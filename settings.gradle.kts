@@ -21,3 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Yumly"
 include(":app")
+include(":domain")
+include(":core")
+include(":core:common")
