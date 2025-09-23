@@ -15,6 +15,7 @@ interface DataError: Error{
         USER_NOT_FOUND,
         INVALID_DATA,
         USER_NOT_VERIFIED,
+        CODE_EXPIRED,
     }
 
     enum class Local{
