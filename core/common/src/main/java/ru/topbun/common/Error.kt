@@ -12,6 +12,7 @@ interface DataError: Error{
         UNKNOWN,
 
         USER_EXISTS,
+        USER_NOT_FOUND,
         INVALID_DATA,
     }
 
