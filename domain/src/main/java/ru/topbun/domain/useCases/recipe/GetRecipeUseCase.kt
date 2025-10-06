@@ -7,6 +7,6 @@ class GetRecipeUseCase(
     private val repository: RecipeRepository
 ) {
 
-    suspend operator fun invoke(getRecipe: GetRecipeEntity) = repository.getRecipe(getRecipe)
+    suspend operator fun invoke(data: GetRecipeEntity) = repository.getRecipe(data)
 
 }
