@@ -8,5 +8,6 @@ import ru.topbun.domain.entity.recipe.getRecipe.GetRecipeEntity
 interface RecipeRepository {
 
     suspend fun getRecipe(getRecipe: GetRecipeEntity): Result<List<RecipeEntity> ,DataError>
+    suspend fun getRecipeById(id: Int): Result<RecipeEntity ,DataError>
 
 }
