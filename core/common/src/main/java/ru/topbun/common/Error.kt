@@ -19,6 +19,7 @@ interface DataError: Error{
         USER_NOT_VERIFIED,
         CODE_EXPIRED,
         UNAUTHORIZED,
+        FORBIDDEN,
     }
 
     enum class Local{
