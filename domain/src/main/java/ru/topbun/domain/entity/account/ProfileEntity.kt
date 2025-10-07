@@ -7,5 +7,6 @@ data class ProfileEntity(
     val photoUrl: String?,
     val countFollowing: Int,
     val countFollowers: Int,
-    val countLikes: Int
+    val countLikes: Int,
+    val isFollow: Boolean
 )
