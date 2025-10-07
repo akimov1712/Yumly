@@ -7,6 +7,6 @@ import ru.topbun.domain.entity.recipe.RecipeEntity
 interface FavoriteRepository {
 
     suspend fun switchFavoriteRecipe(id: Int): Result<Boolean, DataError>
-    suspend fun getFavoriteRecipes(userId: Int): Result<List<RecipeEntity>, DataError>
+    suspend fun getFavoriteRecipes(userId: Int, limit: Int = 20, offset: Int = 0): Result<List<RecipeEntity>, DataError>
 
 }
