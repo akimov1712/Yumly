@@ -13,8 +13,8 @@ interface DataError: Error{
         UNKNOWN,
 
         // Custom
-        USER_EXISTS,
-        USER_NOT_FOUND,
+        EXISTS,
+        NOT_FOUND,
         INVALID_DATA,
         USER_NOT_VERIFIED,
         CODE_EXPIRED,
