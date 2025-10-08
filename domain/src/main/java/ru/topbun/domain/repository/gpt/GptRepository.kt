@@ -7,5 +7,6 @@ import ru.topbun.domain.entity.gpt.GptChatEntity
 interface GptRepository {
 
     suspend fun getChats(limit: Int, offset: Int): Result<List<GptChatEntity>, DataError>
+    suspend fun getChatById(id: Int): Result<GptChatEntity, DataError>
 
 }
