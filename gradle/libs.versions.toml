@@ -11,6 +11,7 @@ versionName = "1.0"
 # Library Version
 gson = "2.13.2"
 retrofit = "3.0.0"
+okhttp = "5.2.0"
 
 # Default Library Version
 agp = "8.13.0"
@@ -31,7 +32,7 @@ appcompatV7 = "28.0.0"
 [libraries]
 # Library
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-okhttp-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "retrofit" }
+okhttp-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 
