@@ -28,8 +28,8 @@ class SignUpRepositoryImpl(
                     Result.Success(user.toEntity())
                 } else {
                     val error = when (response.code()) {
-                        HttpStatusCode.BadRequest -> DataError.Network.INVALID_DATA
-                        HttpStatusCode.Conflict -> DataError.Network.EXISTS
+                        HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
+                        HttpStatusCode.CONFLICT -> DataError.Network.EXISTS
                         else -> DataError.Network.SERVER_ERROR
                     }
                     Result.Error(error)
