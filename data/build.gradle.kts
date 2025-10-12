@@ -41,6 +41,9 @@ android {
 
 dependencies {
 
+    // SharedPreferences
+    implementation(libs.sharedPreferences.crypto)
+
     // Retrofit
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.converter.gson)

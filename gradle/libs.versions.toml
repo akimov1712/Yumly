@@ -13,6 +13,8 @@ gson = "2.13.2"
 retrofit = "3.0.0"
 okhttp = "5.2.0"
 
+sharedPreferences-crypto = "1.1.0"
+
 # Default Library Version
 agp = "8.13.0"
 kotlin = "2.2.21-RC"
@@ -35,6 +37,9 @@ retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.r
 okhttp-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+
+sharedPreferences-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "sharedPreferences-crypto" }
+
 
 # Default Library
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
