@@ -4,5 +4,6 @@ data class SignUpEntity(
     val email: String,
     val username: String,
     val password: String,
+    val confirmPassword: String,
     val photoUrl: String? = null
 )

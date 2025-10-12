@@ -1,6 +1,6 @@
 package ru.topbun.domain.repository.history
 
-import ru.topbun.common.DataError
+import ru.topbun.common.error.DataError
 import ru.topbun.common.Result
 
 interface HistoryRepository {

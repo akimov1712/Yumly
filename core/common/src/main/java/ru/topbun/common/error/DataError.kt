@@ -1,10 +1,8 @@
-package ru.topbun.common
-
-sealed interface Error
+package ru.topbun.common.error
 
 interface DataError: Error{
 
-    enum class Network{
+    enum class Network: DataError{
         // Default
         REQUEST_TIMEOUT,
         SERIALIZATION,
@@ -14,15 +12,15 @@ interface DataError: Error{
 
         // Custom
         EXISTS,
-        NOT_FOUND,
         INVALID_DATA,
+        NOT_FOUND,
         USER_NOT_VERIFIED,
         CODE_EXPIRED,
         UNAUTHORIZED,
         FORBIDDEN,
     }
 
-    enum class Local{
+    enum class Local: DataError{
         WRITE_TOKEN,
         READ_TOKEN
     }
