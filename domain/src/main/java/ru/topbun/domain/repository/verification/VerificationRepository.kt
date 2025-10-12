@@ -8,7 +8,7 @@ import ru.topbun.domain.entity.verification.VerificationStatusType
 
 interface VerificationRepository {
 
-    suspend fun request(request: RequestVerificationEntity): Result<VerificationStatusType, DataError>
+    suspend fun request(request: RequestVerificationEntity): Result<Unit, DataError>
     suspend fun confirm(confirm: ConfirmVerificationEntity): Result<VerificationStatusType, DataError>
 
 }
