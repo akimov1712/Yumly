@@ -1,15 +1,14 @@
 package ru.topbun.data.source.remote
 
-import android.content.SharedPreferences
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import ru.topbun.data.source.local.config.getToken
+import ru.topbun.data.source.local.config.TokenManager
 
-class AuthTokenInterceptor(private val config: SharedPreferences) : Interceptor {
+class AuthTokenInterceptor(private val tokenManager: TokenManager) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val token = config.getToken()
+        val token = tokenManager.getToken()
         val originalRequest = chain.request()
         val requestBuilder = originalRequest.newBuilder()
         requestBuilder.createAuthHeader(token)

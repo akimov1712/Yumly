@@ -1,21 +1,28 @@
 package ru.topbun.data.repository.verification
 
 import android.content.Context
+import com.google.gson.Gson
 import ru.topbun.common.HttpStatusCode
 import ru.topbun.common.Result
 import ru.topbun.common.error.DataError
 import ru.topbun.data.exceptionWrapper
+import ru.topbun.data.source.local.config.TokenManager
 import ru.topbun.data.source.remote.api.VerificationApi
+import ru.topbun.data.source.remote.dto.token.TokenResponse
+import ru.topbun.data.source.remote.dto.verification.VerificationStatusResponse
 import ru.topbun.data.source.remote.dto.verification.toRequest
 import ru.topbun.data.withInternetCheck
 import ru.topbun.domain.entity.verification.ConfirmVerificationEntity
 import ru.topbun.domain.entity.verification.RequestVerificationEntity
 import ru.topbun.domain.entity.verification.VerificationStatusType
+import ru.topbun.domain.entity.verification.VerificationType
 import ru.topbun.domain.repository.verification.VerificationRepository
 
 class VerificationRepositoryImpl(
     private val context: Context,
-    private val api: VerificationApi
+    private val api: VerificationApi,
+    private val tokenManager: TokenManager,
+    private val gson: Gson,
 ): VerificationRepository {
 
     override suspend fun request(data: RequestVerificationEntity): Result<Unit, DataError> =
@@ -26,7 +33,7 @@ class VerificationRepositoryImpl(
                     Result.Success(Unit)
                 } else {
                     val error = when(response.code){
-                        HttpStatusCode.NotFound -> DataError.Network.NOT_FOUND
+                        HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
                         else -> DataError.Network.SERVER_ERROR
                     }
                     Result.Error(error)
@@ -34,8 +41,31 @@ class VerificationRepositoryImpl(
             }
         }
 
-    override suspend fun confirm(confirm: ConfirmVerificationEntity): Result<VerificationStatusType, DataError> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun confirm(data: ConfirmVerificationEntity): Result<VerificationStatusType, DataError> =
+        exceptionWrapper {
+            withInternetCheck(context){
+                val response = api.confirm(data.toRequest())
+                if (response.isSuccessful){
+                    if (data.type == VerificationType.SIGN_UP_CONFIRM){
+                        val token = gson.fromJson(response.body.string(), TokenResponse::class.java)
+                        tokenManager.saveToken(token.token)
+                    }
+                    Result.Success(VerificationStatusType.SUCCESS)
+                } else {
+                    val error = when(response.code){
+                        HttpStatusCode.FORBIDDEN -> DataError.Network.FORBIDDEN
+                        HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
+                        else -> DataError.Network.SERVER_ERROR
+                    }
+                    val data = if (response.code == HttpStatusCode.FORBIDDEN){
+                        gson.fromJson(
+                            response.body.string(),
+                            VerificationStatusResponse::class.java
+                        ).status
+                    } else null
+                    Result.Error(error, data)
+                }
+            }
+        }
 
 }

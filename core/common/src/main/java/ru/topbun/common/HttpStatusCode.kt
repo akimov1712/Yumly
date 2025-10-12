@@ -2,10 +2,10 @@ package ru.topbun.common
 
 object HttpStatusCode {
 
-    val Success = (200..299)
-    val BadRequest = 400
-    val NotFound = 404
-    val Conflict = 409
+    const val BAD_REQUEST = 400
+    const val FORBIDDEN = 403
+    const val NOT_FOUND = 404
+    const val CONFLICT = 409
 
 
 }
