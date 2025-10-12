@@ -1,28 +1,30 @@
 package ru.topbun.data.source.remote
 
+import android.util.Log.v
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
-import ru.topbun.data.BuildConfig
 import ru.topbun.data.source.remote.api.LoginApi
 import ru.topbun.data.source.remote.api.SignUpApi
 
-object ApiFactory {
+class ApiFactory(
+    private val authTokenProvider: AuthTokenInterceptor
+) {
 
-    private fun createDefaultOkHttpClient(): OkHttpClient {
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+    private fun createOkHttpClient(): OkHttpClient {
+        val logInterceptor = HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) }
         return OkHttpClient.Builder()
-            .addInterceptor(interceptor)
+            .addInterceptor(authTokenProvider)
+            .addInterceptor(logInterceptor)
             .build()
     }
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(BuildConfig.BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
-        .client(createDefaultOkHttpClient())
+        .client(createOkHttpClient())
         .build()
 
 
