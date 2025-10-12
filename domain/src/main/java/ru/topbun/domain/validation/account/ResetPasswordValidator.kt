@@ -4,7 +4,6 @@ import ru.topbun.common.Result
 import ru.topbun.common.Validator
 import ru.topbun.common.error.ValidatorError
 import ru.topbun.domain.entity.account.ResetPasswordEntity
-import ru.topbun.domain.validation.signUp.SignUpValidatorError
 
 class ResetPasswordValidator: Validator<ResetPasswordEntity> {
 
@@ -12,13 +11,13 @@ class ResetPasswordValidator: Validator<ResetPasswordEntity> {
         return when{
 
             data.password.isBlank() ->
-                Result.Error(SignUpValidatorError.PASSWORD_EMPTY)
+                Result.Error(ResetPasswordValidatorError.PASSWORD_EMPTY)
 
             data.password.length < 6 ->
-                Result.Error(SignUpValidatorError.PASSWORD_SHORT)
+                Result.Error(ResetPasswordValidatorError.PASSWORD_SHORT)
 
             data.password != data.confirmPassword ->
-                Result.Error(SignUpValidatorError.PASSWORD_NOT_MATCH)
+                Result.Error(ResetPasswordValidatorError.PASSWORD_NOT_MATCH)
 
             else -> Result.Success(Unit)
 
