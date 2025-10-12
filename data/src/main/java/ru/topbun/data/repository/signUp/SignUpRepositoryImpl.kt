@@ -27,11 +27,12 @@ class SignUpRepositoryImpl(
                 if (response.isSuccessful && user != null) {
                     Result.Success(user.toEntity())
                 } else {
-                    when (response.code()) {
-                        HttpStatusCode.BadRequest -> Result.Error(DataError.Network.INVALID_DATA)
-                        HttpStatusCode.Conflict -> Result.Error(DataError.Network.EXISTS)
-                        else -> Result.Error(DataError.Network.SERVER_ERROR)
+                    val error = when (response.code()) {
+                        HttpStatusCode.BadRequest -> DataError.Network.INVALID_DATA
+                        HttpStatusCode.Conflict -> DataError.Network.EXISTS
+                        else -> DataError.Network.SERVER_ERROR
                     }
+                    Result.Error(error)
                 }
             }
         }
