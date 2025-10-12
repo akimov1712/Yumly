@@ -1,4 +1,4 @@
-package ru.topbun.data.source.remote.dto.signUp
+package ru.topbun.data.source.remote.dto.account
 
 import ru.topbun.domain.entity.account.UserEntity
 import java.util.Date
