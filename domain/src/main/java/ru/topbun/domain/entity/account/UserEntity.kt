@@ -4,7 +4,7 @@ import java.util.Date
 
 data class UserEntity(
     val id: Int,
-    val username: Int,
+    val username: String,
     val email: String,
     val photoUrl: String?,
     val isVerified: Boolean,
