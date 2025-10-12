@@ -6,6 +6,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import ru.topbun.data.BuildConfig
+import ru.topbun.data.source.remote.api.LoginApi
+import ru.topbun.data.source.remote.api.SignUpApi
 
 object ApiFactory {
 
@@ -25,5 +27,6 @@ object ApiFactory {
 
 
     val signUpApi = retrofit.create<SignUpApi>()
+    val loginApi = retrofit.create<LoginApi>()
 
 }
