@@ -7,5 +7,5 @@ data class ResetPasswordRequest(
     val newPassword: String
 )
 
-fun ResetPasswordEntity.toRequest() = ResetPasswordRequest(email, newPassword)
+fun ResetPasswordEntity.toRequest() = ResetPasswordRequest(email, password)
 
