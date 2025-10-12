@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.dependencies
+
 plugins {
     id("java-library")
     alias(libs.plugins.jetbrains.kotlin.jvm)
@@ -14,6 +16,6 @@ kotlin {
 
 dependencies{
 
-    implementation(project(":core:common"))
+    api(project(":core:common"))
 
 }
