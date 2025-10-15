@@ -59,7 +59,6 @@ class RecipeRepositoryImpl(
                 Result.Success(recipe.toEntity())
             } else {
                 val error = when(response.code()){
-                    HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
                     HttpStatusCode.CONFLICT -> DataError.Network.INVALID_DATA
                     HttpStatusCode.UNAUTHORIZED -> DataError.Network.UNAUTHORIZED
                     else -> DataError.Network.SERVER_ERROR
@@ -68,8 +67,21 @@ class RecipeRepositoryImpl(
             }
         }
 
-    override suspend fun deleteRecipe(id: Int): Result<Unit, DataError> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun deleteRecipe(id: Int): Result<Unit, DataError> =
+        context.exceptionWrapper {
+            val response = api.deleteRecipe(id)
+            if (response.isSuccessful){
+                Result.Success(Unit)
+            } else{
+                val error = when(response.code){
+                    HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
+                    HttpStatusCode.UNAUTHORIZED -> DataError.Network.UNAUTHORIZED
+                    HttpStatusCode.FORBIDDEN -> DataError.Network.UNAUTHORIZED
+                    HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
+                    else -> DataError.Network.SERVER_ERROR
+                }
+                Result.Error(error)
+            }
+        }
 
 }
