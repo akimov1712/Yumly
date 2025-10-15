@@ -6,8 +6,12 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
+import ru.topbun.data.BuildConfig
+import ru.topbun.data.source.remote.api.account.AccountApi
 import ru.topbun.data.source.remote.api.login.LoginApi
+import ru.topbun.data.source.remote.api.recipe.RecipeApi
 import ru.topbun.data.source.remote.api.signUp.SignUpApi
+import ru.topbun.data.source.remote.api.verification.VerificationApi
 
 class ApiFactory(
     private val authTokenProvider: AuthTokenInterceptor
@@ -30,5 +34,8 @@ class ApiFactory(
 
     val signUpApi = retrofit.create<SignUpApi>()
     val loginApi = retrofit.create<LoginApi>()
+    val verificationApi = retrofit.create<VerificationApi>()
+    val accountApi = retrofit.create<AccountApi>()
+    val recipeApi = retrofit.create<RecipeApi>()
 
 }
