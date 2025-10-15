@@ -1,0 +1,27 @@
+package ru.topbun.data.source.remote.dto.account
+
+import ru.topbun.domain.entity.account.ProfileEntity
+
+data class ProfileDto(
+    val userId: Int,
+    val username: String,
+    val email: String,
+    val photoUrl: String?,
+    val countFollowing: Int,
+    val countFollowers: Int,
+    val countLikes: Int,
+    val isFollow: Boolean
+){
+
+    fun toEntity() = ProfileEntity(
+        userId = userId,
+        username = username,
+        email = email,
+        photoUrl = photoUrl,
+        countFollowing = countFollowing,
+        countFollowers = countFollowers,
+        countLikes = countLikes,
+        isFollow = isFollow,
+    )
+
+}
