@@ -8,10 +8,12 @@ import ru.topbun.data.source.local.config.TokenManager
 class AuthTokenInterceptor(private val tokenManager: TokenManager) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val token = tokenManager.getToken()
         val originalRequest = chain.request()
         val requestBuilder = originalRequest.newBuilder()
+
+        val token = tokenManager.getToken()
         requestBuilder.createAuthHeader(token)
+
         val request = requestBuilder.build()
         return chain.proceed(request)
     }

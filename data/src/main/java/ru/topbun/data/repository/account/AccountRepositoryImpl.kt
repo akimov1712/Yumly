@@ -34,9 +34,23 @@ class AccountRepositoryImpl(
             }
         }
 
-    override suspend fun getAccountInfo(): Result<UserEntity, DataError> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getAccountInfo(): Result<UserEntity, DataError> =
+        exceptionWrapper {
+            withInternetCheck(context){
+                val response = api.getAccountInfo()
+                val user = response.body()
+                if (response.isSuccessful && user != null){
+                    Result.Success(user.toEntity())
+                }else{
+                    val error = when(response.code()){
+                        HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
+                        HttpStatusCode.UNAUTHORIZED -> DataError.Network.UNAUTHORIZED
+                        else -> DataError.Network.SERVER_ERROR
+                    }
+                    Result.Error(error)
+                }
+            }
+        }
 
     override suspend fun updateAccountInfo(
         username: String?,
