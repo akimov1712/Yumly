@@ -13,13 +13,16 @@ import java.net.UnknownHostException
 
 open class AppException: Exception()
 class NoInternetException: AppException()
+class UnauthorizedException: AppException()
 
 suspend fun <T> exceptionWrapper(data: T? = null,block: suspend () -> Result<T, DataError>): Result<T, DataError> =
     try {
         block()
     } catch (e: NoInternetException) {
         Result.Error(DataError.Network.NO_INTERNET, data)
-    } catch (e: SocketTimeoutException) {
+    } catch (e: UnauthorizedException) {
+        Result.Error(DataError.Network.UNAUTHORIZED, data)
+    }catch (e: SocketTimeoutException) {
         Result.Error(DataError.Network.REQUEST_TIMEOUT, data)
     } catch (e: JsonSyntaxException) {
         Result.Error(DataError.Network.SERIALIZATION, data)
