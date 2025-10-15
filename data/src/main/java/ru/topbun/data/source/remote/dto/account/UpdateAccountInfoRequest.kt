@@ -7,4 +7,4 @@ data class UpdateAccountInfoRequest(
     val photoUrl: String?
 )
 
-fun UpdateAccountInfoEntity.toRequest() = UpdateAccountInfoRequest(username, photoUrl)
+internal fun UpdateAccountInfoEntity.toRequest() = UpdateAccountInfoRequest(username, photoUrl)

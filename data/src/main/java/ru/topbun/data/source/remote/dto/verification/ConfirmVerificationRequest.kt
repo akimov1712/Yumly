@@ -8,4 +8,4 @@ data class ConfirmVerificationRequest(
     val type: String
 )
 
-fun ConfirmVerificationEntity.toRequest() = ConfirmVerificationRequest(email, code, type.toString())
+internal fun ConfirmVerificationEntity.toRequest() = ConfirmVerificationRequest(email, code, type.toString())

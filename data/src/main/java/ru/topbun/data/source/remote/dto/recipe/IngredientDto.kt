@@ -15,3 +15,5 @@ data class IngredientDto(
     )
 
 }
+
+internal fun IngredientEntity.toDto() = IngredientDto(id, name, value)

@@ -9,4 +9,4 @@ data class SignUpRequest(
     val photoUrl: String?
 )
 
-fun SignUpEntity.toRequest() = SignUpRequest(email, username, password, photoUrl)
+internal fun SignUpEntity.toRequest() = SignUpRequest(email, username, password, photoUrl)

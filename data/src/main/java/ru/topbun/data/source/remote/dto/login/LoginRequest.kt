@@ -8,6 +8,6 @@ data class LoginRequest(
     val password: String
 )
 
-fun LoginEntity.toRequest() = LoginRequest(email, password)
+internal fun LoginEntity.toRequest() = LoginRequest(email, password)
 
 
