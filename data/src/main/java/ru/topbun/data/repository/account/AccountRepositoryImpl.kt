@@ -10,6 +10,7 @@ import ru.topbun.data.source.remote.dto.account.toRequest
 import ru.topbun.data.withInternetCheck
 import ru.topbun.domain.entity.account.ProfileEntity
 import ru.topbun.domain.entity.account.ResetPasswordEntity
+import ru.topbun.domain.entity.account.UpdateAccountInfoEntity
 import ru.topbun.domain.entity.account.UserEntity
 import ru.topbun.domain.repository.account.AccountRepository
 
@@ -52,12 +53,25 @@ class AccountRepositoryImpl(
             }
         }
 
-    override suspend fun updateAccountInfo(
-        username: String?,
-        photoUrl: String?
-    ): Result<UserEntity, DataError> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun updateAccountInfo(data: UpdateAccountInfoEntity): Result<UserEntity, DataError> =
+        exceptionWrapper {
+            withInternetCheck(context){
+                val response = api.updateAccountInfo(data.toRequest())
+                val user = response.body()
+                if (response.isSuccessful && user != null){
+                    Result.Success(user.toEntity())
+                }else{
+                    val error = when(response.code()){
+                        HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
+                        HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
+                        HttpStatusCode.UNAUTHORIZED -> DataError.Network.UNAUTHORIZED
+                        else -> DataError.Network.SERVER_ERROR
+                    }
+                    Result.Error(error)
+                }
+            }
+        }
+
 
     override suspend fun getProfile(userId: Int): Result<ProfileEntity, DataError> {
         TODO("Not yet implemented")
