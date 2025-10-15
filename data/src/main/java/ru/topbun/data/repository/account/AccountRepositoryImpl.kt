@@ -73,7 +73,22 @@ class AccountRepositoryImpl(
         }
 
 
-    override suspend fun getProfile(userId: Int): Result<ProfileEntity, DataError> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getProfile(userId: Int): Result<ProfileEntity, DataError> =
+        exceptionWrapper {
+            withInternetCheck(context){
+                val response = api.getProfile(userId)
+                val profile = response.body()
+                if (response.isSuccessful && profile != null){
+                    Result.Success(profile.toEntity())
+                }else{
+                    val error = when(response.code()){
+                        HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
+                        HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
+                        HttpStatusCode.UNAUTHORIZED -> DataError.Network.UNAUTHORIZED
+                        else -> DataError.Network.SERVER_ERROR
+                    }
+                    Result.Error(error)
+                }
+            }
+        }
 }
