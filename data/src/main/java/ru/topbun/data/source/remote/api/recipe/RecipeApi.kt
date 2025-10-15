@@ -19,6 +19,9 @@ interface RecipeApi {
     @GET("/v1/recipe/{id}")
     suspend fun getRecipeById(@Path("id") recipeId: Int): Response<RecipeDto>
 
+    @GET("/v1/recipe/user/{id}")
+    suspend fun getRecipeByUserId(@Path("id") userId: Int): Response<GetRecipeResponse>
+
     @POST("/v1/recipe/add")
     suspend fun addRecipe(@Body body: AddRecipeRequest): Response<RecipeDto>
 

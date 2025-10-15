@@ -51,6 +51,21 @@ class RecipeRepositoryImpl(
             }
         }
 
+    override suspend fun getRecipeByUserId(userId: Int): Result<List<RecipeEntity>, DataError> =
+        context.exceptionWrapper {
+            val response = api.getRecipeByUserId(userId)
+            val recipes = response.body()
+            if (response.isSuccessful && recipes != null){
+                Result.Success(recipes.toEntityList())
+            } else {
+                val error = when(response.code()){
+                    HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
+                    else -> DataError.Network.SERVER_ERROR
+                }
+                Result.Error(error)
+            }
+        }
+
     override suspend fun addRecipe(data: AddRecipeEntity): Result<RecipeEntity, DataError> =
         context.exceptionWrapper {
             val response = api.addRecipe(data.toRequest())
