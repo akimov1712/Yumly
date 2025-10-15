@@ -7,7 +7,7 @@ import ru.topbun.common.Result
 import ru.topbun.common.error.DataError
 import ru.topbun.data.exceptionWrapper
 import ru.topbun.data.source.local.config.TokenManager
-import ru.topbun.data.source.remote.api.VerificationApi
+import ru.topbun.data.source.remote.api.verification.VerificationApi
 import ru.topbun.data.source.remote.dto.token.TokenResponse
 import ru.topbun.data.source.remote.dto.verification.VerificationStatusResponse
 import ru.topbun.data.source.remote.dto.verification.toRequest

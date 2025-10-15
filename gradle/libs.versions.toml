@@ -16,7 +16,7 @@ okhttp = "5.2.0"
 sharedPreferences-crypto = "1.1.0"
 
 # Default Library Version
-agp = "8.13.0"
+agp = "9.0.0-alpha09"
 kotlin = "2.2.21-RC"
 coreKtx = "1.17.0"
 junit = "4.13.2"
@@ -65,7 +65,7 @@ appcompat = { group = "com.android.support", name = "appcompat-v7", version.ref 
 
 # Default Plugins
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version = "2.2.0" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version = "2.2.10" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 android-library = { id = "com.android.library", version.ref = "agp" }

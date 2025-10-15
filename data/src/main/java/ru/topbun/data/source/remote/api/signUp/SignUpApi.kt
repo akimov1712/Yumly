@@ -1,10 +1,10 @@
-package ru.topbun.data.source.remote.api
+package ru.topbun.data.source.remote.api.signUp
 
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
-import ru.topbun.data.source.remote.dto.signUp.SignUpRequest
 import ru.topbun.data.source.remote.dto.account.UserDto
+import ru.topbun.data.source.remote.dto.signUp.SignUpRequest
 
 interface SignUpApi {
 

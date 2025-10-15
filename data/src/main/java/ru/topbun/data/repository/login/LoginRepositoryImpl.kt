@@ -6,7 +6,7 @@ import ru.topbun.common.Result
 import ru.topbun.common.error.DataError
 import ru.topbun.data.exceptionWrapper
 import ru.topbun.data.source.local.config.TokenManager
-import ru.topbun.data.source.remote.api.LoginApi
+import ru.topbun.data.source.remote.api.login.LoginApi
 import ru.topbun.data.source.remote.dto.login.toRequest
 import ru.topbun.data.withInternetCheck
 import ru.topbun.domain.entity.login.LoginEntity
