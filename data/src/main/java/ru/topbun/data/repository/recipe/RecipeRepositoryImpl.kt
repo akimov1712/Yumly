@@ -7,6 +7,7 @@ import ru.topbun.common.Result
 import ru.topbun.common.error.DataError
 import ru.topbun.data.exceptionWrapper
 import ru.topbun.data.source.remote.api.recipe.RecipeApi
+import ru.topbun.data.source.remote.dto.recipe.addRecipe.toRequest
 import ru.topbun.data.source.remote.dto.recipe.getRecipe.toRequest
 import ru.topbun.data.withInternetCheck
 import ru.topbun.domain.entity.recipe.RecipeEntity
@@ -50,9 +51,22 @@ class RecipeRepositoryImpl(
             }
         }
 
-    override suspend fun addRecipe(data: AddRecipeEntity): Result<RecipeEntity, DataError> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun addRecipe(data: AddRecipeEntity): Result<RecipeEntity, DataError> =
+        context.exceptionWrapper {
+            val response = api.addRecipe(data.toRequest())
+            val recipe = response.body()
+            if (response.isSuccessful && recipe != null){
+                Result.Success(recipe.toEntity())
+            } else {
+                val error = when(response.code()){
+                    HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
+                    HttpStatusCode.CONFLICT -> DataError.Network.INVALID_DATA
+                    HttpStatusCode.UNAUTHORIZED -> DataError.Network.UNAUTHORIZED
+                    else -> DataError.Network.SERVER_ERROR
+                }
+                Result.Error(error)
+            }
+        }
 
     override suspend fun deleteRecipe(id: Int): Result<Unit, DataError> {
         TODO("Not yet implemented")

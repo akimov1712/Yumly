@@ -7,4 +7,4 @@ data class RequestVerificationRequest(
     val type: String
 )
 
-fun RequestVerificationEntity.toRequest() = RequestVerificationRequest(email, type.toString())
+internal fun RequestVerificationEntity.toRequest() = RequestVerificationRequest(email, type.toString())

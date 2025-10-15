@@ -15,3 +15,5 @@ data class StepDto (
     )
 
 }
+
+internal fun StepEntity.toDto() = StepDto(id, description, previewUrl)

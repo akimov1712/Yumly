@@ -9,7 +9,7 @@ data class GetRecipeRequest(
     val recipeFilter: GetRecipeFilterDto
 )
 
-fun GetRecipeEntity.toRequest() = GetRecipeRequest(
+internal fun GetRecipeEntity.toRequest() = GetRecipeRequest(
     q = q,
     offset = offset,
     limit = limit,

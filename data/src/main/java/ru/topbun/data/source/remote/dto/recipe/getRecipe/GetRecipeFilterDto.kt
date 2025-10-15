@@ -10,7 +10,7 @@ data class GetRecipeFilterDto(
     val difficulty: String?
 )
 
-fun GetRecipeFilterEntity.toDto() = GetRecipeFilterDto(
+internal fun GetRecipeFilterEntity.toDto() = GetRecipeFilterDto(
     tagIds = tagIds,
     cookingTime = cookingTime,
     minKcal = minKcal,
