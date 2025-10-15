@@ -19,24 +19,34 @@ suspend fun <T> exceptionWrapper(data: T? = null,block: suspend () -> Result<T, 
     try {
         block()
     } catch (e: NoInternetException) {
+        e.printStackTrace()
         Result.Error(DataError.Network.NO_INTERNET, data)
     } catch (e: UnauthorizedException) {
+        e.printStackTrace()
         Result.Error(DataError.Network.UNAUTHORIZED, data)
     }catch (e: SocketTimeoutException) {
+        e.printStackTrace()
         Result.Error(DataError.Network.REQUEST_TIMEOUT, data)
     } catch (e: JsonSyntaxException) {
+        e.printStackTrace()
         Result.Error(DataError.Network.SERIALIZATION, data)
     } catch (e: JsonParseException) {
+        e.printStackTrace()
         Result.Error(DataError.Network.SERIALIZATION, data)
     } catch (e: IllegalStateException) {
+        e.printStackTrace()
         Result.Error(DataError.Network.SERIALIZATION, data)
     } catch (e: UnknownHostException) {
+        e.printStackTrace()
         Result.Error(DataError.Network.SERVER_ERROR, data)
     } catch (e: ConnectException) {
+        e.printStackTrace()
         Result.Error(DataError.Network.SERVER_ERROR, data)
     } catch (e: SocketException) {
+        e.printStackTrace()
         Result.Error(DataError.Network.SERVER_ERROR, data)
     } catch (e: Exception) {
+        e.printStackTrace()
         Result.Error(DataError.Network.UNKNOWN, data)
     }
 
