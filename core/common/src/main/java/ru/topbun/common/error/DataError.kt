@@ -14,7 +14,6 @@ interface DataError: Error{
         EXISTS,
         INVALID_DATA,
         NOT_FOUND,
-        CODE_EXPIRED,
         UNAUTHORIZED,
         FORBIDDEN,
     }

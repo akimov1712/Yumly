@@ -1,5 +1,6 @@
 package ru.topbun.data.repository.recipe
 
+import android.R.attr.data
 import android.content.Context
 import ru.topbun.common.HttpStatusCode
 import ru.topbun.common.Result
@@ -33,9 +34,21 @@ class RecipeRepositoryImpl(
             }
         }
 
-    override suspend fun getRecipeById(id: Int): Result<RecipeEntity, DataError> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getRecipeById(id: Int): Result<RecipeEntity, DataError> =
+        context.exceptionWrapper {
+            val response = api.getRecipeById(id)
+            val recipe = response.body()
+            if (response.isSuccessful && recipe != null){
+                Result.Success(recipe.toEntity())
+            } else {
+                val error = when(response.code()){
+                    HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
+                    HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
+                    else -> DataError.Network.SERVER_ERROR
+                }
+                Result.Error(error)
+            }
+        }
 
     override suspend fun addRecipe(data: AddRecipeEntity): Result<RecipeEntity, DataError> {
         TODO("Not yet implemented")
