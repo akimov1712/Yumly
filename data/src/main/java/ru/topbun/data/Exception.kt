@@ -15,9 +15,11 @@ open class AppException: Exception()
 class NoInternetException: AppException()
 class UnauthorizedException: AppException()
 
-suspend fun <T> exceptionWrapper(data: T? = null,block: suspend () -> Result<T, DataError>): Result<T, DataError> =
+internal suspend fun <T> Context.exceptionWrapper(data: T? = null, block: suspend () -> Result<T, DataError>): Result<T, DataError> =
     try {
-        block()
+        withInternetCheck(this){
+            block()
+        }
     } catch (e: NoInternetException) {
         e.printStackTrace()
         Result.Error(DataError.Network.NO_INTERNET, data)
@@ -50,7 +52,7 @@ suspend fun <T> exceptionWrapper(data: T? = null,block: suspend () -> Result<T, 
         Result.Error(DataError.Network.UNKNOWN, data)
     }
 
-inline fun <D> withInternetCheck(
+internal inline fun <D> withInternetCheck(
     context: Context,
     block: () -> Result<D, DataError>
 ): Result<D, DataError> {

@@ -19,21 +19,19 @@ class SignUpRepositoryImpl(
 
 
     override suspend fun signUp(signUp: SignUpEntity): Result<UserEntity, DataError> =
-        exceptionWrapper {
-            withInternetCheck(context) {
-                val response = api.signUp(signUp.toRequest())
-                val user = response.body()
+        context.exceptionWrapper {
+            val response = api.signUp(signUp.toRequest())
+            val user = response.body()
 
-                if (response.isSuccessful && user != null) {
-                    Result.Success(user.toEntity())
-                } else {
-                    val error = when (response.code()) {
-                        HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
-                        HttpStatusCode.CONFLICT -> DataError.Network.EXISTS
-                        else -> DataError.Network.SERVER_ERROR
-                    }
-                    Result.Error(error)
+            if (response.isSuccessful && user != null) {
+                Result.Success(user.toEntity())
+            } else {
+                val error = when (response.code()) {
+                    HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
+                    HttpStatusCode.CONFLICT -> DataError.Network.EXISTS
+                    else -> DataError.Network.SERVER_ERROR
                 }
+                Result.Error(error)
             }
         }
 
