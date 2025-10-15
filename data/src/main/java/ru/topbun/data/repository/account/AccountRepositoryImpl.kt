@@ -5,7 +5,7 @@ import ru.topbun.common.HttpStatusCode
 import ru.topbun.common.Result
 import ru.topbun.common.error.DataError
 import ru.topbun.data.exceptionWrapper
-import ru.topbun.data.source.remote.api.AccountApi
+import ru.topbun.data.source.remote.api.account.AccountApi
 import ru.topbun.data.source.remote.dto.account.toRequest
 import ru.topbun.data.withInternetCheck
 import ru.topbun.domain.entity.account.ProfileEntity

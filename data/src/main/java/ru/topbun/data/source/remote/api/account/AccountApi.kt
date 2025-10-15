@@ -1,4 +1,4 @@
-package ru.topbun.data.source.remote.api
+package ru.topbun.data.source.remote.api.account
 
 import okhttp3.Response
 import retrofit2.http.Body

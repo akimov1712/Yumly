@@ -6,8 +6,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
-import ru.topbun.data.source.remote.api.LoginApi
-import ru.topbun.data.source.remote.api.SignUpApi
+import ru.topbun.data.source.remote.api.login.LoginApi
+import ru.topbun.data.source.remote.api.signUp.SignUpApi
 
 class ApiFactory(
     private val authTokenProvider: AuthTokenInterceptor
