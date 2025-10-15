@@ -26,45 +26,41 @@ class VerificationRepositoryImpl(
 ): VerificationRepository {
 
     override suspend fun request(data: RequestVerificationEntity): Result<Unit, DataError> =
-        exceptionWrapper {
-            withInternetCheck(context){
-                val response = api.request(data.toRequest())
-                if (response.isSuccessful){
-                    Result.Success(Unit)
-                } else {
-                    val error = when(response.code){
-                        HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
-                        else -> DataError.Network.SERVER_ERROR
-                    }
-                    Result.Error(error)
+        context.exceptionWrapper {
+            val response = api.request(data.toRequest())
+            if (response.isSuccessful){
+                Result.Success(Unit)
+            } else {
+                val error = when(response.code){
+                    HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
+                    else -> DataError.Network.SERVER_ERROR
                 }
+                Result.Error(error)
             }
         }
 
     override suspend fun confirm(data: ConfirmVerificationEntity): Result<VerificationStatusType, DataError> =
-        exceptionWrapper {
-            withInternetCheck(context){
-                val response = api.confirm(data.toRequest())
-                if (response.isSuccessful){
-                    if (data.type == VerificationType.SIGN_UP_CONFIRM){
-                        val token = gson.fromJson(response.body.string(), TokenResponse::class.java)
-                        tokenManager.saveToken(token.token)
-                    }
-                    Result.Success(VerificationStatusType.SUCCESS)
-                } else {
-                    val error = when(response.code){
-                        HttpStatusCode.FORBIDDEN -> DataError.Network.FORBIDDEN
-                        HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
-                        else -> DataError.Network.SERVER_ERROR
-                    }
-                    val data = if (response.code == HttpStatusCode.FORBIDDEN){
-                        gson.fromJson(
-                            response.body.string(),
-                            VerificationStatusResponse::class.java
-                        ).status
-                    } else null
-                    Result.Error(error, data)
+        context.exceptionWrapper {
+            val response = api.confirm(data.toRequest())
+            if (response.isSuccessful){
+                if (data.type == VerificationType.SIGN_UP_CONFIRM){
+                    val token = gson.fromJson(response.body.string(), TokenResponse::class.java)
+                    tokenManager.saveToken(token.token)
                 }
+                Result.Success(VerificationStatusType.SUCCESS)
+            } else {
+                val error = when(response.code){
+                    HttpStatusCode.FORBIDDEN -> DataError.Network.FORBIDDEN
+                    HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
+                    else -> DataError.Network.SERVER_ERROR
+                }
+                val data = if (response.code == HttpStatusCode.FORBIDDEN){
+                    gson.fromJson(
+                        response.body.string(),
+                        VerificationStatusResponse::class.java
+                    ).status
+                } else null
+                Result.Error(error, data)
             }
         }
 

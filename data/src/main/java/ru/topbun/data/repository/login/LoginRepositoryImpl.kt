@@ -19,21 +19,19 @@ class LoginRepositoryImpl(
 ) : LoginRepository {
 
     override suspend fun login(login: LoginEntity): Result<Unit, DataError> =
-        exceptionWrapper {
-            withInternetCheck(context) {
-                val response = api.login(login.toRequest())
-                val token = response.body()
+        context.exceptionWrapper {
+            val response = api.login(login.toRequest())
+            val token = response.body()
 
-                if (response.isSuccessful && token != null) {
-                    tokenManager.saveToken(token.token)
-                    Result.Success(Unit)
-                } else {
-                    val error = when (response.code()) {
-                        HttpStatusCode.NOT_FOUND -> DataError.Network.SERVER_ERROR
-                        else -> DataError.Network.SERVER_ERROR
-                    }
-                    Result.Error(error)
+            if (response.isSuccessful && token != null) {
+                tokenManager.saveToken(token.token)
+                Result.Success(Unit)
+            } else {
+                val error = when (response.code()) {
+                    HttpStatusCode.NOT_FOUND -> DataError.Network.SERVER_ERROR
+                    else -> DataError.Network.SERVER_ERROR
                 }
+                Result.Error(error)
             }
         }
 
