@@ -9,30 +9,20 @@ import ru.topbun.domain.entity.signUp.SignUpEntity
 class SignUpValidator: Validator<SignUpEntity> {
 
     override fun validate(signUp: SignUpEntity): Result<Unit, ValidatorError> {
-        return when{
-            signUp.username.isBlank() ->
-                Result.Error(SignUpValidatorError.USERNAME_EMPTY)
+        val error = when{
+            signUp.username.isBlank() -> SignUpValidatorError.USERNAME_EMPTY
+            signUp.username.length < 4 -> SignUpValidatorError.USERNAME_SHORT
 
-            signUp.username.length < 4 ->
-                Result.Error(SignUpValidatorError.USERNAME_SHORT)
+            signUp.email.isBlank() -> SignUpValidatorError.EMAIL_EMPTY
+            !signUp.email.isEmailValid() -> SignUpValidatorError.EMAIL_NOT_VALID
 
-            signUp.email.isBlank() ->
-                Result.Error(SignUpValidatorError.EMAIL_EMPTY)
+            signUp.password.isBlank() -> SignUpValidatorError.PASSWORD_EMPTY
+            signUp.password.length < 6 -> SignUpValidatorError.PASSWORD_SHORT
+            signUp.password != signUp.confirmPassword -> SignUpValidatorError.PASSWORD_NOT_MATCH
 
-            !signUp.email.isEmailValid() ->
-                Result.Error(SignUpValidatorError.EMAIL_NOT_VALID)
-
-            signUp.password.isBlank() ->
-                Result.Error(SignUpValidatorError.PASSWORD_EMPTY)
-
-            signUp.password.length < 6 ->
-                Result.Error(SignUpValidatorError.PASSWORD_SHORT)
-
-            signUp.password != signUp.confirmPassword -> 
-                Result.Error(SignUpValidatorError.PASSWORD_NOT_MATCH)
-
-            else -> return Result.Success(Unit)
+            else -> null
         }
+        return error?.let { Result.Error(error) } ?: run { Result.Success(Unit) }
     }
 
 }
