@@ -10,6 +10,7 @@ interface RecipeRepository {
 
     suspend fun getRecipe(data: GetRecipeEntity): Result<List<RecipeEntity> ,DataError>
     suspend fun getRecipeById(id: Int): Result<RecipeEntity ,DataError>
+    suspend fun getRecipeByUserId(userId: Int): Result<List<RecipeEntity> ,DataError>
     suspend fun addRecipe(data: AddRecipeEntity): Result<RecipeEntity, DataError>
     suspend fun deleteRecipe(id: Int): Result<Unit, DataError>
 
