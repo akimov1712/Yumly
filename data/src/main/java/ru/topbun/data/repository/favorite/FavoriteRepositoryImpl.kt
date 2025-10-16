@@ -25,6 +25,7 @@ class FavoriteRepositoryImpl(
                 val error = when(response.code()){
                     HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
                     HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
+                    HttpStatusCode.UNAUTHORIZED -> DataError.Network.UNAUTHORIZED
                     else -> DataError.Network.SERVER_ERROR
                 }
                 Result.Error(error)

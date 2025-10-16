@@ -6,6 +6,7 @@ import ru.topbun.common.Result
 import ru.topbun.common.error.DataError
 import ru.topbun.data.exceptionWrapper
 import ru.topbun.data.source.remote.api.follow.FollowApi
+import ru.topbun.data.source.remote.dto.follow.GetFollowRequest
 import ru.topbun.domain.entity.account.ProfileEntity
 import ru.topbun.domain.repository.follow.FollowRepository
 
@@ -23,6 +24,8 @@ class FollowRepositoryImpl(
             } else {
                 val error = when(response.code()){
                     HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
+                    HttpStatusCode.CONFLICT -> DataError.Network.FORBIDDEN
+                    HttpStatusCode.UNAUTHORIZED -> DataError.Network.UNAUTHORIZED
                     HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
                     else -> DataError.Network.SERVER_ERROR
                 }
@@ -30,13 +33,22 @@ class FollowRepositoryImpl(
             }
         }
 
-    override suspend fun getFollowers(
-        userId: Int,
-        limit: Int,
-        offset: Int
-    ): Result<List<ProfileEntity>, DataError> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getFollowers(userId: Int, limit: Int, offset: Int): Result<List<ProfileEntity>, DataError> =
+        context.exceptionWrapper {
+            val request = GetFollowRequest(userId, limit, offset)
+            val response = api.getFollowers(request)
+            val followers = response.body()
+            if (response.isSuccessful && followers != null){
+                Result.Success(followers.follows.map { it.toEntity() })
+            } else {
+                val error = when(response.code()){
+                    HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
+                    HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
+                    else -> DataError.Network.SERVER_ERROR
+                }
+                Result.Error(error)
+            }
+        }
 
     override suspend fun getFollowing(
         userId: Int,
