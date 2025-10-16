@@ -12,8 +12,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 open class AppException: Exception()
-class NoInternetException: AppException()
-class UnauthorizedException: AppException()
+internal class NoInternetException: AppException()
+internal class UnauthorizedException: AppException()
 
 internal suspend fun <T> Context.exceptionWrapper(data: T? = null, block: suspend () -> Result<T, DataError>): Result<T, DataError> =
     try {

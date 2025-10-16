@@ -6,6 +6,7 @@ import ru.topbun.common.Result
 import ru.topbun.common.error.DataError
 import ru.topbun.data.exceptionWrapper
 import ru.topbun.data.source.remote.api.favorite.FavoriteApi
+import ru.topbun.data.source.remote.dto.favorite.GetFavoriteRequest
 import ru.topbun.domain.entity.recipe.RecipeEntity
 import ru.topbun.domain.repository.favorite.FavoriteRepository
 
@@ -30,12 +31,20 @@ class FavoriteRepositoryImpl(
             }
         }
 
-    override suspend fun getFavoriteRecipes(
-        userId: Int,
-        limit: Int,
-        offset: Int
-    ): Result<List<RecipeEntity>, DataError> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getFavoriteRecipes(userId: Int, limit: Int, offset: Int): Result<List<RecipeEntity>, DataError> =
+        context.exceptionWrapper {
+            val request = GetFavoriteRequest(limit, offset)
+            val response = api.getFavoriteRecipes(userId, request)
+            val recipes = response.body()
+            if (response.isSuccessful && recipes != null){
+                Result.Success(recipes.toEntityList())
+            } else {
+                val error = when(response.code()){
+                    HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
+                    else -> DataError.Network.SERVER_ERROR
+                }
+                Result.Error(error)
+            }
+        }
 
 }
