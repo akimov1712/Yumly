@@ -2,7 +2,7 @@ package ru.topbun.data.source.remote.dto.signUp
 
 import ru.topbun.domain.entity.signUp.SignUpEntity
 
-data class SignUpRequest(
+internal data class SignUpRequest(
     val email: String,
     val username: String,
     val password: String,

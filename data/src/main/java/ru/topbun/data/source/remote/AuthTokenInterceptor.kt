@@ -5,7 +5,7 @@ import okhttp3.Request
 import okhttp3.Response
 import ru.topbun.data.source.local.config.TokenManager
 
-class AuthTokenInterceptor(private val tokenManager: TokenManager) : Interceptor {
+internal class AuthTokenInterceptor(private val tokenManager: TokenManager) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()

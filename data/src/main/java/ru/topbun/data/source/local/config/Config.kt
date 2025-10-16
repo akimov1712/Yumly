@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
-object Config {
+internal object Config {
 
     private const val CRYPT_CONFIG_NAME = "secure_config"
 

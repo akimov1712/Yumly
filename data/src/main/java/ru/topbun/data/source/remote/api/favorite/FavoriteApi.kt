@@ -8,13 +8,13 @@ import retrofit2.http.Path
 import ru.topbun.data.source.remote.dto.favorite.GetFavoriteRequest
 import ru.topbun.data.source.remote.dto.recipe.getRecipe.GetRecipeResponse
 
-interface FavoriteApi {
+internal interface FavoriteApi {
 
     @POST("/v1/favorite/{id}")
-    fun switchFavorite(@Path("id") recipeId: Int): Response<Boolean>
+    suspend fun switchFavorite(@Path("id") recipeId: Int): Response<Boolean>
 
 
     @GET("/v1/favorite/{id}")
-    fun getFavoriteRecipes(@Path("id") userId: Int, @Body body: GetFavoriteRequest): Response<GetRecipeResponse>
+    suspend fun getFavoriteRecipes(@Path("id") userId: Int, @Body body: GetFavoriteRequest): Response<GetRecipeResponse>
 
 }

@@ -11,7 +11,7 @@ import ru.topbun.data.source.remote.dto.account.ResetPasswordRequest
 import ru.topbun.data.source.remote.dto.account.UpdateAccountInfoRequest
 import ru.topbun.data.source.remote.dto.account.UserDto
 
-interface AccountApi {
+internal interface AccountApi {
 
     @POST("/v1/account/reset-password")
     suspend fun resetPassword(@Body body: ResetPasswordRequest): Response

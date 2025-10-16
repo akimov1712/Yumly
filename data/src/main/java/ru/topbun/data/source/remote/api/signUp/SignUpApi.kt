@@ -6,7 +6,7 @@ import retrofit2.http.POST
 import ru.topbun.data.source.remote.dto.account.UserDto
 import ru.topbun.data.source.remote.dto.signUp.SignUpRequest
 
-interface SignUpApi {
+internal interface SignUpApi {
 
     @POST("/v1/signUp")
     suspend fun signUp(@Body body: SignUpRequest): Response<UserDto>

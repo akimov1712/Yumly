@@ -3,7 +3,7 @@ package ru.topbun.data.source.remote.dto.recipe
 import ru.topbun.domain.entity.recipe.tag.TagRecipeEntity
 import ru.topbun.domain.entity.recipe.tag.TagType
 
-data class TagRecipeDto(
+internal data class TagRecipeDto(
     val id: Int,
     val type: TagType,
     val name: String,

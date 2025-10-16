@@ -11,7 +11,7 @@ import ru.topbun.data.source.remote.dto.recipe.addRecipe.AddRecipeRequest
 import ru.topbun.data.source.remote.dto.recipe.getRecipe.GetRecipeResponse
 import ru.topbun.data.source.remote.dto.recipe.getRecipe.GetRecipeRequest
 
-interface RecipeApi {
+internal interface RecipeApi {
 
     @POST("/v1/recipe")
     suspend fun getRecipes(@Body body: GetRecipeRequest): Response<GetRecipeResponse>

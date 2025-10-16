@@ -10,7 +10,7 @@ import ru.topbun.data.source.remote.dto.follow.GetFollowRequest
 import ru.topbun.domain.entity.account.ProfileEntity
 import ru.topbun.domain.repository.follow.FollowRepository
 
-class FollowRepositoryImpl(
+internal class FollowRepositoryImpl(
     private val context: Context,
     private val api: FollowApi
 ): FollowRepository {

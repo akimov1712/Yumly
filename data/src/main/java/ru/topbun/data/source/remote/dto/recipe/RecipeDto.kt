@@ -7,7 +7,7 @@ import ru.topbun.domain.entity.recipe.RecipeEntity
 import ru.topbun.domain.entity.recipe.StepEntity
 import ru.topbun.domain.entity.recipe.tag.TagRecipeEntity
 
-data class RecipeDto(
+internal data class RecipeDto(
     val id: Int,
     val author: ProfileDto,
     val title: String,

@@ -3,7 +3,7 @@ package ru.topbun.data.source.remote.dto.account
 import ru.topbun.domain.entity.account.UserEntity
 import java.util.Date
 
-data class UserDto(
+internal data class UserDto(
     val id: Int,
     val username: String,
     val email: String,

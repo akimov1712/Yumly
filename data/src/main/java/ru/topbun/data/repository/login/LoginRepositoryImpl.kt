@@ -12,7 +12,7 @@ import ru.topbun.data.withInternetCheck
 import ru.topbun.domain.entity.login.LoginEntity
 import ru.topbun.domain.repository.login.LoginRepository
 
-class LoginRepositoryImpl(
+internal class LoginRepositoryImpl(
     private val context: Context,
     private val api: LoginApi,
     private val tokenManager: TokenManager

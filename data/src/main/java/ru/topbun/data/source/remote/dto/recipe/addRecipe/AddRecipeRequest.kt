@@ -7,7 +7,7 @@ import ru.topbun.domain.entity.recipe.IngredientEntity
 import ru.topbun.domain.entity.recipe.StepEntity
 import ru.topbun.domain.entity.recipe.addRecipe.AddRecipeEntity
 
-data class AddRecipeRequest(
+internal data class AddRecipeRequest(
     val title: String,
     val description: String?,
     val previewUrl: String?,

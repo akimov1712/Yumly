@@ -2,7 +2,7 @@ package ru.topbun.data.source.remote.dto.account
 
 import ru.topbun.domain.entity.account.ProfileEntity
 
-data class ProfileDto(
+internal data class ProfileDto(
     val userId: Int,
     val username: String,
     val email: String,

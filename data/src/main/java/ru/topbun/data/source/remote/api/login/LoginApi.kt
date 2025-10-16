@@ -6,7 +6,7 @@ import retrofit2.http.POST
 import ru.topbun.data.source.remote.dto.login.LoginRequest
 import ru.topbun.data.source.remote.dto.token.TokenResponse
 
-interface LoginApi {
+internal interface LoginApi {
 
 
     @POST("/v1/login")
