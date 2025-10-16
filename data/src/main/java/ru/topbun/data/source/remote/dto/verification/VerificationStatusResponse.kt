@@ -2,6 +2,6 @@ package ru.topbun.data.source.remote.dto.verification
 
 import ru.topbun.domain.entity.verification.VerificationStatusType
 
-data class VerificationStatusResponse(
+internal data class VerificationStatusResponse(
     val status: VerificationStatusType
 )

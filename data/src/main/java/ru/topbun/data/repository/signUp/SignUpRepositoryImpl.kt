@@ -12,7 +12,7 @@ import ru.topbun.domain.entity.account.UserEntity
 import ru.topbun.domain.entity.signUp.SignUpEntity
 import ru.topbun.domain.repository.signUp.SignUpRepository
 
-class SignUpRepositoryImpl(
+internal class SignUpRepositoryImpl(
     private val context: Context,
     private val api: SignUpApi
 ) : SignUpRepository {

@@ -2,7 +2,7 @@ package ru.topbun.data.source.remote.dto.recipe
 
 import ru.topbun.domain.entity.recipe.IngredientEntity
 
-data class IngredientDto(
+internal data class IngredientDto(
     val id: Int,
     val name: String,
     val value: String,

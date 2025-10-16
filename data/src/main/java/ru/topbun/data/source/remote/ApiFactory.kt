@@ -10,11 +10,12 @@ import ru.topbun.data.source.remote.api.account.AccountApi
 import ru.topbun.data.source.remote.api.favorite.FavoriteApi
 import ru.topbun.data.source.remote.api.follow.FollowApi
 import ru.topbun.data.source.remote.api.login.LoginApi
+import ru.topbun.data.source.remote.api.notification.NotificationApi
 import ru.topbun.data.source.remote.api.recipe.RecipeApi
 import ru.topbun.data.source.remote.api.signUp.SignUpApi
 import ru.topbun.data.source.remote.api.verification.VerificationApi
 
-class ApiFactory(
+internal class ApiFactory(
     private val authTokenProvider: AuthTokenInterceptor
 ) {
 
@@ -41,5 +42,6 @@ class ApiFactory(
     val recipeApi = retrofit.create<RecipeApi>()
     val favoriteApi = retrofit.create<FavoriteApi>()
     val followApi = retrofit.create<FollowApi>()
+    val notificationApi = retrofit.create<NotificationApi>()
 
 }

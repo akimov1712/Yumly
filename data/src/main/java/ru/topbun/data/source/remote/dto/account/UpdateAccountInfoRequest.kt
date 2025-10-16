@@ -2,7 +2,7 @@ package ru.topbun.data.source.remote.dto.account
 
 import ru.topbun.domain.entity.account.UpdateAccountInfoEntity
 
-data class UpdateAccountInfoRequest(
+internal data class UpdateAccountInfoRequest(
     val username: String,
     val photoUrl: String?
 )

@@ -15,7 +15,7 @@ import ru.topbun.domain.entity.recipe.addRecipe.AddRecipeEntity
 import ru.topbun.domain.entity.recipe.getRecipe.GetRecipeEntity
 import ru.topbun.domain.repository.recipe.RecipeRepository
 
-class RecipeRepositoryImpl(
+internal class RecipeRepositoryImpl(
     private val context: Context,
     private val api: RecipeApi
 ): RecipeRepository {

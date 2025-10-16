@@ -18,7 +18,7 @@ import ru.topbun.domain.entity.verification.VerificationStatusType
 import ru.topbun.domain.entity.verification.VerificationType
 import ru.topbun.domain.repository.verification.VerificationRepository
 
-class VerificationRepositoryImpl(
+internal class VerificationRepositoryImpl(
     private val context: Context,
     private val api: VerificationApi,
     private val tokenManager: TokenManager,

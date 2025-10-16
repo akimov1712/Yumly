@@ -14,7 +14,7 @@ import ru.topbun.domain.entity.account.UpdateAccountInfoEntity
 import ru.topbun.domain.entity.account.UserEntity
 import ru.topbun.domain.repository.account.AccountRepository
 
-class AccountRepositoryImpl(
+internal class AccountRepositoryImpl(
     private val context: Context,
     private val api: AccountApi,
 ): AccountRepository {

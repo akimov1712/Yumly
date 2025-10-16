@@ -10,7 +10,7 @@ import ru.topbun.data.source.remote.dto.favorite.GetFavoriteRequest
 import ru.topbun.domain.entity.recipe.RecipeEntity
 import ru.topbun.domain.repository.favorite.FavoriteRepository
 
-class FavoriteRepositoryImpl(
+internal class FavoriteRepositoryImpl(
     private val context: Context,
     private val api: FavoriteApi
 ): FavoriteRepository {
