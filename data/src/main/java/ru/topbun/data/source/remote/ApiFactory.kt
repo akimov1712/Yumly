@@ -1,6 +1,5 @@
 package ru.topbun.data.source.remote
 
-import android.util.Log.v
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -19,7 +18,8 @@ class ApiFactory(
 ) {
 
     private fun createOkHttpClient(): OkHttpClient {
-        val logInterceptor = HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) }
+        val logInterceptor =
+            HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) }
         return OkHttpClient.Builder()
             .addInterceptor(authTokenProvider)
             .addInterceptor(logInterceptor)
