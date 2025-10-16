@@ -15,4 +15,8 @@ interface FollowApi {
     @POST("/v1/follow/followers")
     fun getFollowers(@Body body: GetFollowRequest): Response<GetFollowResponse>
 
+
+    @POST("/v1/follow/following")
+    fun getFollowing(@Body body: GetFollowRequest): Response<GetFollowResponse>
+
 }

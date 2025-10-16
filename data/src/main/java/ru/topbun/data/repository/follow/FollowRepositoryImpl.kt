@@ -50,12 +50,21 @@ class FollowRepositoryImpl(
             }
         }
 
-    override suspend fun getFollowing(
-        userId: Int,
-        limit: Int,
-        offset: Int
-    ): Result<List<ProfileEntity>, DataError> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getFollowing(userId: Int, limit: Int, offset: Int): Result<List<ProfileEntity>, DataError> =
+        context.exceptionWrapper {
+            val request = GetFollowRequest(userId, limit, offset)
+            val response = api.getFollowing(request)
+            val following = response.body()
+            if (response.isSuccessful && following != null){
+                Result.Success(following.follows.map { it.toEntity() })
+            } else {
+                val error = when(response.code()){
+                    HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
+                    HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
+                    else -> DataError.Network.SERVER_ERROR
+                }
+                Result.Error(error)
+            }
+        }
 
 }
