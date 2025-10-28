@@ -25,3 +25,5 @@ internal data class ProfileDto(
     )
 
 }
+
+internal fun List<ProfileDto>.toEntity() = this.map { it.toEntity() }

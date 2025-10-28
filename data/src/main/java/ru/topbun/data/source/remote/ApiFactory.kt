@@ -9,6 +9,7 @@ import ru.topbun.data.BuildConfig
 import ru.topbun.data.source.remote.api.account.AccountApi
 import ru.topbun.data.source.remote.api.favorite.FavoriteApi
 import ru.topbun.data.source.remote.api.follow.FollowApi
+import ru.topbun.data.source.remote.api.gpt.GptApi
 import ru.topbun.data.source.remote.api.login.LoginApi
 import ru.topbun.data.source.remote.api.notification.NotificationApi
 import ru.topbun.data.source.remote.api.recipe.RecipeApi
@@ -43,5 +44,6 @@ internal class ApiFactory(
     val favoriteApi = retrofit.create<FavoriteApi>()
     val followApi = retrofit.create<FollowApi>()
     val notificationApi = retrofit.create<NotificationApi>()
+    val gptApi = retrofit.create<GptApi>()
 
 }

@@ -6,7 +6,7 @@ import ru.topbun.domain.entity.notification.NotificationEntity
 import ru.topbun.domain.entity.notification.NotificationType
 import java.util.Date
 
-internal data class NotificationDTO(
+internal data class NotificationDto(
     val id: Int,
     val type: NotificationType,
     val initiator: ProfileDto,
@@ -22,3 +22,5 @@ internal data class NotificationDTO(
     )
 
 }
+
+internal fun List<NotificationDto>.toEntity() = this.map { it.toEntity() }

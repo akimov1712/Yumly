@@ -8,6 +8,7 @@ import ru.topbun.data.exceptionWrapper
 import ru.topbun.data.source.remote.api.notification.NotificationApi
 import ru.topbun.data.source.remote.dto.notification.GetNotificationRequest
 import ru.topbun.data.source.remote.dto.notification.GetNotificationResponse
+import ru.topbun.data.source.remote.dto.notification.toEntity
 import ru.topbun.domain.entity.notification.NotificationEntity
 import ru.topbun.domain.repository.notification.NotificationRepository
 
@@ -22,7 +23,7 @@ internal class NotificationRepositoryImpl(
             val response = api.getNotifications(request)
             val notifications = response.body()
             if (response.isSuccessful && notifications != null){
-                Result.Success(notifications.map { it.toEntity() })
+                Result.Success(notifications.toEntity())
             } else {
                 val error = when(response.code()){
                     HttpStatusCode.UNAUTHORIZED -> DataError.Network.UNAUTHORIZED
