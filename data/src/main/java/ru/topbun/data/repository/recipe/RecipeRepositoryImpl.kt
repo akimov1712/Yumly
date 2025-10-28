@@ -6,6 +6,8 @@ import ru.topbun.common.HttpStatusCode
 import ru.topbun.common.Result
 import ru.topbun.common.error.DataError
 import ru.topbun.data.exceptionWrapper
+import ru.topbun.data.source.local.database.history.HistoryDao
+import ru.topbun.data.source.local.database.history.dbo.HistoryDbo
 import ru.topbun.data.source.remote.api.recipe.RecipeApi
 import ru.topbun.data.source.remote.dto.recipe.addRecipe.toRequest
 import ru.topbun.data.source.remote.dto.recipe.getRecipe.toRequest
@@ -17,7 +19,8 @@ import ru.topbun.domain.repository.recipe.RecipeRepository
 
 internal class RecipeRepositoryImpl(
     private val context: Context,
-    private val api: RecipeApi
+    private val api: RecipeApi,
+    private val historyDao: HistoryDao
 ): RecipeRepository {
 
     override suspend fun getRecipe(data: GetRecipeEntity): Result<List<RecipeEntity>, DataError> =
@@ -25,6 +28,7 @@ internal class RecipeRepositoryImpl(
             val response = api.getRecipes(data.toRequest())
             val recipes = response.body()
             if (response.isSuccessful && recipes != null){
+                insertHistoryQuery(data.q)
                 Result.Success(recipes.toEntityList())
             } else {
                 val error = when(response.code()){
@@ -34,6 +38,13 @@ internal class RecipeRepositoryImpl(
                 Result.Error(error)
             }
         }
+
+    private suspend fun insertHistoryQuery(q: String?){
+        if (q != null){
+            val dbo = HistoryDbo(query = q)
+            historyDao.addHistory(dbo)
+        }
+    }
 
     override suspend fun getRecipeById(id: Int): Result<RecipeEntity, DataError> =
         context.exceptionWrapper {

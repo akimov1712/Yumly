@@ -5,12 +5,14 @@ import ru.topbun.common.HttpStatusCode
 import ru.topbun.common.Result
 import ru.topbun.common.error.DataError
 import ru.topbun.data.exceptionWrapper
+import ru.topbun.data.source.local.database.history.HistoryDao
 import ru.topbun.data.source.remote.api.history.HistoryApi
 import ru.topbun.domain.repository.history.HistoryRepository
 
 class HistoryRepositoryImpl(
     private val context: Context,
-    private val api: HistoryApi
+    private val api: HistoryApi,
+    private val dao: HistoryDao
 ): HistoryRepository {
 
     override suspend fun getTopQueries(): Result<List<String>, DataError> =
@@ -28,6 +30,7 @@ class HistoryRepositoryImpl(
         }
 
     override suspend fun getHistory(): Result<List<String>, DataError> {
-        TODO("Not yet implemented")
+        val history = dao.getHistory()
+        return Result.Success(history.map { it.query })
     }
 }
