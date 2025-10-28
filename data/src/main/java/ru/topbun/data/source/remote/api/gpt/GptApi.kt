@@ -7,13 +7,19 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import ru.topbun.data.source.remote.dto.gpt.chat.GetGptChatsRequest
 import ru.topbun.data.source.remote.dto.gpt.chat.GetGptChatsResponse
+import ru.topbun.data.source.remote.dto.gpt.chat.GptChatResponse
+import ru.topbun.data.source.remote.dto.gpt.message.SendMessageRequest
 
 internal interface GptApi {
 
     @POST("/v1/gpt")
-    suspend fun getChats(@Body body: GetGptChatsRequest): Response<List<GetGptChatsResponse>>
+    suspend fun getChats(@Body body: GetGptChatsRequest): Response<GetGptChatsResponse>
 
     @GET("/v1/gpt/{id}")
-    suspend fun getChatById(@Path("id") id: Int): Response<GetGptChatsResponse>
+    suspend fun getChatById(@Path("id") id: Int): Response<GptChatResponse>
+
+    @POST("/v1/gpt/send")
+    suspend fun sendMessage(@Body body: SendMessageRequest): Response<GptChatResponse>
+
 
 }

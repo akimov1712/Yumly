@@ -13,6 +13,7 @@ interface DataError: Error{
         // Custom
         EXISTS,
         INVALID_DATA,
+        BAD_REQUEST,
         NOT_FOUND,
         UNAUTHORIZED,
         FORBIDDEN,
