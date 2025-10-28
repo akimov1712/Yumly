@@ -33,9 +33,23 @@ internal class GptRepositoryImpl(
             }
         }
 
-    override suspend fun getChatById(id: Int): Result<GptChatEntity, DataError> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getChatById(id: Int): Result<GptChatEntity, DataError> =
+        context.exceptionWrapper {
+            val response = api.getChatById(id)
+            val chat = response.body()
+            if (response.isSuccessful && chat != null) {
+                Result.Success(chat.toEntity())
+            } else {
+                val error = when(response.code()){
+                    HttpStatusCode.UNAUTHORIZED -> DataError.Network.UNAUTHORIZED
+                    HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
+                    HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
+                    HttpStatusCode.FORBIDDEN -> DataError.Network.FORBIDDEN
+                    else -> DataError.Network.SERVER_ERROR
+                }
+                Result.Error(error)
+            }
+        }
 
     override suspend fun sendMessage(data: SendMessageEntity): Result<GptChatEntity, DataError> {
         TODO("Not yet implemented")
