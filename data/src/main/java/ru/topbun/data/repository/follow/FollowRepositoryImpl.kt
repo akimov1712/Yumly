@@ -6,6 +6,7 @@ import ru.topbun.common.Result
 import ru.topbun.common.error.DataError
 import ru.topbun.data.exceptionWrapper
 import ru.topbun.data.source.remote.api.follow.FollowApi
+import ru.topbun.data.source.remote.dto.account.toEntity
 import ru.topbun.data.source.remote.dto.follow.GetFollowRequest
 import ru.topbun.domain.entity.account.ProfileEntity
 import ru.topbun.domain.repository.follow.FollowRepository
@@ -39,7 +40,7 @@ internal class FollowRepositoryImpl(
             val response = api.getFollowers(request)
             val followers = response.body()
             if (response.isSuccessful && followers != null){
-                Result.Success(followers.follows.map { it.toEntity() })
+                Result.Success(followers.follows.toEntity())
             } else {
                 val error = when(response.code()){
                     HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
@@ -56,7 +57,7 @@ internal class FollowRepositoryImpl(
             val response = api.getFollowing(request)
             val following = response.body()
             if (response.isSuccessful && following != null){
-                Result.Success(following.follows.map { it.toEntity() })
+                Result.Success(following.follows.toEntity())
             } else {
                 val error = when(response.code()){
                     HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
