@@ -20,8 +20,8 @@ interface DataError: Error{
     }
 
     enum class Local: DataError{
-        WRITE_TOKEN,
-        READ_TOKEN
+        FILE_NOT_FOUND,
+        FILE_COMPRESS
     }
 
 }

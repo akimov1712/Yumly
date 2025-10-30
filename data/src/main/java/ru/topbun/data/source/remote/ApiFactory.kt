@@ -14,6 +14,7 @@ import ru.topbun.data.source.remote.api.login.LoginApi
 import ru.topbun.data.source.remote.api.notification.NotificationApi
 import ru.topbun.data.source.remote.api.recipe.RecipeApi
 import ru.topbun.data.source.remote.api.signUp.SignUpApi
+import ru.topbun.data.source.remote.api.upload.UploadApi
 import ru.topbun.data.source.remote.api.verification.VerificationApi
 
 internal class ApiFactory(
@@ -45,5 +46,6 @@ internal class ApiFactory(
     val followApi = retrofit.create<FollowApi>()
     val notificationApi = retrofit.create<NotificationApi>()
     val gptApi = retrofit.create<GptApi>()
+    val uploadApi = retrofit.create<UploadApi>()
 
 }

@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
 }
@@ -36,8 +35,8 @@ android {
     buildFeatures{
         buildConfig = true
     }
-    kotlin {
-        jvmToolchain(17)
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.kotlin.get()
     }
     room {
         schemaDirectory("$projectDir/schemas")

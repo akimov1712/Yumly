@@ -14,7 +14,7 @@ retrofit = "3.0.0"
 okhttp = "5.2.1"
 sharedPreferences-crypto = "1.1.0"
 room = "2.8.3"
-ksp = "2.2.10-2.0.2"
+ksp = "2.3.0"
 
 # Default Library Version
 agp = "9.0.0-alpha09"
@@ -68,7 +68,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 # Default Plugins
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version = "2.2.20" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 android-library = { id = "com.android.library", version.ref = "agp" }
