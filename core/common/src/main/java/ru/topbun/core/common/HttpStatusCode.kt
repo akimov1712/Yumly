@@ -1,4 +1,4 @@
-package ru.topbun.common
+package ru.topbun.core.common
 
 object HttpStatusCode {
 

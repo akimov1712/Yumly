@@ -1,6 +1,6 @@
-package ru.topbun.common
+package ru.topbun.core.common
 
-import ru.topbun.common.error.ValidatorError
+import ru.topbun.core.common.error.ValidatorError
 
 interface Validator<T> {
 

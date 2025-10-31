@@ -1,7 +1,7 @@
 package ru.topbun.domain.repository.signUp
 
-import ru.topbun.common.error.DataError
-import ru.topbun.common.Result
+import ru.topbun.core.common.error.DataError
+import ru.topbun.core.common.Result
 import ru.topbun.domain.entity.account.UserEntity
 import ru.topbun.domain.entity.signUp.SignUpEntity
 

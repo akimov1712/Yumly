@@ -4,8 +4,8 @@ import android.content.Context
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
 import ru.topbun.android.isInternetAvailable
-import ru.topbun.common.error.DataError
-import ru.topbun.common.Result
+import ru.topbun.core.common.error.DataError
+import ru.topbun.core.common.Result
 import java.net.ConnectException
 import java.net.SocketException
 import java.net.SocketTimeoutException

@@ -1,9 +1,9 @@
 package ru.topbun.domain.validation.signUp
 
-import ru.topbun.common.Result
-import ru.topbun.common.Validator
-import ru.topbun.common.error.ValidatorError
-import ru.topbun.common.isEmailValid
+import ru.topbun.core.common.Result
+import ru.topbun.core.common.Validator
+import ru.topbun.core.common.error.ValidatorError
+import ru.topbun.core.common.isEmailValid
 import ru.topbun.domain.entity.signUp.SignUpEntity
 
 class SignUpValidator: Validator<SignUpEntity> {

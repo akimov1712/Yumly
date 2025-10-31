@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.topbun.android"
+    namespace = "ru.topbun.core.android"
     compileSdk {
         version = release(36)
     }

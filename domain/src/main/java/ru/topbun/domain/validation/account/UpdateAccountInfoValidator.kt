@@ -1,8 +1,8 @@
 package ru.topbun.domain.validation.account
 
-import ru.topbun.common.Result
-import ru.topbun.common.Validator
-import ru.topbun.common.error.ValidatorError
+import ru.topbun.core.common.Result
+import ru.topbun.core.common.Validator
+import ru.topbun.core.common.error.ValidatorError
 import ru.topbun.domain.entity.account.UpdateAccountInfoEntity
 
 class UpdateAccountInfoValidator: Validator<UpdateAccountInfoEntity> {

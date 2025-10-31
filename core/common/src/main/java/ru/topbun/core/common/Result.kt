@@ -1,6 +1,6 @@
-package ru.topbun.common
+package ru.topbun.core.common
 
-import ru.topbun.common.error.Error
+import ru.topbun.core.common.error.Error
 
 typealias RootError = Error
 
