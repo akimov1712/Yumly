@@ -2,16 +2,15 @@ package ru.topbun.data.repository.verification
 
 import android.content.Context
 import com.google.gson.Gson
-import ru.topbun.common.HttpStatusCode
-import ru.topbun.common.Result
-import ru.topbun.common.error.DataError
+import ru.topbun.core.common.HttpStatusCode
+import ru.topbun.core.common.Result
+import ru.topbun.core.common.error.DataError
 import ru.topbun.data.exceptionWrapper
 import ru.topbun.data.source.local.config.TokenManager
 import ru.topbun.data.source.remote.api.verification.VerificationApi
 import ru.topbun.data.source.remote.dto.token.TokenResponse
 import ru.topbun.data.source.remote.dto.verification.VerificationStatusResponse
 import ru.topbun.data.source.remote.dto.verification.toRequest
-import ru.topbun.data.withInternetCheck
 import ru.topbun.domain.entity.verification.ConfirmVerificationEntity
 import ru.topbun.domain.entity.verification.RequestVerificationEntity
 import ru.topbun.domain.entity.verification.VerificationStatusType

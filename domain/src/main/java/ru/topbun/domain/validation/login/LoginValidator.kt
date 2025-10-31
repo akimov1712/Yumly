@@ -1,8 +1,8 @@
 package ru.topbun.domain.validation.login
 
-import ru.topbun.common.Result
-import ru.topbun.common.Validator
-import ru.topbun.common.error.ValidatorError
+import ru.topbun.core.common.Result
+import ru.topbun.core.common.Validator
+import ru.topbun.core.common.error.ValidatorError
 import ru.topbun.domain.entity.login.LoginEntity
 
 class LoginValidator: Validator<LoginEntity> {

@@ -1,4 +1,4 @@
-package ru.topbun.common.error
+package ru.topbun.core.common.error
 
 interface DataError: Error{
 

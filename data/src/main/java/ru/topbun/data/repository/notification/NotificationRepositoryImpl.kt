@@ -1,9 +1,9 @@
 package ru.topbun.data.repository.notification
 
 import android.content.Context
-import ru.topbun.common.HttpStatusCode
-import ru.topbun.common.Result
-import ru.topbun.common.error.DataError
+import ru.topbun.core.common.HttpStatusCode
+import ru.topbun.core.common.Result
+import ru.topbun.core.common.error.DataError
 import ru.topbun.data.exceptionWrapper
 import ru.topbun.data.source.remote.api.notification.NotificationApi
 import ru.topbun.data.source.remote.dto.notification.GetNotificationRequest
