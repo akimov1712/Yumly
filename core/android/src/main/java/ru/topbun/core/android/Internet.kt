@@ -1,13 +1,12 @@
-package ru.topbun.android
+package ru.topbun.core.android
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.support.annotation.RequiresPermission
 
 
-@RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+@SuppressLint("MissingPermission")
 fun isInternetAvailable(context: Context): Boolean {
     val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
