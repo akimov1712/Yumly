@@ -50,8 +50,9 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.compiler)
 
-    // SharedPreferences
-    implementation(libs.sharedPreferences.crypto)
+    // Config
+    implementation(libs.datastore.preferences)
+    implementation(libs.security.crypto)
 
     // Retrofit
     implementation(libs.retrofit.core)
