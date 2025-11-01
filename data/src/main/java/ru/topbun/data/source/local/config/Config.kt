@@ -2,14 +2,21 @@ package ru.topbun.data.source.local.config
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+
+typealias CryptConfig = SharedPreferences
+typealias DefaultConfig = DataStore<Preferences>
 
 internal object Config {
 
     private const val CRYPT_CONFIG_NAME = "secure_config"
+    private const val DEFAULT_CONFIG_NAME = "default_config"
 
-    fun createEncryptedPrefs(context: Context): SharedPreferences {
+    internal fun createCryptConfig(context: Context): CryptConfig {
         val masterKey = MasterKey.Builder(context)
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build()
@@ -23,9 +30,13 @@ internal object Config {
         )
     }
 
-    object Properties{
+    val Context.dataStore by preferencesDataStore(DEFAULT_CONFIG_NAME)
+
+    object Properties {
 
         const val TOKEN = "token"
+
+        const val IS_FIRST_START = "is_first_start"
 
     }
 
