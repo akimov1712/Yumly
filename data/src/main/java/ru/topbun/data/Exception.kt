@@ -3,7 +3,7 @@ package ru.topbun.data
 import android.content.Context
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
-import ru.topbun.android.isInternetAvailable
+import ru.topbun.core.android.isInternetAvailable
 import ru.topbun.core.common.error.DataError
 import ru.topbun.core.common.Result
 import java.net.ConnectException

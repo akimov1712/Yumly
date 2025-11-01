@@ -8,17 +8,17 @@ import ru.topbun.domain.entity.signUp.SignUpEntity
 
 class SignUpValidator: Validator<SignUpEntity> {
 
-    override fun validate(signUp: SignUpEntity): Result<Unit, ValidatorError> {
+    override fun validate(data: SignUpEntity): Result<Unit, ValidatorError> {
         val error = when{
-            signUp.username.isBlank() -> SignUpValidatorError.USERNAME_EMPTY
-            signUp.username.length < 4 -> SignUpValidatorError.USERNAME_SHORT
+            data.username.isBlank() -> SignUpValidatorError.USERNAME_EMPTY
+            data.username.length < 4 -> SignUpValidatorError.USERNAME_SHORT
 
-            signUp.email.isBlank() -> SignUpValidatorError.EMAIL_EMPTY
-            !signUp.email.isEmailValid() -> SignUpValidatorError.EMAIL_NOT_VALID
+            data.email.isBlank() -> SignUpValidatorError.EMAIL_EMPTY
+            !data.email.isEmailValid() -> SignUpValidatorError.EMAIL_NOT_VALID
 
-            signUp.password.isBlank() -> SignUpValidatorError.PASSWORD_EMPTY
-            signUp.password.length < 6 -> SignUpValidatorError.PASSWORD_SHORT
-            signUp.password != signUp.confirmPassword -> SignUpValidatorError.PASSWORD_NOT_MATCH
+            data.password.isBlank() -> SignUpValidatorError.PASSWORD_EMPTY
+            data.password.length < 6 -> SignUpValidatorError.PASSWORD_SHORT
+            data.password != data.confirmPassword -> SignUpValidatorError.PASSWORD_NOT_MATCH
 
             else -> null
         }

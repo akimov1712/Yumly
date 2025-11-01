@@ -9,11 +9,8 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 kotlin {
-    compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
-    }
+    jvmToolchain(17)
 }
-
 dependencies{
 
     api(project(":core:common"))
