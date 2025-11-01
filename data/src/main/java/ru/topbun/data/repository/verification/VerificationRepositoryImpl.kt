@@ -43,7 +43,7 @@ internal class VerificationRepositoryImpl(
             val response = api.confirm(data.toRequest())
             if (response.isSuccessful){
                 if (data.type == VerificationType.SIGN_UP_CONFIRM){
-                    val token = gson.fromJson(response.body?.string(), TokenResponse::class.java)
+                    val token = gson.fromJson(response.body.string(), TokenResponse::class.java)
                     tokenManager.saveToken(token.token)
                 }
                 Result.Success(VerificationStatusType.SUCCESS)
@@ -55,7 +55,7 @@ internal class VerificationRepositoryImpl(
                 }
                 val data = if (response.code == HttpStatusCode.FORBIDDEN){
                     gson.fromJson(
-                        response.body?.string(),
+                        response.body.string(),
                         VerificationStatusResponse::class.java
                     ).status
                 } else null

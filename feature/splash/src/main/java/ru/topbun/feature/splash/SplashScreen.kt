@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -17,10 +18,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.topbun.core.ui.components.PulseLoading
 import ru.topbun.core.ui.theme.Colors
+import ru.topbun.core.ui.utils.StatusBarColor
+import ru.topbun.core.ui.utils.changeStatusBarColor
 
 @Preview
 @Composable
 fun SplashScreen(modifier: Modifier = Modifier) {
+
+    changeStatusBarColor(StatusBarColor.LIGHT)
+
     Box(
         modifier = modifier
             .fillMaxSize()
