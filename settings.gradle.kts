@@ -29,3 +29,5 @@ include(":core:android")
 include(":core:ui")
 include(":feature")
 include(":feature:splash")
+include(":navigation")
+

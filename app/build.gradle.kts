@@ -41,6 +41,16 @@ android {
 
 dependencies {
 
+    // Koin
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(project.dependencies.platform(libs.koin.bom))
+
+    // Voyager
+    implementation(libs.voyager.navigator)
+    implementation(libs.voyager.transition)
+
+    // Default
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -58,6 +68,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
 
+    implementation(project(":navigation"))
     implementation(project(":domain"))
     implementation(project(":data"))
     implementation(project(":core:android"))

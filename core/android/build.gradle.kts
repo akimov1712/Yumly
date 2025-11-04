@@ -4,9 +4,10 @@ plugins {
 }
 
 android {
-    namespace = "ru.topbun.android"
+    namespace = "ru.topbun.core.android"
     compileSdk {
-        version = release(36)
+        val compileSdkVersion = libs.versions.compileSdk.get().toInt()
+        version = release(compileSdkVersion)
     }
 
     defaultConfig {
