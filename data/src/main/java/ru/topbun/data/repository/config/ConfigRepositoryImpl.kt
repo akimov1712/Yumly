@@ -12,7 +12,7 @@ class ConfigRepositoryImpl(
 ): ConfigRepository {
 
     override suspend fun getStatusFirstStart(): Boolean {
-        return config.getBoolean(Config.Properties.IS_FIRST_START, false).last()
+        return config.getBoolean(Config.Properties.IS_FIRST_START, true).last()
     }
 
     override suspend fun setStatusFirstStart(status: Boolean) {
