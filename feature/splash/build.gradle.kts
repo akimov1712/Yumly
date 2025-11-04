@@ -5,10 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "ru.topbun.feature.splash"
+    namespace = "ru.toapbun.feature.splash"
 
     compileSdk {
-        version = release(36)
+        val compileSdkVersion = libs.versions.compileSdk.get().toInt()
+        version = release(compileSdkVersion)
     }
 
     defaultConfig {
@@ -40,6 +41,16 @@ android {
 }
 
 dependencies {
+
+    // Voyager
+    implementation(libs.voyager.navigator)
+
+    // Koin
+    implementation(libs.koin.core)
+    implementation(libs.koin.compose.viewmodel)
+    implementation(project.dependencies.platform(libs.koin.bom))
+
+    // Default
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -48,6 +59,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // Project Modules
     implementation(project(":core:ui"))
     implementation(project(":domain"))
+    implementation(project(":navigation"))
 }
