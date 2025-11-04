@@ -17,6 +17,7 @@ datastore = "1.1.7"
 room = "2.8.3"
 ksp = "2.3.0"
 systemuicontroller = "0.36.0"
+voyager = "1.1.0-beta02"
 
 # Default Library Version
 agp = "8.13.0"
@@ -45,6 +46,9 @@ security-crypto = { group = "androidx.security", name = "security-crypto", versi
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "systemuicontroller" }
+voyager-navigator = { group = "cafe.adriel.voyager", name = "voyager-navigator", version.ref = "voyager" }
+voyager-transition = { group = "cafe.adriel.voyager", name = "voyager-transitions", version.ref = "voyager" }
+voyager-hilt = { group = "cafe.adriel.voyager", name = "voyager-hilt", version.ref = "voyager" }
 
 # Default Library
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
