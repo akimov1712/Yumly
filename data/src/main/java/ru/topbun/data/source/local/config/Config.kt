@@ -30,7 +30,7 @@ internal object Config {
         )
     }
 
-    val Context.dataStore by preferencesDataStore(DEFAULT_CONFIG_NAME)
+    val Context.dataStore: DefaultConfig by preferencesDataStore(DEFAULT_CONFIG_NAME)
 
     object Properties {
 
