@@ -30,5 +30,5 @@ include(":core:ui")
 include(":feature")
 include(":feature:splash")
 include(":navigation")
-
 include(":feature:auth")
+include(":feature:auth_welcome")
