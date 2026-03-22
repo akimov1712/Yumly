@@ -16,8 +16,8 @@ android {
         consumerProguardFiles("consumer-rules.pro")
 
 
-        val baseUrl = property("BASE_URL")?.toString() ?: error("BASE_URL not found")
-        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+//        val baseUrl = property("BASE_URL")?.toString() ?: error("BASE_URL not found")
+        buildConfigField("String", "BASE_URL", "\"localhost\"")
     }
 
     buildTypes {
@@ -46,9 +46,14 @@ android {
 
 dependencies {
 
+    // Koin
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(project.dependencies.platform(libs.koin.bom))
+
     // Room
     implementation(libs.room.runtime)
-    implementation(libs.room.compiler)
+    ksp(libs.room.compiler)
 
     // Config
     implementation(libs.datastore.preferences)
