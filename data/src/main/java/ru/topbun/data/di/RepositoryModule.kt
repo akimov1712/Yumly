@@ -1,6 +1,6 @@
 package ru.topbun.data.di
 
-import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import ru.topbun.data.repository.account.AccountRepositoryImpl
@@ -27,15 +27,15 @@ import ru.topbun.domain.repository.signUp.SignUpRepository
 import ru.topbun.domain.repository.verification.VerificationRepository
 
 val repositoryModule = module {
-    singleOf(::AccountRepositoryImpl) bind AccountRepository::class
-    singleOf(::ConfigRepositoryImpl) bind ConfigRepository::class
-    singleOf(::FavoriteRepositoryImpl) bind FavoriteRepository::class
-    singleOf(::FollowRepositoryImpl) bind FollowRepository::class
-    singleOf(::GptRepositoryImpl) bind GptRepository::class
-    singleOf(::HistoryRepositoryImpl) bind HistoryRepository::class
-    singleOf(::LoginRepositoryImpl) bind LoginRepository::class
-    singleOf(::NotificationRepositoryImpl) bind NotificationRepository::class
-    singleOf(::RecipeRepositoryImpl) bind RecipeRepository::class
-    singleOf(::SignUpRepositoryImpl) bind SignUpRepository::class
-    singleOf(::VerificationRepositoryImpl) bind VerificationRepository::class
+    factoryOf(::AccountRepositoryImpl) bind AccountRepository::class
+    factoryOf(::ConfigRepositoryImpl) bind ConfigRepository::class
+    factoryOf(::FavoriteRepositoryImpl) bind FavoriteRepository::class
+    factoryOf(::FollowRepositoryImpl) bind FollowRepository::class
+    factoryOf(::GptRepositoryImpl) bind GptRepository::class
+    factoryOf(::HistoryRepositoryImpl) bind HistoryRepository::class
+    factoryOf(::LoginRepositoryImpl) bind LoginRepository::class
+    factoryOf(::NotificationRepositoryImpl) bind NotificationRepository::class
+    factoryOf(::RecipeRepositoryImpl) bind RecipeRepository::class
+    factoryOf(::SignUpRepositoryImpl) bind SignUpRepository::class
+    factoryOf(::VerificationRepositoryImpl) bind VerificationRepository::class
 }

@@ -1,6 +1,7 @@
 package ru.topbun.data.di
 
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import ru.topbun.data.source.remote.ApiFactory
@@ -11,8 +12,8 @@ internal inline fun <reified T> Module.api(noinline provider: ApiFactory.() -> T
 }
 
 val apiModule = module {
-    singleOf(::AuthTokenInterceptor)
-    singleOf(::ApiFactory)
+    factoryOf(::AuthTokenInterceptor)
+    factoryOf(::ApiFactory)
     api { accountApi }
     api { favoriteApi }
     api { followApi }
