@@ -31,3 +31,4 @@ include(":feature")
 include(":feature:splash")
 include(":navigation")
 
+include(":feature:auth")
