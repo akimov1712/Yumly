@@ -7,6 +7,7 @@ val appModule = module {
     includes(
         repositoryModule,
         useCaseModule,
-        featureModule
+        featureModule,
+        dataModule
     )
 }
