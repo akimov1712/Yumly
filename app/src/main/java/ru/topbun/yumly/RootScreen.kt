@@ -7,7 +7,7 @@ import ru.topbun.core.ui.theme.Colors
 import ru.topbun.feature.splash.SplashScreen
 
 @Composable
-fun AppScreen() {
+fun RootScreen() {
     Surface(
         contentColor = Colors.MAIN_TEXT,
         color = Colors.WHITE
