@@ -10,6 +10,7 @@ import ru.topbun.data.source.remote.api.account.AccountApi
 import ru.topbun.data.source.remote.api.favorite.FavoriteApi
 import ru.topbun.data.source.remote.api.follow.FollowApi
 import ru.topbun.data.source.remote.api.gpt.GptApi
+import ru.topbun.data.source.remote.api.history.HistoryApi
 import ru.topbun.data.source.remote.api.login.LoginApi
 import ru.topbun.data.source.remote.api.notification.NotificationApi
 import ru.topbun.data.source.remote.api.recipe.RecipeApi
@@ -38,6 +39,7 @@ internal class ApiFactory(
 
     val signUpApi = retrofit.create<SignUpApi>()
     val loginApi = retrofit.create<LoginApi>()
+    val historyApi = retrofit.create<HistoryApi>()
     val verificationApi = retrofit.create<VerificationApi>()
     val accountApi = retrofit.create<AccountApi>()
     val recipeApi = retrofit.create<RecipeApi>()
