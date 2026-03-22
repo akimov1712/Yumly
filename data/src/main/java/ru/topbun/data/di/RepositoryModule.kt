@@ -1,0 +1,41 @@
+package ru.topbun.data.di
+
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import ru.topbun.data.repository.account.AccountRepositoryImpl
+import ru.topbun.data.repository.config.ConfigRepositoryImpl
+import ru.topbun.data.repository.favorite.FavoriteRepositoryImpl
+import ru.topbun.data.repository.follow.FollowRepositoryImpl
+import ru.topbun.data.repository.gpt.GptRepositoryImpl
+import ru.topbun.data.repository.history.HistoryRepositoryImpl
+import ru.topbun.data.repository.login.LoginRepositoryImpl
+import ru.topbun.data.repository.notification.NotificationRepositoryImpl
+import ru.topbun.data.repository.recipe.RecipeRepositoryImpl
+import ru.topbun.data.repository.signUp.SignUpRepositoryImpl
+import ru.topbun.data.repository.verification.VerificationRepositoryImpl
+import ru.topbun.domain.repository.account.AccountRepository
+import ru.topbun.domain.repository.config.ConfigRepository
+import ru.topbun.domain.repository.favorite.FavoriteRepository
+import ru.topbun.domain.repository.follow.FollowRepository
+import ru.topbun.domain.repository.gpt.GptRepository
+import ru.topbun.domain.repository.history.HistoryRepository
+import ru.topbun.domain.repository.login.LoginRepository
+import ru.topbun.domain.repository.notification.NotificationRepository
+import ru.topbun.domain.repository.recipe.RecipeRepository
+import ru.topbun.domain.repository.signUp.SignUpRepository
+import ru.topbun.domain.repository.verification.VerificationRepository
+
+val repositoryModule = module {
+    singleOf(::AccountRepositoryImpl) bind AccountRepository::class
+    singleOf(::ConfigRepositoryImpl) bind ConfigRepository::class
+    singleOf(::FavoriteRepositoryImpl) bind FavoriteRepository::class
+    singleOf(::FollowRepositoryImpl) bind FollowRepository::class
+    singleOf(::GptRepositoryImpl) bind GptRepository::class
+    singleOf(::HistoryRepositoryImpl) bind HistoryRepository::class
+    singleOf(::LoginRepositoryImpl) bind LoginRepository::class
+    singleOf(::NotificationRepositoryImpl) bind NotificationRepository::class
+    singleOf(::RecipeRepositoryImpl) bind RecipeRepository::class
+    singleOf(::SignUpRepositoryImpl) bind SignUpRepository::class
+    singleOf(::VerificationRepositoryImpl) bind VerificationRepository::class
+}
