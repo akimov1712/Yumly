@@ -3,6 +3,7 @@ package ru.topbun.feature.splash
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import ru.topbun.domain.useCases.config.GetStatusFirstStartUseCase
@@ -24,6 +25,7 @@ class SplashViewModel(
     private fun handleFirstStart() = viewModelScope.launch {
         val firstStatus = getStatusFirstStartUseCase()
         val hasSession = hasSessionUseCase()
+        delay(3000)
         val event = when{
             firstStatus -> SplashEvent.NavigateToAuth(AuthStartScreen.WELCOME)
             hasSession -> SplashEvent.NavigateToMain

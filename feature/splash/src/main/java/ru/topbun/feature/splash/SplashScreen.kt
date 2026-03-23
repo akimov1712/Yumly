@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
-import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -45,7 +44,7 @@ object SplashScreen: Screen{
                     navigator.replaceAll(screen)
                 }
                 SplashEvent.NavigateToMain -> {
-                    val screen = ScreenRegistry.get(RootScreenProvider.Main)
+                    val screen = ScreenRegistry.get(RootScreenProvider.Dashboard)
                     navigator.replaceAll(screen)
                 }
             }

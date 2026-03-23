@@ -83,5 +83,6 @@ dependencies {
     implementation(project(":feature:auth_confirm"))
     implementation(project(":feature:auth_reset"))
     implementation(project(":feature:splash"))
+    implementation(project(":feature:dashboard"))
 
 }

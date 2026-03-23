@@ -5,11 +5,9 @@ plugins {
 }
 
 android {
-    namespace = "ru.toapbun.feature.splash"
-
+    namespace = "ru.topbun.dashboard"
     compileSdk {
-        val compileSdkVersion = libs.versions.compileSdk.get().toInt()
-        version = release(compileSdkVersion)
+        version = release(libs.versions.compileSdk.get().toInt())
     }
 
     defaultConfig {

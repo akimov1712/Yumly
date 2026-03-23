@@ -42,6 +42,7 @@ dependencies {
 
     // Voyager
     implementation(libs.voyager.navigator)
+    implementation(libs.voyager.transition)
     implementation(libs.voyager.koin)
 
     // Koin
@@ -60,6 +61,7 @@ dependencies {
 
     // Project Modules
     implementation(project(":core:ui"))
+    implementation(project(":core:android"))
     implementation(project(":domain"))
     implementation(project(":navigation"))
 }
