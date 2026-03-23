@@ -38,8 +38,10 @@ object SplashScreen: Screen{
 
         ObserveAsEvents(viewModel.events) {
             when(it){
-                SplashEvent.NavigateToAuth -> {
-                    val screen = ScreenRegistry.get(RootScreenProvider.Auth)
+                is SplashEvent.NavigateToAuth -> {
+                    val screen = ScreenRegistry.get(
+                        RootScreenProvider.Auth(it.startDestination)
+                    )
                     navigator.replaceAll(screen)
                 }
                 SplashEvent.NavigateToMain -> {

@@ -10,3 +10,4 @@ gradle.properties
 .externalNativeBuild
 .cxx
 local.properties
+/.gradle-user-home/

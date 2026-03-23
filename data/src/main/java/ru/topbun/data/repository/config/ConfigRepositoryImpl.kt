@@ -1,6 +1,7 @@
 package ru.topbun.data.repository.config
 
 import androidx.datastore.core.DataStore
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.last
 import ru.topbun.data.source.local.config.Config
 import ru.topbun.data.source.local.config.DataStoreManager
@@ -12,7 +13,7 @@ class ConfigRepositoryImpl(
 ): ConfigRepository {
 
     override suspend fun getStatusFirstStart(): Boolean {
-        return config.getBoolean(Config.Properties.IS_FIRST_START, true).last()
+        return config.getBoolean(Config.Properties.IS_FIRST_START, true).firstOrNull() ?: true
     }
 
     override suspend fun setStatusFirstStart(status: Boolean) {

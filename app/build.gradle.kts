@@ -49,6 +49,7 @@ dependencies {
     // Voyager
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.transition)
+    implementation(libs.voyager.koin)
 
     // Default
     implementation(libs.androidx.core.ktx)
@@ -75,6 +76,12 @@ dependencies {
     implementation(project(":core:android"))
     implementation(project(":core:ui"))
     implementation(project(":core:common"))
+    implementation(project(":feature:auth"))
+    implementation(project(":feature:auth_welcome"))
+    implementation(project(":feature:auth_login"))
+    implementation(project(":feature:auth_register"))
+    implementation(project(":feature:auth_confirm"))
+    implementation(project(":feature:auth_reset"))
     implementation(project(":feature:splash"))
 
 }

@@ -7,11 +7,6 @@ import ru.topbun.feature.splash.SplashScreen
 import ru.topbun.feature.splash.SplashViewModel
 import ru.topbun.navigation.RootScreenProvider
 
-val splashScreenModule = screenModule {
-    register<RootScreenProvider.Splash> {
-        SplashScreen
-    }
-}
 
 val splashModule = module {
     viewModel {

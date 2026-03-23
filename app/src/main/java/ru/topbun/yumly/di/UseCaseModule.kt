@@ -4,7 +4,6 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import ru.topbun.domain.useCases.account.GetAccountInfoUseCase
 import ru.topbun.domain.useCases.account.GetProfileUseCase
-import ru.topbun.domain.useCases.account.ResetPasswordUseCase
 import ru.topbun.domain.useCases.account.UpdateAccountInfoUseCase
 import ru.topbun.domain.useCases.config.GetStatusFirstStartUseCase
 import ru.topbun.domain.useCases.config.SetStatusFirstStartUseCase
@@ -25,6 +24,7 @@ import ru.topbun.domain.useCases.recipe.DeleteRecipeUseCase
 import ru.topbun.domain.useCases.recipe.GetRecipeByIdUseCase
 import ru.topbun.domain.useCases.recipe.GetRecipeByUserIdUseCase
 import ru.topbun.domain.useCases.recipe.GetRecipeUseCase
+import ru.topbun.domain.useCases.session.HasSessionUseCase
 import ru.topbun.domain.useCases.signUp.SignUpUseCase
 import ru.topbun.domain.useCases.upload.UploadFileUseCase
 import ru.topbun.domain.useCases.verification.ConfirmVerificationUseCase
@@ -33,7 +33,6 @@ import ru.topbun.domain.useCases.verification.RequestVerificationUseCase
 val useCaseModule = module {
     singleOf(::GetAccountInfoUseCase)
     singleOf(::GetProfileUseCase)
-    singleOf(::ResetPasswordUseCase)
     singleOf(::UpdateAccountInfoUseCase)
     singleOf(::GetStatusFirstStartUseCase)
     singleOf(::SetStatusFirstStartUseCase)
@@ -54,6 +53,7 @@ val useCaseModule = module {
     singleOf(::GetRecipeByIdUseCase)
     singleOf(::GetRecipeByUserIdUseCase)
     singleOf(::GetRecipeUseCase)
+    singleOf(::HasSessionUseCase)
     singleOf(::SignUpUseCase)
     singleOf(::UploadFileUseCase)
     singleOf(::ConfirmVerificationUseCase)

@@ -6,11 +6,12 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import ru.topbun.domain.useCases.config.GetStatusFirstStartUseCase
-import ru.topbun.domain.useCases.config.SetStatusFirstStartUseCase
+import ru.topbun.domain.useCases.session.HasSessionUseCase
+import ru.topbun.navigation.auth.AuthStartScreen
 
 class SplashViewModel(
     private val getStatusFirstStartUseCase: GetStatusFirstStartUseCase,
-    private val setStatusFirstStartUseCase: SetStatusFirstStartUseCase
+    private val hasSessionUseCase: HasSessionUseCase
 ): ViewModel() {
 
     private val _events = Channel<SplashEvent>()
@@ -21,13 +22,14 @@ class SplashViewModel(
     }
 
     private fun handleFirstStart() = viewModelScope.launch {
-        val status = getStatusFirstStartUseCase()
-        if (status){
-            setStatusFirstStartUseCase(false)
-            _events.send(SplashEvent.NavigateToAuth)
-        } else {
-            _events.send(SplashEvent.NavigateToMain)
+        val firstStatus = getStatusFirstStartUseCase()
+        val hasSession = hasSessionUseCase()
+        val event = when{
+            firstStatus -> SplashEvent.NavigateToAuth(AuthStartScreen.WELCOME)
+            hasSession -> SplashEvent.NavigateToMain
+            else -> SplashEvent.NavigateToAuth(AuthStartScreen.LOGIN)
         }
+        _events.send(event)
     }
 
 }

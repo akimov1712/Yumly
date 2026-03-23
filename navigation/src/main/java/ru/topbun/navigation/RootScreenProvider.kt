@@ -1,11 +1,12 @@
 package ru.topbun.navigation
 
 import cafe.adriel.voyager.core.registry.ScreenProvider
+import ru.topbun.navigation.auth.AuthStartScreen
 
 sealed interface RootScreenProvider : ScreenProvider {
 
     object Splash: RootScreenProvider
-    object Auth: RootScreenProvider
+    data class Auth(val startScreen: AuthStartScreen): RootScreenProvider
     object Main: RootScreenProvider
 
 }
