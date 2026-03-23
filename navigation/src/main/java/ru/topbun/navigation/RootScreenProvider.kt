@@ -7,6 +7,6 @@ sealed interface RootScreenProvider : ScreenProvider {
 
     object Splash: RootScreenProvider
     data class Auth(val startScreen: AuthStartScreen): RootScreenProvider
-    object Main: RootScreenProvider
+    object Dashboard: RootScreenProvider
 
 }
