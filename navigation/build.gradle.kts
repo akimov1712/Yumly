@@ -39,6 +39,7 @@ dependencies {
 
     // Navigation
     implementation(libs.voyager.navigator)
+    implementation(libs.voyager.koin)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

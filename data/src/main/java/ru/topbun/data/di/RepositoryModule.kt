@@ -12,6 +12,7 @@ import ru.topbun.data.repository.history.HistoryRepositoryImpl
 import ru.topbun.data.repository.login.LoginRepositoryImpl
 import ru.topbun.data.repository.notification.NotificationRepositoryImpl
 import ru.topbun.data.repository.recipe.RecipeRepositoryImpl
+import ru.topbun.data.repository.session.SessionRepositoryImpl
 import ru.topbun.data.repository.signUp.SignUpRepositoryImpl
 import ru.topbun.data.repository.verification.VerificationRepositoryImpl
 import ru.topbun.domain.repository.account.AccountRepository
@@ -23,6 +24,7 @@ import ru.topbun.domain.repository.history.HistoryRepository
 import ru.topbun.domain.repository.login.LoginRepository
 import ru.topbun.domain.repository.notification.NotificationRepository
 import ru.topbun.domain.repository.recipe.RecipeRepository
+import ru.topbun.domain.repository.session.SessionRepository
 import ru.topbun.domain.repository.signUp.SignUpRepository
 import ru.topbun.domain.repository.verification.VerificationRepository
 
@@ -32,6 +34,7 @@ val repositoryModule = module {
     factoryOf(::FavoriteRepositoryImpl) bind FavoriteRepository::class
     factoryOf(::FollowRepositoryImpl) bind FollowRepository::class
     factoryOf(::GptRepositoryImpl) bind GptRepository::class
+    factoryOf(::SessionRepositoryImpl) bind SessionRepository::class
     factoryOf(::HistoryRepositoryImpl) bind HistoryRepository::class
     factoryOf(::LoginRepositoryImpl) bind LoginRepository::class
     factoryOf(::NotificationRepositoryImpl) bind NotificationRepository::class

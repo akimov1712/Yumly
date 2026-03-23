@@ -5,7 +5,11 @@ import cafe.adriel.voyager.core.registry.ScreenRegistry
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
-import ru.topbun.feature.splash.di.splashScreenModule
+import ru.topbun.feature.auth.AuthScreen
+import ru.topbun.feature.auth.welcome.WelcomeScreen
+import ru.topbun.feature.splash.SplashScreen
+import ru.topbun.navigation.RootScreenProvider
+import ru.topbun.navigation.auth.AuthScreenProvider
 import ru.topbun.yumly.di.appModule
 
 class App: Application() {
@@ -28,7 +32,16 @@ class App: Application() {
 
     private fun initScreens(){
         ScreenRegistry{
-            splashScreenModule
+            register<RootScreenProvider.Splash>{ SplashScreen }
+            register<RootScreenProvider.Auth>{ AuthScreen(it.startScreen) }
+
+            register<AuthScreenProvider.Welcome>{ WelcomeScreen }
+//            register<AuthScreenProvider.Login>{ LoginScreen }
+//            register<AuthScreenProvider.Register>{ RegisterScreen }
+//            register<AuthScreenProvider.Confirm>{ ConfirmScreen(it.email, it.screenMode) }
+//            register<AuthScreenProvider.ResetRequest>{ ResetRequestScreen }
+//            register<AuthScreenProvider.ResetNewPassword>{ ResetPasswordScreen(it.email, it.code) }
+
         }
     }
 
