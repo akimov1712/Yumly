@@ -45,10 +45,12 @@ dependencies {
     implementation(libs.voyager.transition)
     implementation(libs.voyager.koin)
 
-    // Koin
+        // Koin
     implementation(libs.koin.core)
+    implementation(libs.koin.compose)
     implementation(libs.koin.compose.viewmodel)
     implementation(project.dependencies.platform(libs.koin.bom))
+
 
     // Default
     implementation(libs.androidx.lifecycle.runtime.ktx)

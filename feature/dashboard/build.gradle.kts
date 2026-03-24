@@ -46,6 +46,7 @@ dependencies {
 
     // Koin
     implementation(libs.koin.core)
+    implementation(libs.koin.compose)
     implementation(libs.koin.compose.viewmodel)
     implementation(project.dependencies.platform(libs.koin.bom))
 

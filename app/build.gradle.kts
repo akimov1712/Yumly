@@ -43,6 +43,7 @@ dependencies {
 
     // Koin
     implementation(libs.koin.core)
+    implementation(libs.koin.compose.viewmodel)
     implementation(libs.koin.android)
     implementation(project.dependencies.platform(libs.koin.bom))
 
