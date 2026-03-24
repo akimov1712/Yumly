@@ -36,6 +36,12 @@ kotlin {
 }
 
 dependencies {
+
+    // Koin
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(project.dependencies.platform(libs.koin.bom))
+
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
