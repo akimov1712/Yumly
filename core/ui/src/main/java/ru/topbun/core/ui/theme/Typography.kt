@@ -54,4 +54,11 @@ object Typography {
         color = Colors.MAIN_TEXT
     )
 
+    val Placeholder = TextStyle(
+        color = Colors.BLUE_TEXT,
+        fontFamily = Fonts.INTER,
+        fontWeight = FontWeight.Medium,
+        fontSize = 15.sp
+    )
+
 }
