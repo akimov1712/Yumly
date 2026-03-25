@@ -12,16 +12,18 @@ import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.AppTextField
 
 @Composable
-internal fun FieldEmail() {
+internal fun FieldEmail(
+    value: String,
+    onValueChange: (String) -> Unit
+) {
     AppTextField(
-        text = "",
+        text = value,
+        onValueChange = onValueChange,
         placeholder = "Email",
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp),
         startIcon = painterResource(R.drawable.ic_email),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
-    ) {
-
-    }
+    )
 }

@@ -33,6 +33,7 @@ fun AppSnackbarHost(
                 color = Colors.WHITE,
                 style = Typography.H3,
                 fontSize = 14.sp,
+                lineHeight = 16.sp,
             )
         }
     }

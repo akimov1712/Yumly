@@ -11,8 +11,10 @@ internal class AuthTokenInterceptor(private val tokenManager: TokenManager) : In
         val originalRequest = chain.request()
         val requestBuilder = originalRequest.newBuilder()
 
-        val token = tokenManager.getToken()
-        requestBuilder.createAuthHeader(token)
+        val token = tokenManager.getTokenOrNull()
+        token?.let {
+            requestBuilder.createAuthHeader(token)
+        }
 
         val request = requestBuilder.build()
         return chain.proceed(request)

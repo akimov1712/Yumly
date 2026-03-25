@@ -28,7 +28,7 @@ abstract class MVI<I,S,E>(state: S): ViewModel() {
         _intent.send(intent)
     }
 
-    abstract suspend fun handleIntent(intent: I)
+    protected abstract suspend fun handleIntent(intent: I)
 
     protected fun observeIntent() = _intent.handleIntent(viewModelScope) {
         handleIntent(it)

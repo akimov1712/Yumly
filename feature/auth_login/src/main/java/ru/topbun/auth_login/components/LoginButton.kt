@@ -8,12 +8,18 @@ import androidx.compose.ui.unit.dp
 import ru.topbun.core.ui.components.AppButton
 
 @Composable
-internal fun LoginButton() {
+internal fun LoginButton(
+    enabled: Boolean,
+    isLoading: Boolean,
+    onClick: () -> Unit
+) {
     AppButton(
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp),
-        text = "Login"
-    ) { }
+        text = "Login",
+        enabled = enabled,
+        isLoading = isLoading
+    ) { onClick() }
 }
 

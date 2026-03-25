@@ -1,6 +1,6 @@
 package ru.topbun.core.common.error
 
-interface DataError: Error{
+sealed interface DataError: Error{
 
     enum class Network: DataError{
         // Default
@@ -15,13 +15,9 @@ interface DataError: Error{
         INVALID_DATA,
         BAD_REQUEST,
         NOT_FOUND,
+        NOT_VERIFIED,
         UNAUTHORIZED,
         FORBIDDEN,
-    }
-
-    enum class Local: DataError{
-        WRITE_TOKEN,
-        READ_TOKEN
     }
 
 }

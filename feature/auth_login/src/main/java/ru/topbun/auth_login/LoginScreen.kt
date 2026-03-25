@@ -2,24 +2,19 @@ package ru.topbun.auth_login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import org.koin.compose.viewmodel.koinViewModel
 import ru.topbun.auth_login.components.Description
 import ru.topbun.auth_login.components.FieldEmail
 import ru.topbun.auth_login.components.FieldPassword
@@ -27,17 +22,15 @@ import ru.topbun.auth_login.components.ForgotPasswordButton
 import ru.topbun.auth_login.components.LoginButton
 import ru.topbun.auth_login.components.SignUpButton
 import ru.topbun.auth_login.components.Title
-import ru.topbun.core.ui.components.AppButton
 import ru.topbun.core.ui.components.Height
-import ru.topbun.core.ui.components.Weight
 import ru.topbun.core.ui.theme.Colors
-import ru.topbun.core.ui.theme.Typography
-import ru.topbun.core.ui.utils.noRippleClickable
 
 object LoginScreen : Screen {
 
     @Composable
     override fun Content() {
+        val viewModel: LoginViewModel = koinViewModel()
+        val state by viewModel.state.collectAsState()
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -54,15 +47,18 @@ object LoginScreen : Screen {
                 Height(8.dp)
                 Description()
                 Height(32.dp)
-                FieldEmail()
+                FieldEmail(state.email){ viewModel.sendIntent(LoginIntent.ChangeEmail(it)) }
                 Height(16.dp)
-                FieldPassword()
+                FieldPassword(state.password, state.showPassword){ viewModel.sendIntent(it) }
                 Height(12.dp)
-                ForgotPasswordButton()
+                ForgotPasswordButton{ viewModel.sendIntent(LoginIntent.ClickResetPassword) }
                 Height(72.dp)
-                LoginButton()
+                LoginButton(
+                    enabled = state.loginButtonEnabled,
+                    isLoading = state.loginIsLoading
+                ){ viewModel.sendIntent(LoginIntent.ClickLogin) }
             }
-            SignUpButton()
+            SignUpButton{ viewModel.sendIntent(LoginIntent.ClickSingUp) }
         }
     }
 

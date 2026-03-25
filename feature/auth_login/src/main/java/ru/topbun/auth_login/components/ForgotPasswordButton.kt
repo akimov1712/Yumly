@@ -12,11 +12,11 @@ import ru.topbun.core.ui.theme.Typography
 import ru.topbun.core.ui.utils.noRippleClickable
 
 @Composable
-internal fun ColumnScope.ForgotPasswordButton() {
+internal fun ColumnScope.ForgotPasswordButton(onClick: () -> Unit) {
     Text(
         modifier = Modifier
             .align(Alignment.End)
-            .noRippleClickable { }
+            .noRippleClickable { onClick() }
             .padding(vertical = 4.dp, horizontal = 8.dp),
         text = "Forgot password?",
         style = Typography.P2,

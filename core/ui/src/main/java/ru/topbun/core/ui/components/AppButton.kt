@@ -3,9 +3,11 @@ package ru.topbun.core.ui.components
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,12 +21,15 @@ import ru.topbun.core.ui.theme.Fonts
 fun AppButton(
     text: String,
     modifier: Modifier,
+    enabled: Boolean = true,
+    isLoading: Boolean = false,
     onClick: () -> Unit
 ) {
     Button(
         modifier = modifier,
         shape = RoundedCornerShape(32.dp),
         onClick = onClick,
+        enabled = enabled && !isLoading,
         colors = ButtonColors(
             containerColor = Colors.PRIMARY,
             contentColor = Colors.WHITE,
@@ -32,12 +37,20 @@ fun AppButton(
             disabledContentColor = Colors.WHITE
         ),
     ) {
-        Text(
-            text = text,
-            color = Colors.WHITE,
-            fontFamily = Fonts.INTER,
-            fontWeight = FontWeight.Bold,
-            fontSize = 15.sp,
-        )
+        if (isLoading){
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                color = Colors.WHITE,
+                strokeWidth = 2.dp
+            )
+        } else {
+            Text(
+                text = text,
+                color = Colors.WHITE,
+                fontFamily = Fonts.INTER,
+                fontWeight = FontWeight.Bold,
+                fontSize = 15.sp,
+            )
+        }
     }
 }

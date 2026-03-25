@@ -16,12 +16,12 @@ import ru.topbun.core.ui.theme.Typography
 import ru.topbun.core.ui.utils.noRippleClickable
 
 @Composable
-internal fun BoxScope.SignUpButton() {
+internal fun BoxScope.SignUpButton(onClick: () -> Unit) {
     Text(
         modifier = Modifier
             .padding(24.dp)
             .align(Alignment.BottomCenter)
-            .noRippleClickable { }
+            .noRippleClickable { onClick() }
             .padding(vertical = 4.dp, horizontal = 8.dp),
         text = buildAnnotatedString {
             append("Don’t have any account? ")
