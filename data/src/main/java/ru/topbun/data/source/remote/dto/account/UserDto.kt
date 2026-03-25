@@ -1,6 +1,7 @@
 package ru.topbun.data.source.remote.dto.account
 
 import ru.topbun.domain.entity.account.UserEntity
+import java.time.LocalDateTime
 import java.util.Date
 
 internal data class UserDto(
@@ -10,8 +11,8 @@ internal data class UserDto(
     val password: String,
     val photoUrl: String?,
     val isVerified: Boolean,
-    val createdAt: Date,
-    val updatedAt: Date
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime
 ){
 
     fun toEntity() = UserEntity(

@@ -1,6 +1,6 @@
 package ru.topbun.domain.entity.account
 
-import java.util.Date
+import java.time.LocalDateTime
 
 data class UserEntity(
     val id: Int,
@@ -8,6 +8,6 @@ data class UserEntity(
     val email: String,
     val photoUrl: String?,
     val isVerified: Boolean,
-    val createdAt: Date,
-    val updatedAt: Date
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime
 )
