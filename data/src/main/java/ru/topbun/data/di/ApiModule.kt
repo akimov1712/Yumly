@@ -10,6 +10,8 @@ import ru.topbun.data.source.remote.ApiFactory
 import ru.topbun.data.source.remote.AuthTokenInterceptor
 import ru.topbun.data.source.remote.dto.login.LoginResponse
 import ru.topbun.data.source.remote.dto.login.LoginResponseDeserializer
+import ru.topbun.data.source.remote.dto.verification.ConfirmVerificationDeserializer
+import ru.topbun.data.source.remote.dto.verification.ConfirmVerificationResponse
 import java.time.LocalDateTime
 
 internal inline fun <reified T> Module.api(noinline provider: ApiFactory.() -> T) {
@@ -20,9 +22,8 @@ val apiModule = module {
     factory<Gson> {
         GsonBuilder()
             .registerTypeAdapter(LoginResponse::class.java, LoginResponseDeserializer())
-            .registerTypeAdapter(
-                LocalDateTime::class.java,
-                JsonDeserializer { json, _, _ -> LocalDateTime.parse(json.asString) })
+            .registerTypeAdapter(ConfirmVerificationResponse::class.java, ConfirmVerificationDeserializer())
+            .registerTypeAdapter(LocalDateTime::class.java, JsonDeserializer { json, _, _ -> LocalDateTime.parse(json.asString) })
             .create()
     }
     factoryOf(::AuthTokenInterceptor)

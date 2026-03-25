@@ -22,7 +22,7 @@ internal class ResetRequestViewModel(
         val verification = RequestVerificationEntity(state.value.email, VerificationType.RESET_PASSWORD)
         val result = requestVerificationUseCase(verification)
         result.onSuccess {
-            _events.send(ResetRequestEvent.NavigateToConfirmReset(state.value.email, VerificationType.RESET_PASSWORD))
+            _events.send(ResetRequestEvent.NavigateToConfirm(state.value.email, VerificationType.RESET_PASSWORD))
         }.onError { error, _ ->
             val message = when (error) {
                 DataError.Network.NOT_FOUND -> "Пользователь с указанной почтой не найден"

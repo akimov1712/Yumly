@@ -5,8 +5,9 @@ import cafe.adriel.voyager.core.registry.ScreenRegistry
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
-import ru.topbun.auth_login.LoginScreen
 import ru.topbun.auth.AuthScreen
+import ru.topbun.auth_confirm.ConfirmScreen
+import ru.topbun.auth_login.LoginScreen
 import ru.topbun.auth_register.RegisterScreen
 import ru.topbun.auth_reset_request.ResetRequestScreen
 import ru.topbun.auth_welcome.WelcomeScreen
@@ -16,7 +17,7 @@ import ru.topbun.navigation.RootScreenProvider
 import ru.topbun.navigation.auth.AuthScreenProvider
 import ru.topbun.yumly.di.appModule
 
-class App: Application() {
+class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
@@ -34,17 +35,17 @@ class App: Application() {
     }
 
 
-    private fun initScreens(){
-        ScreenRegistry{
-            register<RootScreenProvider.Splash>{ SplashScreen }
-            register<RootScreenProvider.Auth>{ AuthScreen(it.startScreen) }
-            register<RootScreenProvider.Dashboard>{ DashboardScreen }
+    private fun initScreens() {
+        ScreenRegistry {
+            register<RootScreenProvider.Splash> { SplashScreen }
+            register<RootScreenProvider.Auth> { AuthScreen(it.startScreen) }
+            register<RootScreenProvider.Dashboard> { DashboardScreen }
 
-            register<AuthScreenProvider.Welcome>{ WelcomeScreen }
-            register<AuthScreenProvider.Login>{ LoginScreen }
-            register<AuthScreenProvider.Register>{ RegisterScreen }
-            register<AuthScreenProvider.ResetRequest>{ ResetRequestScreen }
-//            register<AuthScreenProvider.Confirm>{ ConfirmScreen(it.email, it.screenMode) }
+            register<AuthScreenProvider.Welcome> { WelcomeScreen }
+            register<AuthScreenProvider.Login> { LoginScreen }
+            register<AuthScreenProvider.Register> { RegisterScreen }
+            register<AuthScreenProvider.ResetRequest> { ResetRequestScreen }
+            register<AuthScreenProvider.Confirm> { ConfirmScreen(it.email, it.screenMode) }
 //            register<AuthScreenProvider.ResetNewPassword>{ ResetPasswordScreen(it.email, it.code) }
 
         }

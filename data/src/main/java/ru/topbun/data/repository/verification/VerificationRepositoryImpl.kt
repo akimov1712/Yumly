@@ -8,7 +8,7 @@ import ru.topbun.core.common.error.DataError
 import ru.topbun.data.exceptionWrapper
 import ru.topbun.data.source.local.config.TokenManager
 import ru.topbun.data.source.remote.api.verification.VerificationApi
-import ru.topbun.data.source.remote.dto.token.TokenResponse
+import ru.topbun.data.source.remote.dto.verification.TokenResponse
 import ru.topbun.data.source.remote.dto.verification.VerificationStatusResponse
 import ru.topbun.data.source.remote.dto.verification.toRequest
 import ru.topbun.domain.entity.verification.ConfirmVerificationEntity
@@ -22,15 +22,15 @@ internal class VerificationRepositoryImpl(
     private val api: VerificationApi,
     private val tokenManager: TokenManager,
     private val gson: Gson,
-): VerificationRepository {
+) : VerificationRepository {
 
     override suspend fun request(data: RequestVerificationEntity): Result<Unit, DataError> =
         context.exceptionWrapper {
             val response = api.request(data.toRequest())
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
                 Result.Success(Unit)
             } else {
-                val error = when(response.code()){
+                val error = when (response.code()) {
                     HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
                     else -> DataError.Network.SERVER_ERROR
                 }
@@ -41,26 +41,37 @@ internal class VerificationRepositoryImpl(
     override suspend fun confirm(data: ConfirmVerificationEntity): Result<VerificationStatusType, DataError> =
         context.exceptionWrapper {
             val response = api.confirm(data.toRequest())
-            if (response.isSuccessful){
-                if (data.type == VerificationType.SIGN_UP_CONFIRM){
-                    val token = gson.fromJson(response.body.string(), TokenResponse::class.java)
-                    tokenManager.saveToken(token.token)
+            val result = response.body()
+            val errorResult = response.errorBody()
+            when{
+                result != null && result is TokenResponse -> {
+                    tokenManager.saveToken(result.token)
+                    Result.Success(VerificationStatusType.SUCCESS)
                 }
-                Result.Success(VerificationStatusType.SUCCESS)
-            } else {
-                val error = when(response.code){
-                    HttpStatusCode.FORBIDDEN -> DataError.Network.FORBIDDEN
-                    HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
-                    else -> DataError.Network.SERVER_ERROR
+                errorResult != null -> {
+                    val errorBody = response.errorBody()?.string()
+
+                    val status = errorBody?.let {
+                        try {
+                            gson.fromJson(it, VerificationStatusResponse::class.java)
+                        } catch (e: Exception) {
+                            null
+                        }
+                    }
+                    status?.let {
+                        Result.Success(it.status)
+                    } ?: Result.Error(DataError.Network.SERIALIZATION)
                 }
-                val data = if (response.code == HttpStatusCode.FORBIDDEN){
-                    gson.fromJson(
-                        response.body.string(),
-                        VerificationStatusResponse::class.java
-                    ).status
-                } else null
-                Result.Error(error, data)
+                else -> {
+                    val error = when (response.code()) {
+                        HttpStatusCode.FORBIDDEN -> DataError.Network.FORBIDDEN
+                        HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
+                        else -> DataError.Network.SERVER_ERROR
+                    }
+                    Result.Error(error)
+                }
             }
+
         }
 
 }

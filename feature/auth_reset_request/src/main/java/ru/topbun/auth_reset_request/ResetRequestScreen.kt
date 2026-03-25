@@ -25,6 +25,7 @@ import ru.topbun.auth_reset_request.components.Title
 import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.utils.ObserveAsEvents
+import ru.topbun.navigation.auth.AuthConfirmMode
 import ru.topbun.navigation.auth.AuthScreenProvider
 
 object ResetRequestScreen: Screen {
@@ -36,8 +37,8 @@ object ResetRequestScreen: Screen {
 
         ObserveAsEvents(viewModel.events) {
             when(it){
-                is ResetRequestEvent.NavigateToConfirmReset -> {
-                    val screen = ScreenRegistry.get(AuthScreenProvider.ResetNewPassword(it.email, it.type))
+                is ResetRequestEvent.NavigateToConfirm -> {
+                    val screen = ScreenRegistry.get(AuthScreenProvider.Confirm(it.email, AuthConfirmMode.RESET_PASSWORD))
                 }
             }
         }
