@@ -2,6 +2,7 @@ package ru.topbun.data.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializer
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -10,6 +11,7 @@ import ru.topbun.data.source.remote.ApiFactory
 import ru.topbun.data.source.remote.AuthTokenInterceptor
 import ru.topbun.data.source.remote.dto.login.LoginResponse
 import ru.topbun.data.source.remote.dto.login.LoginResponseDeserializer
+import java.time.LocalDateTime
 
 internal inline fun <reified T> Module.api(noinline provider: ApiFactory.() -> T) {
     single { get<ApiFactory>().provider() }
@@ -19,6 +21,7 @@ val apiModule = module {
     factory<Gson> {
         GsonBuilder()
             .registerTypeAdapter(LoginResponse::class.java, LoginResponseDeserializer())
+            .registerTypeAdapter(LocalDateTime::class.java, JsonDeserializer { json, _, _ -> LocalDateTime.parse(json.asString) })
             .create()
     }
     factoryOf(::AuthTokenInterceptor)

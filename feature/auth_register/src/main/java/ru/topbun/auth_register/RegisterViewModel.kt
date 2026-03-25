@@ -1,5 +1,6 @@
 package ru.topbun.auth_register
 
+import android.R.id.message
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
@@ -8,6 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.topbun.core.android.MVI
 import ru.topbun.core.android.SnackbarManager
+import ru.topbun.core.common.error.DataError
 import ru.topbun.core.common.onError
 import ru.topbun.core.common.onSuccess
 import ru.topbun.domain.entity.signUp.SignUpEntity
@@ -38,6 +40,23 @@ internal class RegisterViewModel(
         )
         val resultValidation = signUpValidator.validate(signUp)
         resultValidation.onSuccess {
+            _state.update { it.copy(registerIsLoading = true) }
+            val result = signUpUseCase(signUp)
+            result.onSuccess {
+                snackbarManager.sendMessage("Пользователь отправлен на подтвержддение")
+            }.onError { error, _ ->
+                val message = when(error){
+                    DataError.Network.INVALID_DATA -> "Пользователь с указанной почтой или паролем не найден"
+                    DataError.Network.EXISTS -> "Пользователь с указанной почтой или паролем уже зарегистрирован"
+                    DataError.Network.REQUEST_TIMEOUT -> "Время ожидание превышено. Проверьте интернет соединение или попробуйте позже"
+                    DataError.Network.SERIALIZATION -> "При получении данных произошла ошибка"
+                    DataError.Network.SERVER_ERROR -> "Произошла ошибка на сервере. Попробуйте позже"
+                    DataError.Network.NO_INTERNET -> "Отсутствует интернет соединение"
+                    else -> "Произошла ошибка. Попробуйте позже"
+                }
+                snackbarManager.sendMessage(message)
+            }
+            _state.update { it.copy(registerIsLoading = false) }
 
         }.onError { error, _ ->
             error.errors.forEach { (_, fieldError) ->
