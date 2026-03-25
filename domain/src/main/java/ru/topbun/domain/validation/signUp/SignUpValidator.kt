@@ -6,31 +6,62 @@ import ru.topbun.core.common.error.ValidatorError
 import ru.topbun.core.common.isEmailValid
 import ru.topbun.domain.entity.signUp.SignUpEntity
 
-class SignUpValidator: Validator<SignUpEntity> {
+class SignUpValidator : Validator<SignUpEntity> {
 
-    override fun validate(data: SignUpEntity): Result<Unit, ValidatorError> {
-        val error = when{
-            data.username.isBlank() -> SignUpValidatorError.USERNAME_EMPTY
-            data.username.length < 4 -> SignUpValidatorError.USERNAME_SHORT
+    override fun validate(data: SignUpEntity): Result<Unit, SignUpValidationError> {
 
-            data.email.isBlank() -> SignUpValidatorError.EMAIL_EMPTY
-            !data.email.isEmailValid() -> SignUpValidatorError.EMAIL_NOT_VALID
+        val errors = mutableMapOf<SignUpValidatorField, MutableList<SignUpValidatorError>>()
 
-            data.password.isBlank() -> SignUpValidatorError.PASSWORD_EMPTY
-            data.password.length < 6 -> SignUpValidatorError.PASSWORD_SHORT
-            data.password != data.confirmPassword -> SignUpValidatorError.PASSWORD_NOT_MATCH
-
-            else -> null
+        fun addError(field: SignUpValidatorField, error: SignUpValidatorError) {
+            errors.getOrPut(field) { mutableListOf() }.add(error)
         }
-        return error?.let { Result.Error(error) } ?: run { Result.Success(Unit) }
+
+        if (data.username.isBlank()) {
+            addError(SignUpValidatorField.USERNAME, SignUpValidatorError.USERNAME_EMPTY)
+        } else if (data.username.length < 4) {
+            addError(SignUpValidatorField.USERNAME, SignUpValidatorError.USERNAME_SHORT)
+        }
+
+        if (data.email.isBlank()) {
+            addError(SignUpValidatorField.EMAIL, SignUpValidatorError.EMAIL_EMPTY)
+        } else if (!data.email.isEmailValid()) {
+            addError(SignUpValidatorField.EMAIL, SignUpValidatorError.EMAIL_NOT_VALID)
+        }
+
+        if (data.password.isBlank()) {
+            addError(SignUpValidatorField.PASSWORD, SignUpValidatorError.PASSWORD_EMPTY)
+        } else if (data.password.length < 6) {
+            addError(SignUpValidatorField.PASSWORD, SignUpValidatorError.PASSWORD_SHORT)
+        }
+
+        if (data.password != data.confirmPassword) {
+            addError(SignUpValidatorField.CONFIRM_PASSWORD, SignUpValidatorError.PASSWORD_NOT_MATCH)
+        }
+
+        return if (errors.isEmpty()) {
+            Result.Success(Unit)
+        } else {
+            Result.Error(SignUpValidationError(errors))
+        }
     }
+}
+
+class SignUpValidationError(
+    val errors: Map<SignUpValidatorField, List<SignUpValidatorError>>
+) : ValidatorError
+
+enum class SignUpValidatorError(val message: String){
+
+    USERNAME_EMPTY("Имя не может быть пустым"),
+    USERNAME_SHORT("Минимальная длина имени 4 символа"),
+    EMAIL_EMPTY("Почта не может быть пустой"),
+    EMAIL_NOT_VALID("Почта неверного формата. Попробуйте в виде example@gmail.com"),
+    PASSWORD_EMPTY("Пароль не может быть пустым"),
+    PASSWORD_SHORT("Минимальная длина пароля 6 символов"),
+    PASSWORD_NOT_MATCH("Пароли не совпадают"),
 
 }
 
-enum class SignUpValidatorError: ValidatorError{
-
-    USERNAME_SHORT, USERNAME_EMPTY,
-    EMAIL_EMPTY, EMAIL_NOT_VALID,
-    PASSWORD_EMPTY, PASSWORD_SHORT, PASSWORD_NOT_MATCH,
-
+enum class SignUpValidatorField{
+    USERNAME, EMAIL, PASSWORD, CONFIRM_PASSWORD
 }

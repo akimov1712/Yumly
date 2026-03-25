@@ -1,6 +1,6 @@
 package ru.topbun.auth_login
 
-data class LoginState(
+internal data class LoginState(
     val email: String ="",
     val password: String = "",
     val showPassword: Boolean = false,
@@ -12,7 +12,7 @@ data class LoginState(
 
 }
 
-sealed interface LoginIntent{
+internal sealed interface LoginIntent{
 
     data class ChangeEmail(val value: String): LoginIntent
     data class ChangePassword(val value: String): LoginIntent
@@ -23,7 +23,7 @@ sealed interface LoginIntent{
 
 }
 
-sealed interface LoginEvent{
+internal sealed interface LoginEvent{
 
     data object NavigateToSignUp: LoginEvent
     data object NavigateToResetPassword: LoginEvent

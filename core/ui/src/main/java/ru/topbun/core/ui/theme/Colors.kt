@@ -10,6 +10,7 @@ object Colors {
     val BLUE_TEXT = Color(0xff3E5481)
     val SECONDARY_TEXT = Color(0xff9FA5C0)
     val OUTLINE = Color(0xffD0DBEA)
+    val ERROR = Color(0xffCC1F22)
     val FORM = Color(0xffF4F5F7)
 
     val WHITE = Color(0xffffffff)
