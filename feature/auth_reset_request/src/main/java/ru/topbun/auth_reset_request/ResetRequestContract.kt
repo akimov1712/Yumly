@@ -20,6 +20,6 @@ internal sealed interface ResetRequestIntent{
 
 internal sealed interface ResetRequestEvent{
 
-    data class NavigateToConfirmReset(val email: String, val type: VerificationType): ResetRequestEvent
+    data class NavigateToConfirm(val email: String, val type: VerificationType): ResetRequestEvent
 
 }

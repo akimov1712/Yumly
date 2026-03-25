@@ -9,6 +9,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
 import ru.topbun.core.ui.utils.StatusBarColor
 import ru.topbun.core.ui.utils.changeStatusBarColor
+import ru.topbun.navigation.auth.AuthConfirmMode
 import ru.topbun.navigation.auth.AuthScreenProvider
 import ru.topbun.navigation.auth.AuthStartScreen
 
@@ -27,9 +28,9 @@ data class AuthScreen(
             }
         }
 
-//        val registerScreen = rememberScreen(AuthScreenProvider.Register)
+        val registerScreen = rememberScreen(AuthScreenProvider.Confirm("akimov1712@mail.ru", AuthConfirmMode.SIGN_UP))
 
-        Navigator(initialScreen){
+        Navigator(registerScreen){
             SlideTransition(it)
         }
     }

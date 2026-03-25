@@ -25,7 +25,7 @@ class SplashViewModel(
     private fun handleFirstStart() = viewModelScope.launch {
         val firstStatus = getStatusFirstStartUseCase()
         val hasSession = hasSessionUseCase()
-        delay(3000)
+        delay(1500)
         val event = when{
             firstStatus -> SplashEvent.NavigateToAuth(AuthStartScreen.WELCOME)
             hasSession -> SplashEvent.NavigateToMain
