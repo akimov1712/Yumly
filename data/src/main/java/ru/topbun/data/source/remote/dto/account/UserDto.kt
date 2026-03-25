@@ -2,7 +2,6 @@ package ru.topbun.data.source.remote.dto.account
 
 import ru.topbun.domain.entity.account.UserEntity
 import java.time.LocalDateTime
-import java.util.Date
 
 internal data class UserDto(
     val id: Int,
@@ -13,7 +12,7 @@ internal data class UserDto(
     val isVerified: Boolean,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
-){
+) {
 
     fun toEntity() = UserEntity(
         id = id,

@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializer
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import ru.topbun.data.source.remote.ApiFactory
 import ru.topbun.data.source.remote.AuthTokenInterceptor
@@ -21,7 +20,9 @@ val apiModule = module {
     factory<Gson> {
         GsonBuilder()
             .registerTypeAdapter(LoginResponse::class.java, LoginResponseDeserializer())
-            .registerTypeAdapter(LocalDateTime::class.java, JsonDeserializer { json, _, _ -> LocalDateTime.parse(json.asString) })
+            .registerTypeAdapter(
+                LocalDateTime::class.java,
+                JsonDeserializer { json, _, _ -> LocalDateTime.parse(json.asString) })
             .create()
     }
     factoryOf(::AuthTokenInterceptor)

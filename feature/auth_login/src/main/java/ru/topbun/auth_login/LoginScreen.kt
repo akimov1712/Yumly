@@ -47,7 +47,10 @@ object LoginScreen : Screen {
                     val screen = ScreenRegistry.get(AuthScreenProvider.Register)
                     navigator.push(screen)
                 }
-                LoginEvent.NavigateToResetPassword -> {}
+                LoginEvent.NavigateToResetPassword -> {
+                    val screen = ScreenRegistry.get(AuthScreenProvider.ResetRequest)
+                    navigator.push(screen)
+                }
             }
         }
 

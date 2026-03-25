@@ -27,9 +27,9 @@ data class AuthScreen(
             }
         }
 
-        val registerScreen = rememberScreen(AuthScreenProvider.Register)
+//        val registerScreen = rememberScreen(AuthScreenProvider.Register)
 
-        Navigator(registerScreen){
+        Navigator(initialScreen){
             SlideTransition(it)
         }
     }

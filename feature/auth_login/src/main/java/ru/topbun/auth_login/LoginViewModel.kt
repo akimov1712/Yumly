@@ -57,9 +57,8 @@ internal class LoginViewModel(
         }
     }
 
-    private suspend fun navigateToRegister(){
-        _events.send(LoginEvent.NavigateToSignUp)
-    }
+    private suspend fun navigateToRegister() = _events.send(LoginEvent.NavigateToSignUp)
+    private suspend fun navigateToResetPassword() = _events.send(LoginEvent.NavigateToResetPassword)
 
     override suspend fun handleIntent(intent: LoginIntent) {
         when(intent){
@@ -68,7 +67,7 @@ internal class LoginViewModel(
             LoginIntent.SwitchShowPassword -> switchShowPassword()
             LoginIntent.ClickSingUp -> navigateToRegister()
             LoginIntent.ClickLogin -> login()
-            LoginIntent.ClickResetPassword -> {}
+            LoginIntent.ClickResetPassword -> navigateToResetPassword()
         }
     }
 
