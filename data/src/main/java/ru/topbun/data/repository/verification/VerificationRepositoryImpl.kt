@@ -30,7 +30,7 @@ internal class VerificationRepositoryImpl(
             if (response.isSuccessful){
                 Result.Success(Unit)
             } else {
-                val error = when(response.code){
+                val error = when(response.code()){
                     HttpStatusCode.NOT_FOUND -> DataError.Network.NOT_FOUND
                     else -> DataError.Network.SERVER_ERROR
                 }
