@@ -59,7 +59,7 @@ internal class RegisterViewModel(
                 snackbarManager.sendMessage("Пользователь отправлен на подтвержддение")
             }.onError { error, _ ->
                 val message = when (error) {
-                    DataError.Network.INVALID_DATA -> "Пользователь с указанной почтой или паролем не найден"
+                    DataError.Network.INVALID_DATA -> "Проверьте корректность введееных данных"
                     DataError.Network.EXISTS -> "Пользователь с указанной почтой или паролем уже зарегистрирован"
                     DataError.Network.REQUEST_TIMEOUT -> "Время ожидание превышено. Проверьте интернет соединение или попробуйте позже"
                     DataError.Network.SERIALIZATION -> "При получении данных произошла ошибка"
