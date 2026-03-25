@@ -3,6 +3,7 @@ package ru.topbun.auth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import cafe.adriel.voyager.core.registry.ScreenRegistry
+import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
@@ -26,7 +27,9 @@ data class AuthScreen(
             }
         }
 
-        Navigator(initialScreen){
+        val registerScreen = rememberScreen(AuthScreenProvider.Register)
+
+        Navigator(registerScreen){
             SlideTransition(it)
         }
     }

@@ -13,7 +13,7 @@ import ru.topbun.domain.validation.login.LoginValidator
 import ru.topbun.domain.validation.login.LoginValidatorError
 import ru.topbun.domain.validation.login.LoginValidatorError.*
 
-class LoginViewModel(
+internal class LoginViewModel(
     private val loginValidator: LoginValidator,
     private val snackbarManager: SnackbarManager,
     private val loginUseCase: LoginUseCase
@@ -57,14 +57,18 @@ class LoginViewModel(
         }
     }
 
+    private suspend fun navigateToRegister(){
+        _events.send(LoginEvent.NavigateToSignUp)
+    }
+
     override suspend fun handleIntent(intent: LoginIntent) {
         when(intent){
             is LoginIntent.ChangeEmail -> changeEmail(intent.value)
             is LoginIntent.ChangePassword -> changePassword(intent.value)
             LoginIntent.SwitchShowPassword -> switchShowPassword()
-            LoginIntent.ClickResetPassword -> {}
-            LoginIntent.ClickSingUp -> {}
+            LoginIntent.ClickSingUp -> navigateToRegister()
             LoginIntent.ClickLogin -> login()
+            LoginIntent.ClickResetPassword -> {}
         }
     }
 

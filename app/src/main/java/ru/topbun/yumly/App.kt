@@ -7,6 +7,7 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import ru.topbun.auth_login.LoginScreen
 import ru.topbun.auth.AuthScreen
+import ru.topbun.auth_register.RegisterScreen
 import ru.topbun.auth_welcome.WelcomeScreen
 import ru.topbun.dashboard.DashboardScreen
 import ru.topbun.feature.splash.SplashScreen
@@ -40,7 +41,7 @@ class App: Application() {
 
             register<AuthScreenProvider.Welcome>{ WelcomeScreen }
             register<AuthScreenProvider.Login>{ LoginScreen }
-//            register<AuthScreenProvider.Register>{ RegisterScreen }
+            register<AuthScreenProvider.Register>{ RegisterScreen }
 //            register<AuthScreenProvider.Confirm>{ ConfirmScreen(it.email, it.screenMode) }
 //            register<AuthScreenProvider.ResetRequest>{ ResetRequestScreen }
 //            register<AuthScreenProvider.ResetNewPassword>{ ResetPasswordScreen(it.email, it.code) }

@@ -2,6 +2,7 @@ package ru.topbun.core.ui.components
 
 import android.R.attr.singleLine
 import android.R.attr.text
+import android.R.attr.textStyle
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -12,6 +13,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -26,18 +28,30 @@ fun AppTextField(
     placeholder: String,
     modifier: Modifier = Modifier,
     startIcon: Painter? = null,
+    error: String? = null,
     endIcon: (@Composable () -> Unit)? = null,
     singleLine: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    onFocused: () -> Unit = {},
     onValueChange: (String) -> Unit
 ) {
     OutlinedTextField(
-        modifier = modifier,
+        modifier = modifier.onFocusChanged{ if (it.isFocused){ onFocused() } },
         value = text,
         onValueChange = onValueChange,
         visualTransformation = visualTransformation,
+        isError = error != null,
         singleLine = singleLine,
+        supportingText = error?.let{
+            {
+                Text(
+                    text = it,
+                    color = Colors.ERROR,
+                    style = Typography.P2
+                )
+            }
+        },
         placeholder = {
             Text(
                 text = placeholder,
@@ -77,7 +91,7 @@ fun AppTextField(
             errorTextColor = Colors.BLUE_TEXT,
             focusedIndicatorColor = Colors.PRIMARY,
             unfocusedIndicatorColor = Colors.OUTLINE,
-            errorIndicatorColor = Colors.SECONDARY,
+            errorIndicatorColor = Colors.ERROR,
         ),
         keyboardOptions = keyboardOptions,
     )
