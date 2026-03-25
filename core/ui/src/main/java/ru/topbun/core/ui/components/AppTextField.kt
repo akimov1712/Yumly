@@ -14,6 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
@@ -26,6 +28,7 @@ fun AppTextField(
     startIcon: Painter? = null,
     endIcon: (@Composable () -> Unit)? = null,
     singleLine: Boolean = true,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onValueChange: (String) -> Unit
 ) {
@@ -33,6 +36,7 @@ fun AppTextField(
         modifier = modifier,
         value = text,
         onValueChange = onValueChange,
+        visualTransformation = visualTransformation,
         singleLine = singleLine,
         placeholder = {
             Text(
@@ -75,6 +79,6 @@ fun AppTextField(
             unfocusedIndicatorColor = Colors.OUTLINE,
             errorIndicatorColor = Colors.SECONDARY,
         ),
-        keyboardOptions = keyboardOptions
+        keyboardOptions = keyboardOptions,
     )
 }

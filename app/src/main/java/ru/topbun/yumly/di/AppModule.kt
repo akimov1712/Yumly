@@ -6,6 +6,7 @@ val appModule = module {
     includes(
         useCaseModule,
         featureModule,
-        dataModule
+        dataModule,
+        validatorModule
     )
 }

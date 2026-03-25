@@ -12,7 +12,7 @@ internal data class UserDto(
     val isVerified: Boolean,
     val createdAt: Date,
     val updatedAt: Date
-) {
+){
 
     fun toEntity() = UserEntity(
         id = id,

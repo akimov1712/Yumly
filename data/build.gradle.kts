@@ -16,8 +16,8 @@ android {
         consumerProguardFiles("consumer-rules.pro")
 
 
-//        val baseUrl = property("BASE_URL")?.toString() ?: error("BASE_URL not found")
-        buildConfigField("String", "BASE_URL", "\"localhost\"")
+        val baseUrl = property("BASE_URL")?.toString() ?: error("BASE_URL not found")
+        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
     }
 
     buildTypes {

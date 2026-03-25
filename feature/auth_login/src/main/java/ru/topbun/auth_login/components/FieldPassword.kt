@@ -11,21 +11,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import ru.topbun.auth_login.LoginIntent
 import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.AppTextField
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.utils.noRippleClickable
 
 @Composable
-internal fun FieldPassword() {
+internal fun FieldPassword(
+    value: String,
+    isShowPassword: Boolean,
+    onSendIntent: (LoginIntent) -> Unit
+) {
     AppTextField(
-        text = "",
+        text = value,
+        onValueChange = { onSendIntent(LoginIntent.ChangePassword(it)) },
         placeholder = "Password",
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp),
         startIcon = painterResource(R.drawable.ic_password),
+        visualTransformation = if (isShowPassword) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         endIcon = {
             Icon(
@@ -33,14 +42,14 @@ internal fun FieldPassword() {
                     .size(24.dp)
                     .clip(CircleShape)
                     .noRippleClickable() {
-
+                        onSendIntent(LoginIntent.SwitchShowPassword)
                     },
-                painter = painterResource(R.drawable.ic_password_hide),
+                painter = painterResource(
+                    if (!isShowPassword) R.drawable.ic_password_hide else R.drawable.ic_password_show
+                ),
                 contentDescription = null,
                 tint = Colors.BLUE_TEXT,
             )
         }
-    ) {
-
-    }
+    )
 }

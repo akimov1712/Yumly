@@ -7,7 +7,7 @@ import ru.topbun.domain.entity.login.LoginEntity
 
 class LoginValidator: Validator<LoginEntity> {
 
-    override fun validate(data: LoginEntity): Result<Unit, ValidatorError> {
+    override fun validate(data: LoginEntity): Result<Unit, LoginValidatorError> {
         val error = when{
             data.email.isEmpty() -> LoginValidatorError.EMAIL_EMPTY
             data.password.isEmpty() -> LoginValidatorError.PASSWORD_EMPTY
