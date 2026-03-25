@@ -1,12 +1,6 @@
 package ru.topbun.auth_register
 
-import android.R.id.message
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import ru.topbun.core.android.MVI
 import ru.topbun.core.android.SnackbarManager
 import ru.topbun.core.common.error.DataError
@@ -15,23 +9,42 @@ import ru.topbun.core.common.onSuccess
 import ru.topbun.domain.entity.signUp.SignUpEntity
 import ru.topbun.domain.useCases.signUp.SignUpUseCase
 import ru.topbun.domain.validation.signUp.SignUpValidator
-import ru.topbun.domain.validation.signUp.SignUpValidatorField.*
+import ru.topbun.domain.validation.signUp.SignUpValidatorField.CONFIRM_PASSWORD
+import ru.topbun.domain.validation.signUp.SignUpValidatorField.EMAIL
+import ru.topbun.domain.validation.signUp.SignUpValidatorField.PASSWORD
+import ru.topbun.domain.validation.signUp.SignUpValidatorField.USERNAME
 
 internal class RegisterViewModel(
     private val signUpValidator: SignUpValidator,
     private val signUpUseCase: SignUpUseCase,
     private val snackbarManager: SnackbarManager,
-): MVI<RegisterIntent, RegisterState, RegisterEvent>(RegisterState()) {
+) : MVI<RegisterIntent, RegisterState, RegisterEvent>(RegisterState()) {
 
-    private fun changeUsername(value: String){ if (value.length < 64) _state.update { it.copy(username = value) } }
-    private fun changeEmail(value: String){ if (value.length < 128) _state.update { it.copy(email = value) } }
-    private fun changePassword(value: String){ if (value.length < 64) _state.update { it.copy(password = value) } }
-    private fun changeConfirmPassword(value: String){ if (value.length < 64) _state.update { it.copy(confirmPassword = value) } }
-    private fun changeFieldFocused(field: RegisterState.FieldFocused) = _state.update { it.copy(fieldFocused = field) }
-    private fun switchShowPassword() = _state.update { it.copy(showPassword = !_state.value.showPassword) }
+    private fun changeUsername(value: String) {
+        if (value.length < 64) _state.update { it.copy(username = value) }
+    }
+
+    private fun changeEmail(value: String) {
+        if (value.length < 128) _state.update { it.copy(email = value) }
+    }
+
+    private fun changePassword(value: String) {
+        if (value.length < 64) _state.update { it.copy(password = value) }
+    }
+
+    private fun changeConfirmPassword(value: String) {
+        if (value.length < 64) _state.update { it.copy(confirmPassword = value) }
+    }
+
+    private fun changeFieldFocused(field: RegisterState.FieldFocused) =
+        _state.update { it.copy(fieldFocused = field) }
+
+    private fun switchShowPassword() =
+        _state.update { it.copy(showPassword = !_state.value.showPassword) }
+
     private suspend fun navigateLogin() = _events.send(RegisterEvent.NavigateToLogin)
 
-    private suspend fun singUp(): Unit = with(state.value){
+    private suspend fun singUp(): Unit = with(state.value) {
         val signUp = SignUpEntity(
             username = username,
             email = email,
@@ -45,7 +58,7 @@ internal class RegisterViewModel(
             result.onSuccess {
                 snackbarManager.sendMessage("Пользователь отправлен на подтвержддение")
             }.onError { error, _ ->
-                val message = when(error){
+                val message = when (error) {
                     DataError.Network.INVALID_DATA -> "Пользователь с указанной почтой или паролем не найден"
                     DataError.Network.EXISTS -> "Пользователь с указанной почтой или паролем уже зарегистрирован"
                     DataError.Network.REQUEST_TIMEOUT -> "Время ожидание превышено. Проверьте интернет соединение или попробуйте позже"
@@ -60,7 +73,7 @@ internal class RegisterViewModel(
 
         }.onError { error, _ ->
             error.errors.forEach { (_, fieldError) ->
-                if (fieldError.isNotEmpty()){
+                if (fieldError.isNotEmpty()) {
                     val message = fieldError.firstOrNull()
                     message?.let {
                         snackbarManager.sendMessage(it.message)
@@ -72,7 +85,7 @@ internal class RegisterViewModel(
     }
 
     override suspend fun handleIntent(intent: RegisterIntent) {
-        when(intent){
+        when (intent) {
             is RegisterIntent.ChangeUsername -> changeUsername(intent.value)
             is RegisterIntent.ChangeEmail -> changeEmail(intent.value)
             is RegisterIntent.ChangePassword -> changePassword(intent.value)
@@ -85,24 +98,5 @@ internal class RegisterViewModel(
     }
 
 
-    private fun validateField(username: String, email: String, password: String, confirmPassword: String){
-        val signUp = SignUpEntity(
-            username = username,
-            email = email,
-            password = password,
-            confirmPassword = confirmPassword
-        )
-        val resultValidation = signUpValidator.validate(signUp)
-        resultValidation.onError { error, _ ->
-            error.errors.forEach { (field, fieldErrors) ->
-                when(field){
-                    USERNAME -> _state.update { it.copy(usernameError = fieldErrors.firstOrNull()?.message) }
-                    EMAIL -> _state.update { it.copy(emailError = fieldErrors.firstOrNull()?.message) }
-                    PASSWORD -> _state.update { it.copy(passwordError = fieldErrors.firstOrNull()?.message) }
-                    CONFIRM_PASSWORD -> _state.update { it.copy(confirmPasswordError = fieldErrors.firstOrNull()?.message) }
-                }
-            }
-        }
-    }
 
 }

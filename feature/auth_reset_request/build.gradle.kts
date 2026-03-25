@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.topbun.auth_reset"
+    namespace = "ru.topbun.auth_reset_request"
     compileSdk {
         version = release(libs.versions.compileSdk.get().toInt())
     }
