@@ -9,6 +9,7 @@ import ru.topbun.auth.AuthScreen
 import ru.topbun.auth_confirm.ConfirmScreen
 import ru.topbun.auth_login.LoginScreen
 import ru.topbun.auth_register.RegisterScreen
+import ru.topbun.auth_reset.ResetScreen
 import ru.topbun.auth_reset_request.ResetRequestScreen
 import ru.topbun.auth_welcome.WelcomeScreen
 import ru.topbun.dashboard.DashboardScreen
@@ -46,7 +47,7 @@ class App : Application() {
             register<AuthScreenProvider.Register> { RegisterScreen }
             register<AuthScreenProvider.ResetRequest> { ResetRequestScreen }
             register<AuthScreenProvider.Confirm> { ConfirmScreen(it.email, it.screenMode) }
-//            register<AuthScreenProvider.ResetNewPassword>{ ResetPasswordScreen(it.email, it.code) }
+            register<AuthScreenProvider.Reset>{ ResetScreen(it.email) }
 
         }
     }

@@ -17,7 +17,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import ru.topbun.auth_confirm.components.Description
@@ -27,9 +30,13 @@ import ru.topbun.core.ui.components.AppOutlinedButton
 import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.components.OtpInput
 import ru.topbun.core.ui.theme.Colors
+import ru.topbun.core.ui.utils.ObserveAsEvents
+import ru.topbun.navigation.RootScreenProvider
 import ru.topbun.navigation.auth.AuthConfirmMode
 import ru.topbun.navigation.auth.AuthConfirmMode.RESET_PASSWORD
 import ru.topbun.navigation.auth.AuthConfirmMode.SIGN_UP
+import ru.topbun.navigation.auth.AuthScreenProvider
+import ru.topbun.navigation.utills.root
 
 data class ConfirmScreen(
     private val email: String,
@@ -40,6 +47,20 @@ data class ConfirmScreen(
     override fun Content() {
         val viewModel: ConfirmViewModel = koinViewModel { parametersOf(email, screenMode) }
         val state by viewModel.state.collectAsState()
+        val navigator = LocalNavigator.currentOrThrow
+
+        ObserveAsEvents(viewModel.events) {
+            when(it){
+                ConfirmEvent.NavigateToDashboard -> {
+                    val screen = ScreenRegistry.get(RootScreenProvider.Dashboard)
+                    navigator.root().replaceAll(screen)
+                }
+                is ConfirmEvent.NavigateToResetPassword -> {
+                    val screen = ScreenRegistry.get(AuthScreenProvider.Reset(it.email))
+                    navigator.replace(screen)
+                }
+            }
+        }
 
         Box(
             modifier = Modifier
