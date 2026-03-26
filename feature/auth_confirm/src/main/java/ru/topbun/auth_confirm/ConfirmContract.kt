@@ -33,5 +33,5 @@ sealed interface ConfirmIntent{
 
 sealed interface ConfirmEvent{
     object NavigateToDashboard: ConfirmEvent
-    object NavigateToResetPassword: ConfirmEvent
+    data class NavigateToResetPassword(val email: String): ConfirmEvent
 }

@@ -28,7 +28,7 @@ data class AuthScreen(
             }
         }
 
-        val registerScreen = rememberScreen(AuthScreenProvider.Confirm("akimov1712@mail.ru", AuthConfirmMode.SIGN_UP))
+        val registerScreen = rememberScreen(AuthScreenProvider.Reset("akimov1712@mail.ru"))
 
         Navigator(registerScreen){
             SlideTransition(it)

@@ -44,6 +44,9 @@ internal class VerificationRepositoryImpl(
             val result = response.body()
             val errorResult = response.errorBody()
             when{
+                result != null && result is VerificationStatusResponse -> {
+                    Result.Success(result.status)
+                }
                 result != null && result is TokenResponse -> {
                     tokenManager.saveToken(result.token)
                     Result.Success(VerificationStatusType.SUCCESS)

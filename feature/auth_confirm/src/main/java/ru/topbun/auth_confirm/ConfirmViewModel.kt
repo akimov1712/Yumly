@@ -6,7 +6,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.core.KoinApplication.Companion.init
 import ru.topbun.core.android.MVI
 import ru.topbun.core.android.SnackbarManager
 import ru.topbun.core.common.error.DataError
@@ -55,7 +54,7 @@ class ConfirmViewModel(
                             snackbarManager.sendMessage("Вы успешно подтвердили аккаунт")
                             ConfirmEvent.NavigateToDashboard
                         }
-                        RESET_PASSWORD -> ConfirmEvent.NavigateToResetPassword
+                        RESET_PASSWORD -> ConfirmEvent.NavigateToResetPassword(email)
                     }
                     _events.send(event)
                 }
