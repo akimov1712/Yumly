@@ -1,5 +1,6 @@
 package ru.topbun.auth_register
 
+import android.R.id.message
 import kotlinx.coroutines.flow.update
 import ru.topbun.core.android.MVI
 import ru.topbun.core.android.SnackbarManager
@@ -7,17 +8,17 @@ import ru.topbun.core.common.error.DataError
 import ru.topbun.core.common.onError
 import ru.topbun.core.common.onSuccess
 import ru.topbun.domain.entity.signUp.SignUpEntity
+import ru.topbun.domain.entity.verification.RequestVerificationEntity
+import ru.topbun.domain.entity.verification.VerificationType
 import ru.topbun.domain.useCases.signUp.SignUpUseCase
+import ru.topbun.domain.useCases.verification.RequestVerificationUseCase
 import ru.topbun.domain.validation.signUp.SignUpValidator
-import ru.topbun.domain.validation.signUp.SignUpValidatorField.CONFIRM_PASSWORD
-import ru.topbun.domain.validation.signUp.SignUpValidatorField.EMAIL
-import ru.topbun.domain.validation.signUp.SignUpValidatorField.PASSWORD
-import ru.topbun.domain.validation.signUp.SignUpValidatorField.USERNAME
 
 internal class RegisterViewModel(
     private val signUpValidator: SignUpValidator,
     private val signUpUseCase: SignUpUseCase,
     private val snackbarManager: SnackbarManager,
+    private val requestVerificationUseCase: RequestVerificationUseCase
 ) : MVI<RegisterIntent, RegisterState, RegisterEvent>(RegisterState()) {
 
     private fun changeUsername(value: String) {
@@ -55,11 +56,16 @@ internal class RegisterViewModel(
         resultValidation.onSuccess {
             _state.update { it.copy(registerIsLoading = true) }
             val result = signUpUseCase(signUp)
-            result.onSuccess {
-                snackbarManager.sendMessage("Пользователь отправлен на подтвержддение")
+            result.onSuccess { user ->
+                val verification = RequestVerificationEntity(user.email, VerificationType.SIGN_UP_CONFIRM)
+                requestVerificationUseCase(verification).onSuccess {
+                    _events.send(RegisterEvent.NavigateToConfirm(user.email))
+                }.onError { _, _ ->
+                    snackbarManager.showMessage("Произошла ошибка. Попробуйте позже")
+                }
             }.onError { error, _ ->
                 val message = when (error) {
-                    DataError.Network.INVALID_DATA -> "Проверьте корректность введееных данных"
+                    DataError.Network.INVALID_DATA -> "Проверьте корректность введеных данных"
                     DataError.Network.EXISTS -> "Пользователь с указанной почтой или паролем уже зарегистрирован"
                     DataError.Network.REQUEST_TIMEOUT -> "Время ожидание превышено. Проверьте интернет соединение или попробуйте позже"
                     DataError.Network.SERIALIZATION -> "При получении данных произошла ошибка"
@@ -67,7 +73,7 @@ internal class RegisterViewModel(
                     DataError.Network.NO_INTERNET -> "Отсутствует интернет соединение"
                     else -> "Произошла ошибка. Попробуйте позже"
                 }
-                snackbarManager.sendMessage(message)
+                snackbarManager.showMessage(message)
             }
             _state.update { it.copy(registerIsLoading = false) }
 
@@ -76,7 +82,7 @@ internal class RegisterViewModel(
                 if (fieldError.isNotEmpty()) {
                     val message = fieldError.firstOrNull()
                     message?.let {
-                        snackbarManager.sendMessage(it.message)
+                        snackbarManager.showMessage(it.message)
                         return@onError
                     }
                 }

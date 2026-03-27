@@ -4,6 +4,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import ru.topbun.domain.useCases.account.GetAccountInfoUseCase
 import ru.topbun.domain.useCases.account.GetProfileUseCase
+import ru.topbun.domain.useCases.account.ResetPasswordUseCase
 import ru.topbun.domain.useCases.account.UpdateAccountInfoUseCase
 import ru.topbun.domain.useCases.config.GetStatusFirstStartUseCase
 import ru.topbun.domain.useCases.config.SetStatusFirstStartUseCase
@@ -58,4 +59,5 @@ val useCaseModule = module {
     singleOf(::UploadFileUseCase)
     singleOf(::ConfirmVerificationUseCase)
     singleOf(::RequestVerificationUseCase)
+    singleOf(::ResetPasswordUseCase)
 }

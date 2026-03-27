@@ -7,7 +7,7 @@ import ru.topbun.domain.entity.account.ResetPasswordEntity
 
 class ResetPasswordValidator: Validator<ResetPasswordEntity> {
 
-    override fun validate(data: ResetPasswordEntity): Result<Unit, ValidatorError> {
+    override fun validate(data: ResetPasswordEntity): Result<Unit, ResetPasswordValidatorError> {
         val error =  when{
             data.password.isBlank() -> ResetPasswordValidatorError.PASSWORD_EMPTY
             data.password.length < 6 -> ResetPasswordValidatorError.PASSWORD_SHORT

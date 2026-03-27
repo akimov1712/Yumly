@@ -27,5 +27,7 @@ internal sealed interface LoginEvent{
 
     data object NavigateToSignUp: LoginEvent
     data object NavigateToResetPassword: LoginEvent
+    data object NavigateToDashboard: LoginEvent
+    data class NavigateToConfirm(val email: String): LoginEvent
 
 }

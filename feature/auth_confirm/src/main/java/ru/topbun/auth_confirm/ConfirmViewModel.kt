@@ -1,6 +1,5 @@
 package ru.topbun.auth_confirm
 
-import android.R.id.message
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -46,12 +45,12 @@ class ConfirmViewModel(
         val result = confirmVerificationUseCase(confirm)
         result.onSuccess {
             when (it) {
-                CODE_EXPIRED -> snackbarManager.sendMessage("Код истек. Запросите новый")
-                CODE_NO_MATCH -> snackbarManager.sendMessage("Коды не совпадают")
+                CODE_EXPIRED -> snackbarManager.showMessage("Код истек. Запросите новый")
+                CODE_NO_MATCH -> snackbarManager.showMessage("Коды не совпадают")
                 else -> {
                     val event = when(screenMode){
                         SIGN_UP -> {
-                            snackbarManager.sendMessage("Вы успешно подтвердили аккаунт")
+                            snackbarManager.showMessage("Вы успешно подтвердили аккаунт")
                             ConfirmEvent.NavigateToDashboard
                         }
                         RESET_PASSWORD -> ConfirmEvent.NavigateToResetPassword(email)
@@ -71,7 +70,7 @@ class ConfirmViewModel(
                 DataError.Network.NO_INTERNET -> "Отсутствует интернет соединение"
                 else -> "Произошла ошибка. Попробуйте позже"
             }
-            snackbarManager.sendMessage(message)
+            snackbarManager.showMessage(message)
         }
 
         _state.update { it.copy(confirmLoading = false) }
@@ -98,7 +97,7 @@ class ConfirmViewModel(
                 DataError.Network.NO_INTERNET -> "Отсутствует интернет соединение"
                 else -> "Произошла ошибка. Попробуйте позже"
             }
-            snackbarManager.sendMessage(message)
+            snackbarManager.showMessage(message)
         }
         _state.update { it.copy(sendAgainLoading = false) }
     }

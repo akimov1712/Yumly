@@ -34,7 +34,7 @@ internal class ResetRequestViewModel(
                 DataError.Network.NO_INTERNET -> "Отсутствует интернет соединение"
                 else -> "Произошла ошибка. Попробуйте позже"
             }
-            snackbarManager.sendMessage(message)
+            snackbarManager.showMessage(message)
         }
         _state.update { it.copy(isLoading = false) }
     }
