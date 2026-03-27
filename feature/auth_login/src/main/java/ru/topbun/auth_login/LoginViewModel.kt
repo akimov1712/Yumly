@@ -1,6 +1,5 @@
 package ru.topbun.auth_login
 
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.update
 import ru.topbun.core.android.MVI
 import ru.topbun.core.android.SnackbarManager
@@ -10,7 +9,6 @@ import ru.topbun.core.common.onSuccess
 import ru.topbun.domain.entity.login.LoginEntity
 import ru.topbun.domain.useCases.login.LoginUseCase
 import ru.topbun.domain.validation.login.LoginValidator
-import ru.topbun.domain.validation.login.LoginValidatorError
 import ru.topbun.domain.validation.login.LoginValidatorError.*
 
 internal class LoginViewModel(
@@ -30,10 +28,10 @@ internal class LoginViewModel(
             _state.update { it.copy(loginIsLoading = true) }
             val result = loginUseCase(login)
             result.onSuccess {
-                snackbarManager.sendMessage("Пользователь авторизован")
+                _events.send(LoginEvent.NavigateToDashboard)
             }.onError { error, _ ->
                 if (error == DataError.Network.NOT_VERIFIED){
-                    snackbarManager.sendMessage("Подтвердите почту")
+                    _events.send(LoginEvent.NavigateToConfirm(login.email))
                 }else {
                     val message = when(error){
                         DataError.Network.NOT_FOUND -> "Пользователь с указанной почтой или паролем не найден"
@@ -44,7 +42,7 @@ internal class LoginViewModel(
                         DataError.Network.INVALID_DATA -> "Проверьте корректность введенных данных"
                         else -> "Произошла ошибка. Попробуйте позже"
                     }
-                    snackbarManager.sendMessage(message)
+                    snackbarManager.showMessage(message)
                 }
             }
             _state.update { it.copy(loginIsLoading = false) }
@@ -53,7 +51,7 @@ internal class LoginViewModel(
                 EMAIL_EMPTY -> "Email пустой"
                 PASSWORD_EMPTY -> "Password пустой"
             }
-            snackbarManager.sendMessage(message)
+            snackbarManager.showMessage(message)
         }
     }
 

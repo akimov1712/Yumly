@@ -38,4 +38,5 @@ internal sealed interface RegisterIntent{
 
 internal sealed interface RegisterEvent{
     object NavigateToLogin: RegisterEvent
+    data class NavigateToConfirm(val email: String): RegisterEvent
 }

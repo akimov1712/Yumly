@@ -13,8 +13,8 @@ import ru.topbun.data.source.remote.dto.account.UserDto
 
 internal interface AccountApi {
 
-    @POST("/v1/account/reset-password")
-    suspend fun resetPassword(@Body body: ResetPasswordRequest): Response
+    @PUT("/v1/account/reset-password")
+    suspend fun resetPassword(@Body body: ResetPasswordRequest): retrofit2.Response<Unit>
 
     @GET("/v1/account/info")
     suspend fun getAccountInfo(): retrofit2.Response<UserDto>

@@ -30,6 +30,7 @@ import ru.topbun.auth_register.components.Title
 import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.utils.ObserveAsEvents
+import ru.topbun.navigation.auth.AuthConfirmMode
 import ru.topbun.navigation.auth.AuthScreenProvider
 
 object RegisterScreen: Screen {
@@ -51,6 +52,11 @@ object RegisterScreen: Screen {
                     } else {
                         navigator.push(screen)
                     }
+                }
+
+                is RegisterEvent.NavigateToConfirm -> {
+                    val screen = ScreenRegistry.get(AuthScreenProvider.Confirm(it.email, AuthConfirmMode.SIGN_UP))
+                    navigator.push(screen)
                 }
             }
         }

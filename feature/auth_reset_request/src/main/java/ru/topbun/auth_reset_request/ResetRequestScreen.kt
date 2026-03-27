@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.viewmodel.koinViewModel
 import ru.topbun.auth_reset_request.components.Description
 import ru.topbun.auth_reset_request.components.FieldEmail
@@ -34,11 +36,13 @@ object ResetRequestScreen: Screen {
     override fun Content() {
         val viewModel: ResetRequestViewModel = koinViewModel()
         val state by viewModel.state.collectAsState()
+        val navigator = LocalNavigator.currentOrThrow
 
         ObserveAsEvents(viewModel.events) {
             when(it){
                 is ResetRequestEvent.NavigateToConfirm -> {
                     val screen = ScreenRegistry.get(AuthScreenProvider.Confirm(it.email, AuthConfirmMode.RESET_PASSWORD))
+                    navigator.push(screen)
                 }
             }
         }

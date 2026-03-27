@@ -17,14 +17,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import ru.topbun.auth_reset.components.Button
 import ru.topbun.auth_reset.components.Description
 import ru.topbun.auth_reset.components.FieldPassword
 import ru.topbun.auth_reset.components.Title
 import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.theme.Colors
+import ru.topbun.core.ui.utils.ObserveAsEvents
+import ru.topbun.navigation.auth.AuthScreenProvider
 
 data class ResetScreen(private val email: String): Screen{
 
@@ -32,6 +38,16 @@ data class ResetScreen(private val email: String): Screen{
     override fun Content() {
         val viewModel: ResetViewModel = koinViewModel { parametersOf(email) }
         val state by viewModel.state.collectAsState()
+        val navigator = LocalNavigator.currentOrThrow
+
+        ObserveAsEvents(viewModel.events) {
+            when(it){
+                ResetEvent.NavigateToLogin -> {
+                    val screen = ScreenRegistry.get(AuthScreenProvider.Login)
+                    navigator.replaceAll(screen)
+                }
+            }
+        }
 
         Box(
             modifier = Modifier
@@ -65,6 +81,11 @@ data class ResetScreen(private val email: String): Screen{
                     onClickShowPassword = { viewModel.sendIntent(ResetIntent.SwitchShowPassword) },
                     onChangeValue = { viewModel.sendIntent(ResetIntent.ChangeConfirmPassword(it)) }
                 )
+                Height(64.dp)
+                Button(
+                    enabled = state.resetButtonEnabled,
+                    isLoading = state.resetLoading
+                ){ viewModel.sendIntent(ResetIntent.ClickReset) }
             }
         }
     }

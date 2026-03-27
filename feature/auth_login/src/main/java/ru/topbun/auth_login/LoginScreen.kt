@@ -31,7 +31,10 @@ import ru.topbun.auth_login.components.Title
 import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.utils.ObserveAsEvents
+import ru.topbun.navigation.RootScreenProvider
+import ru.topbun.navigation.auth.AuthConfirmMode
 import ru.topbun.navigation.auth.AuthScreenProvider
+import ru.topbun.navigation.auth.AuthScreenProvider.*
 
 object LoginScreen : Screen {
 
@@ -50,6 +53,15 @@ object LoginScreen : Screen {
                 LoginEvent.NavigateToResetPassword -> {
                     val screen = ScreenRegistry.get(AuthScreenProvider.ResetRequest)
                     navigator.push(screen)
+                }
+                is LoginEvent.NavigateToConfirm -> {
+                    val screen = ScreenRegistry.get(Confirm(it.email, AuthConfirmMode.SIGN_UP))
+                    navigator.push(screen)
+                }
+
+                LoginEvent.NavigateToDashboard -> {
+                    val screen = ScreenRegistry.get(RootScreenProvider.Dashboard)
+                    navigator.replaceAll(screen)
                 }
             }
         }
