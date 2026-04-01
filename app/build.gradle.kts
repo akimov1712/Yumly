@@ -86,5 +86,10 @@ dependencies {
     implementation(project(":feature:auth_reset"))
     implementation(project(":feature:splash"))
     implementation(project(":feature:dashboard"))
+    implementation(project(":feature:home"))
+    implementation(project(":feature:upload"))
+    implementation(project(":feature:assistant"))
+    implementation(project(":feature:notification"))
+    implementation(project(":feature:profile"))
 
 }

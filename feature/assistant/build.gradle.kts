@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.topbun.dashboard"
+    namespace = "ru.topbun.assistant"
     compileSdk {
         version = release(libs.versions.compileSdk.get().toInt())
     }
@@ -44,7 +44,6 @@ dependencies {
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.tab.navigator)
     implementation(libs.voyager.koin)
-    implementation(libs.voyager.transition)
 
     // Koin
     implementation(libs.koin.core)
