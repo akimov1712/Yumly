@@ -2,9 +2,11 @@ package ru.topbun.yumly
 
 import android.app.Application
 import cafe.adriel.voyager.core.registry.ScreenRegistry
+import cafe.adriel.voyager.core.screen.Screen
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import ru.topbun.assistant.AssistantScreen
 import ru.topbun.auth.AuthScreen
 import ru.topbun.auth_confirm.ConfirmScreen
 import ru.topbun.auth_login.LoginScreen
@@ -14,8 +16,13 @@ import ru.topbun.auth_reset_request.ResetRequestScreen
 import ru.topbun.auth_welcome.WelcomeScreen
 import ru.topbun.dashboard.DashboardScreen
 import ru.topbun.feature.splash.SplashScreen
+import ru.topbun.home.HomeScreen
+import ru.topbun.navigation.DashboardScreenProvider
 import ru.topbun.navigation.RootScreenProvider
 import ru.topbun.navigation.auth.AuthScreenProvider
+import ru.topbun.notification.NotificationScreen
+import ru.topbun.profile.ProfileScreen
+import ru.topbun.upload.UploadScreen
 import ru.topbun.yumly.di.appModule
 
 class App : Application() {
@@ -48,6 +55,12 @@ class App : Application() {
             register<AuthScreenProvider.ResetRequest> { ResetRequestScreen }
             register<AuthScreenProvider.Confirm> { ConfirmScreen(it.email, it.screenMode) }
             register<AuthScreenProvider.Reset>{ ResetScreen(it.email) }
+
+            register<DashboardScreenProvider.Home> { HomeScreen as Screen }
+            register<DashboardScreenProvider.Upload> { UploadScreen as Screen }
+            register<DashboardScreenProvider.Assistant> { AssistantScreen as Screen }
+            register<DashboardScreenProvider.Notification> { NotificationScreen as Screen }
+            register<DashboardScreenProvider.Profile> { ProfileScreen as Screen }
 
         }
     }
