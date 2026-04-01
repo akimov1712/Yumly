@@ -14,6 +14,7 @@ object Colors {
     val FORM = Color(0xffF4F5F7)
 
     val WHITE = Color(0xffffffff)
+    val BACKGROUND = Color(0xffF4F5F7)
     val BLACK = Color(0xff000000)
 
 }
