@@ -14,9 +14,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import ru.topbun.auth_register.RegisterIntent
 import ru.topbun.core.ui.R
-import ru.topbun.core.ui.components.AppTextField
+import ru.topbun.core.ui.components.AppOutlinedTextField
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.utils.noRippleClickable
 
@@ -30,7 +29,7 @@ internal fun FieldPassword(
     onClickShowPassword: () -> Unit,
     onChangeValue: (String) -> Unit,
 ) {
-    AppTextField(
+    AppOutlinedTextField(
         text = value,
         onValueChange = onChangeValue,
         onFocused = onFocused,

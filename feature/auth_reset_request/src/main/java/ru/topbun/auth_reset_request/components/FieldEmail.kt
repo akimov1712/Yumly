@@ -9,14 +9,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import ru.topbun.core.ui.R
-import ru.topbun.core.ui.components.AppTextField
+import ru.topbun.core.ui.components.AppOutlinedTextField
 
 @Composable
 internal fun FieldEmail(
     value: String,
     onValueChange: (String) -> Unit
 ) {
-    AppTextField(
+    AppOutlinedTextField(
         text = value,
         onValueChange = onValueChange,
         placeholder = "Email",

@@ -9,6 +9,7 @@ import ru.topbun.auth_reset_request.di.resetRequestModule
 import ru.topbun.auth_welcome.di.welcomeModule
 import ru.topbun.core.android.snackbarModule
 import ru.topbun.feature.splash.di.splashModule
+import ru.topbun.home.di.homeModule
 
 val featureModule = module {
     includes(
@@ -19,6 +20,7 @@ val featureModule = module {
         registerModule,
         resetRequestModule,
         confirmModule,
-        resetModule
+        resetModule,
+        homeModule
     )
 }

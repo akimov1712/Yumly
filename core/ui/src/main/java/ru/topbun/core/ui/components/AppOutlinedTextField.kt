@@ -7,12 +7,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -20,7 +17,7 @@ import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
 
 @Composable
-fun AppTextField(
+fun AppOutlinedTextField(
     text: String,
     placeholder: String,
     modifier: Modifier = Modifier,
@@ -33,7 +30,7 @@ fun AppTextField(
     onFocused: () -> Unit = {},
     onValueChange: (String) -> Unit
 ) {
-    TextField(
+    OutlinedTextField(
         modifier = modifier.onFocusChanged{ if (it.isFocused){ onFocused() } },
         value = text,
         onValueChange = onValueChange,
@@ -80,19 +77,15 @@ fun AppTextField(
         },
         textStyle = Typography.Placeholder,
         shape = RoundedCornerShape(32.dp),
-        colors = TextFieldDefaults.colors().copy(
+        colors = OutlinedTextFieldDefaults.colors().copy(
             cursorColor = Colors.PRIMARY,
             focusedTextColor = Colors.MAIN_TEXT,
             unfocusedTextColor = Colors.BLUE_TEXT,
             disabledTextColor = Colors.BLUE_TEXT,
             errorTextColor = Colors.BLUE_TEXT,
-            focusedContainerColor = Colors.FORM,
-            unfocusedContainerColor = Colors.FORM,
-            disabledContainerColor = Colors.FORM,
-            errorContainerColor = Colors.FORM,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            errorIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Colors.PRIMARY,
+            unfocusedIndicatorColor = Colors.OUTLINE,
+            errorIndicatorColor = Colors.ERROR,
         ),
         keyboardOptions = keyboardOptions,
     )
