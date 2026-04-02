@@ -13,19 +13,29 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
@@ -36,6 +46,7 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
+import ru.topbun.core.ui.utils.LocalBottomBarPadding
 import ru.topbun.core.ui.utils.StatusBarColor
 import ru.topbun.core.ui.utils.changeStatusBarColor
 import ru.topbun.core.ui.utils.noRippleClickable
@@ -54,22 +65,40 @@ object DashboardScreen: Screen{
             DashboardScreenProvider.Assistant,
             DashboardScreenProvider.Notification,
             DashboardScreenProvider.Profile,
-        ).map { ScreenRegistry.get(it) as Tab}
+        ).map { ScreenRegistry.get(it) as Tab }
 
-        TabNavigator(tabs.first()){
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .background(Colors.BACKGROUND)
+        TabNavigator(tabs.first()) {
+
+            val systemBottom = WindowInsets.systemBars
+                .asPaddingValues()
+                .calculateBottomPadding()
+
+            val bottomPadding = 90.dp + systemBottom + 24.dp
+
+            CompositionLocalProvider(
+                LocalBottomBarPadding provides bottomPadding
             ) {
-                CurrentTabTransition(it, tabs)
-                BottomBar(tabs)
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Colors.BACKGROUND)
+                ) {
+                    CurrentTabTransition(it, tabs)
+
+                    BottomBar(
+                        tabs = tabs,
+                    )
+                }
             }
         }
     }
 
     @Composable
-    private fun BoxScope.BottomBar(tabs: List<Tab>) {
+    private fun BoxScope.BottomBar(
+        tabs: List<Tab>,
+    ) {
         val tabNavigator = LocalTabNavigator.current
+
         Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -82,9 +111,10 @@ object DashboardScreen: Screen{
         ) {
             tabs.forEach { tab ->
                 val title = tab.options.title
-                val icon = tab.options.icon ?: throw RuntimeException("Tab icon not exists")
+                val icon = tab.options.icon!!
                 val selected = tabNavigator.current == tab
-                BottomBarItem(title, icon, selected){
+
+                BottomBarItem(title, icon, selected) {
                     tabNavigator.current = tab
                 }
             }
