@@ -41,6 +41,9 @@ android {
 
 dependencies {
 
+
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
     implementation(libs.accompanist.systemuicontroller)
 
     implementation(libs.androidx.core.ktx)

@@ -1,5 +1,6 @@
 package ru.topbun.dashboard
 
+import android.R
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -33,10 +34,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
@@ -104,6 +108,15 @@ object DashboardScreen: Screen{
                 .align(Alignment.BottomCenter)
                 .systemBarsPadding()
                 .padding(horizontal = 12.dp, vertical = 16.dp)
+                .dropShadow(
+                    shape = RoundedCornerShape(44.dp),
+                    shadow = Shadow(
+                        radius = 4.dp,
+                        spread = 0.dp,
+                        alpha = 0.1f,
+                        offset = DpOffset(x = 0.dp, y = 4.dp)
+                    )
+                )
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(44.dp))
                 .background(Colors.WHITE)

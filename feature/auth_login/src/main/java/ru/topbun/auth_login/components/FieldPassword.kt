@@ -16,7 +16,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import ru.topbun.auth_login.LoginIntent
 import ru.topbun.core.ui.R
-import ru.topbun.core.ui.components.AppTextField
+import ru.topbun.core.ui.components.AppOutlinedTextField
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.utils.noRippleClickable
 
@@ -26,7 +26,7 @@ internal fun FieldPassword(
     isShowPassword: Boolean,
     onSendIntent: (LoginIntent) -> Unit
 ) {
-    AppTextField(
+    AppOutlinedTextField(
         text = value,
         onValueChange = { onSendIntent(LoginIntent.ChangePassword(it)) },
         placeholder = "Password",
