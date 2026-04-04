@@ -11,11 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,28 +29,46 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import ru.topbun.core.ui.utils.formatCookingTime
+import ru.topbun.core.ui.utils.formatIngredientCount
+import ru.topbun.core.ui.utils.formatStepCount
 import ru.topbun.core.ui.R
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
 import ru.topbun.core.ui.utils.LocalBottomBarPadding
+import ru.topbun.core.ui.utils.formatRecipeDifficulty
+import ru.topbun.domain.entity.recipe.RecipeDifficulty.Easy
+import ru.topbun.domain.entity.recipe.RecipeDifficulty.Hard
+import ru.topbun.domain.entity.recipe.RecipeDifficulty.Normal
+import ru.topbun.domain.entity.recipe.RecipeEntity
 
 @Composable
-fun ColumnScope.RecipeList() {
+fun ColumnScope.RecipeList(
+    recipes: List<RecipeEntity>,
+    state: LazyListState = remember { LazyListState() },
+) {
     LazyColumn(
+        state = state,
         modifier = Modifier
             .fillMaxWidth()
             .weight(1f),
         verticalArrangement = Arrangement.spacedBy(20.dp),
-        contentPadding = PaddingValues(start = 12.dp, end = 12.dp, top = 15.dp, bottom = LocalBottomBarPadding.current)
+        contentPadding = PaddingValues(
+            start = 12.dp,
+            end = 12.dp,
+            top = 15.dp,
+            bottom = LocalBottomBarPadding.current
+        )
     ) {
-        items(10){
-            RecipeItem()
+        items(items = recipes, key = { it.id }) {
+            RecipeItem(it)
         }
     }
 }
 
 @Composable
-private fun RecipeItem(){
+private fun RecipeItem(recipe: RecipeEntity) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -56,38 +77,34 @@ private fun RecipeItem(){
             .padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        Preview("https://images.gastronom.ru/LUCWGGJ_W0cOOP-8i2Zty8b3kU3HRVBY10up-ARkRqs/pr:article-content-image/g:ce/rs:auto:0:0:0/L2Ntcy9hbGwtaW1hZ2VzLzI1Zjg1NmNhLTc3YzAtNGFhMS04Y2JjLWYzMTNmZjAwODE0Zi5qcGc.webp")
-        Information()
+        Preview(recipe.smallImage)
+        Information(recipe)
     }
 }
 
 @Composable
-private fun Information() {
+private fun Information(recipe: RecipeEntity) {
     Column(
         Modifier.padding(vertical = 6.dp)
-    ){
-        Title()
+    ) {
+        Title(recipe)
         Height(10.dp)
-        ChipList()
+        ChipList(recipe)
     }
 }
 
 @Composable
-private fun Title() {
+private fun Title(recipe: RecipeEntity) {
     Text(
-        text = buildAnnotatedString {
-            append("Pancake")
-            withStyle(SpanStyle(color = Colors.PRIMARY)){
-                append(" (Easy)")
-            }
-        },
+        text = recipe.title,
         style = Typography.H2,
+        lineHeight = 22.sp,
         color = Colors.BLUE_TEXT
     )
 }
 
 @Composable
-private fun ChipList() {
+private fun ChipList(recipe: RecipeEntity) {
     Column(
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
@@ -97,14 +114,16 @@ private fun ChipList() {
         ) {
             Chip(
                 icon = painterResource(R.drawable.ic_calories),
-                title = "120 kcal"
+                title = "${recipe.kcal} ккал"
             )
-            Box(Modifier
-                .size(4.dp)
-                .background(Colors.SECONDARY_TEXT, CircleShape))
+            Box(
+                Modifier
+                    .size(4.dp)
+                    .background(Colors.SECONDARY_TEXT, CircleShape)
+            )
             Chip(
                 icon = painterResource(R.drawable.ic_time),
-                title = "20 min"
+                title = formatCookingTime(recipe.cookingTime)
             )
         }
         Row(
@@ -113,14 +132,16 @@ private fun ChipList() {
         ) {
             Chip(
                 icon = painterResource(R.drawable.ic_ingredients),
-                title = "5 Ingredients"
+                title = formatIngredientCount(recipe.ingredients.size)
             )
-            Box(Modifier
-                .size(4.dp)
-                .background(Colors.SECONDARY_TEXT, CircleShape))
+            Box(
+                Modifier
+                    .size(4.dp)
+                    .background(Colors.SECONDARY_TEXT, CircleShape)
+            )
             Chip(
                 icon = painterResource(R.drawable.ic_steps),
-                title = "7 Steps"
+                title = formatStepCount(recipe.steps.size)
             )
         }
     }
@@ -150,13 +171,14 @@ private fun Chip(
 }
 
 @Composable
-private fun Preview(url: String) {
+private fun Preview(url: String?) {
     AppAsyncImage(
         url = url,
         modifier = Modifier
             .size(100.dp)
-            .clip(RoundedCornerShape(24.dp)),
-        contentScale = ContentScale.Crop
+            .clip(RoundedCornerShape(24.dp))
+            .background(Colors.FORM),
+        contentScale = ContentScale.Crop,
     )
 }
 

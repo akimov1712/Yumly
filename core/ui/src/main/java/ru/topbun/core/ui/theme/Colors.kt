@@ -12,9 +12,12 @@ object Colors {
     val OUTLINE = Color(0xffD0DBEA)
     val ERROR = Color(0xffCC1F22)
     val FORM = Color(0xffF4F5F7)
+    val BACKGROUND = Color(0xffF4F5F7)
 
     val WHITE = Color(0xffffffff)
-    val BACKGROUND = Color(0xffF4F5F7)
     val BLACK = Color(0xff000000)
+    val GREEN = Color(0xff1FCC79)
+    val ORANGE = Color(0xffEABB21)
+    val RED = Color(0xffEF2626)
 
 }
