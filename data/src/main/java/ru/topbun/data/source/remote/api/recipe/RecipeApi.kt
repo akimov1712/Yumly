@@ -7,6 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import ru.topbun.data.source.remote.dto.recipe.RecipeDto
+import ru.topbun.data.source.remote.dto.recipe.TagRecipeDto
 import ru.topbun.data.source.remote.dto.recipe.addRecipe.AddRecipeRequest
 import ru.topbun.data.source.remote.dto.recipe.getRecipe.GetRecipeResponse
 import ru.topbun.data.source.remote.dto.recipe.getRecipe.GetRecipeRequest
@@ -27,5 +28,8 @@ internal interface RecipeApi {
 
     @DELETE("/v1/recipe/{id}")
     suspend fun deleteRecipe(@Path("id") recipeId: Int): okhttp3.Response
+
+    @GET("/v1/recipe/tags")
+    suspend fun getTags(): Response<List<TagRecipeDto>>
 
 }

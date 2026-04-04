@@ -87,6 +87,7 @@ dependencies {
     implementation(project(":feature:splash"))
     implementation(project(":feature:dashboard"))
     implementation(project(":feature:home"))
+    implementation(project(":feature:home_filter"))
     implementation(project(":feature:upload"))
     implementation(project(":feature:assistant"))
     implementation(project(":feature:notification"))

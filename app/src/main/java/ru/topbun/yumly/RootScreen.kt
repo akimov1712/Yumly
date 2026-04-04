@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -16,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.ScaleTransition
 import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
 import ru.topbun.core.android.SnackbarManager
 import ru.topbun.core.ui.components.AppSnackbarHost
 import ru.topbun.core.ui.theme.Colors

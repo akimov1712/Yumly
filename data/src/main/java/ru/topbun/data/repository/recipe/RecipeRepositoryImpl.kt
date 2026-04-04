@@ -13,6 +13,7 @@ import ru.topbun.data.source.remote.dto.recipe.getRecipe.toRequest
 import ru.topbun.domain.entity.recipe.RecipeEntity
 import ru.topbun.domain.entity.recipe.addRecipe.AddRecipeEntity
 import ru.topbun.domain.entity.recipe.getRecipe.GetRecipeEntity
+import ru.topbun.domain.entity.recipe.tag.TagRecipeEntity
 import ru.topbun.domain.repository.recipe.RecipeRepository
 
 internal class RecipeRepositoryImpl(
@@ -105,6 +106,17 @@ internal class RecipeRepositoryImpl(
                     else -> DataError.Network.SERVER_ERROR
                 }
                 Result.Error(error)
+            }
+        }
+
+    override suspend fun getTags(): Result<List<TagRecipeEntity>, DataError> =
+        context.exceptionWrapper {
+            val response = api.getTags()
+            val tags = response.body()
+            if (response.isSuccessful && tags != null){
+                Result.Success(tags.map { it.toEntity() })
+            } else{
+                Result.Error(DataError.Network.SERVER_ERROR)
             }
         }
 
