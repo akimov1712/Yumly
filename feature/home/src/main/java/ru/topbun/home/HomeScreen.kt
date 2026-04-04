@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -15,10 +14,11 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.koin.compose.viewmodel.koinViewModel
 import ru.topbun.core.ui.components.Height
+import ru.topbun.core.ui.components.RecipeList
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.home.components.Header
-import ru.topbun.core.ui.components.RecipeList
 import ru.topbun.home.components.SearchTypeBar
+import ru.topbun.home_filter.HomeFilterDialog
 
 object HomeScreen: Tab {
 
@@ -32,6 +32,8 @@ object HomeScreen: Tab {
     override fun Content() {
         val viewModel: HomeViewModel = koinViewModel()
         val state by viewModel.state.collectAsState()
+
+        HomeFilterDialog {  }
 
         Column(
             modifier = Modifier.fillMaxSize()

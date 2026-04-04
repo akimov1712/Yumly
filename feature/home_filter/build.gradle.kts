@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.topbun.home"
+    namespace = "ru.topbun.home_filter"
     compileSdk {
         version = release(libs.versions.compileSdk.get().toInt())
     }
@@ -65,5 +65,4 @@ dependencies {
     implementation(project(":core:android"))
     implementation(project(":domain"))
     implementation(project(":navigation"))
-    implementation(project(":feature:home_filter"))
 }

@@ -10,6 +10,7 @@ import ru.topbun.auth_welcome.di.welcomeModule
 import ru.topbun.core.android.snackbarModule
 import ru.topbun.feature.splash.di.splashModule
 import ru.topbun.home.di.homeModule
+import ru.topbun.home_filter.di.homeFilterModule
 
 val featureModule = module {
     includes(
@@ -21,6 +22,7 @@ val featureModule = module {
         resetRequestModule,
         confirmModule,
         resetModule,
-        homeModule
+        homeModule,
+        homeFilterModule
     )
 }
