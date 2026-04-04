@@ -1,11 +1,14 @@
 package ru.topbun.home.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,11 +31,15 @@ import ru.topbun.home.HomeState.SearchType.Subscribers
 internal fun SearchTypeBar(
     types: List<HomeState.SearchType>,
     selectedIndex: Int,
+    isVisible: Boolean,
     onChangeType: (index: Int) -> Unit
 ) {
+    val height = if (isVisible) Modifier.wrapContentHeight() else Modifier.height(0.dp)
     Row(
         modifier = Modifier.padding(horizontal = 12.dp)
             .fillMaxWidth()
+            .animateContentSize()
+            .then(height)
             .clip(RoundedCornerShape(44.dp))
             .background(Colors.WHITE)
             .padding(5.dp),

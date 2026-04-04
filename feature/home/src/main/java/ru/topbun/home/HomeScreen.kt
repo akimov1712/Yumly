@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,10 +42,14 @@ object HomeScreen: Tab {
             Height(10.dp)
             SearchTypeBar(
                 types = state.searchTypeList,
-                selectedIndex = state.selectedSearchTypeIndex
+                selectedIndex = state.selectedSearchTypeIndex,
+                isVisible = state.searchTypeVisible
             ) { viewModel.sendIntent(HomeIntent.ChangeSearchType(it)) }
             Height(5.dp)
-            RecipeList()
+            RecipeList(
+                recipes = state.recipes,
+                state = state.recipeListState
+            )
         }
     }
 

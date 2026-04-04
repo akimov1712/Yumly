@@ -19,7 +19,7 @@ import coil3.request.crossfade
 
 @Composable
 fun AppAsyncImage(
-    url: String,
+    url: String?,
     contentDescription: String? = null,
     modifier: Modifier = Modifier,
     placeholder: Painter? = null,
