@@ -21,14 +21,16 @@ internal class HomeFilterViewModel(
     private var loadCategoryJob: Job? = null
 
     private fun changeExpandedCategoryList() = _state.update { it.copy(isExpanded = !_state.value.isExpanded) }
+    private fun changeDuration(progress: Float) = _state.update { it.copy(durationProgress = progress) }
+    private fun changeLimitCalories(minProgress: Float, maxProgress: Float){ _state.update { it.copy(minCaloriesProgress = minProgress, maxCaloriesProgress = maxProgress) } }
+    private fun changeMaxCalories(progress: Float) = _state.update { it.copy(maxCaloriesProgress = progress) }
+
     private fun changeSelectedCategory(id: Int): Unit = with(_state.value){
         val newSelectedList = selectedCategoriesIds.toMutableList().apply { if (selectedCategoriesIds.contains(id)) remove(id) else add(id) }
         _state.update {
             it.copy(selectedCategoriesIds = newSelectedList,)
         }
     }
-
-    private fun changeDuration(progress: Float) = _state.update { it.copy(durationProgress = progress) }
 
     private fun loadCategories(): Unit = with(_state){
         loadCategoryJob?.cancel()
@@ -58,6 +60,7 @@ internal class HomeFilterViewModel(
             is HomeFilterIntent.ChangeSelectedCategory -> changeSelectedCategory(intent.id)
             HomeFilterIntent.LoadCategories -> loadCategories()
             is HomeFilterIntent.ChangeDuration -> changeDuration(intent.progress)
+            is HomeFilterIntent.ChangeLimitCalories -> changeLimitCalories(intent.minProgress, intent.maxProgress)
         }
     }
 

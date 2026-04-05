@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,13 +26,55 @@ import ru.topbun.core.ui.theme.Typography
 import ru.topbun.home_filter.HomeFilterIntent
 import ru.topbun.home_filter.HomeFilterViewModel
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DurationSection() = Column {
     val viewModel: HomeFilterViewModel = koinViewModel()
     val state by viewModel.state.collectAsState()
 
+    Title()
+    Height(16.dp)
+    RowValues(state.durationFromProgress)
+    AppSlider(state.durationProgress){
+        viewModel.sendIntent(HomeFilterIntent.ChangeDuration(it))
+    }
+}
+
+@Composable
+private fun RowValues(duration: Int) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp),
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = when {
+                duration <= 10 -> "<10"
+                duration >= 60 -> ">60"
+                else -> duration.toString()
+            },
+            color = Colors.PRIMARY,
+            style = Typography.H3,
+            textAlign = TextAlign.Center
+        )
+
+        Text(
+            modifier = Modifier.align(Alignment.CenterStart),
+            text = "<10",
+            color = if (duration > 10) Colors.PRIMARY else Colors.SECONDARY_TEXT,
+            style = Typography.H3
+        )
+        Text(
+            modifier = Modifier.align(Alignment.CenterEnd),
+            text = ">60",
+            color = if (duration < 60) Colors.SECONDARY_TEXT else Colors.PRIMARY,
+            style = Typography.H3
+        )
+    }
+}
+
+@Composable
+private fun Title() {
     Text(
         text = buildAnnotatedString {
             append("Макс. время приготовления ")
@@ -44,7 +85,7 @@ internal fun DurationSection() = Column {
                     fontWeight = FontWeight.Medium,
                     fontSize = 17.sp,
                 )
-            ){
+            ) {
                 append("(в минутах)")
             }
         },
@@ -52,39 +93,5 @@ internal fun DurationSection() = Column {
         color = Colors.MAIN_TEXT,
         style = Typography.H2
     )
-    Height(16.dp)
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp),
-    ){
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = when{
-                state.progressToDuration <= 10 -> "<10"
-                state.progressToDuration >= 60 -> ">60"
-                else -> state.progressToDuration.toString()
-            },
-            color = Colors.PRIMARY,
-            style = Typography.H3,
-            textAlign = TextAlign.Center
-        )
-
-        Text(
-            modifier = Modifier.align(Alignment.CenterStart),
-            text = "<10",
-            color = if (state.progressToDuration > 10) Colors.PRIMARY else Colors.SECONDARY_TEXT,
-            style = Typography.H3
-        )
-        Text(
-            modifier = Modifier.align(Alignment.CenterEnd),
-            text = ">60",
-            color = if (state.progressToDuration < 60) Colors.SECONDARY_TEXT else Colors.PRIMARY,
-            style = Typography.H3
-        )
-    }
-    AppSlider(state.durationProgress){
-        viewModel.sendIntent(HomeFilterIntent.ChangeDuration(it))
-    }
 }
 
