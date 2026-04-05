@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import ru.topbun.core.ui.components.BottomDialogWrapper
 import ru.topbun.core.ui.components.Height
 import ru.topbun.home_filter.components.CategorySection
+import ru.topbun.home_filter.components.DurationSection
 import ru.topbun.home_filter.components.Title
 
 
@@ -41,6 +42,8 @@ internal fun FilterContent() {
             .padding(top = 20.dp, bottom = 32.dp)
     ) {
         CategorySection()
+        Height(20.dp)
+        DurationSection()
     }
 }
 
