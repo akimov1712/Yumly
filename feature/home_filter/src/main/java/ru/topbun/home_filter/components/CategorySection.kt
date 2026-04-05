@@ -1,12 +1,10 @@
 package ru.topbun.home_filter.components
 
-import android.R.attr.text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -27,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import org.koin.compose.viewmodel.koinViewModel
 import ru.topbun.core.ui.components.AppButton
 import ru.topbun.core.ui.components.AppTextButton
@@ -83,11 +80,13 @@ private fun CategoryError(onClick: () -> Unit) {
 
 @Composable
 private fun CategoryLoading() {
-    CircularProgressIndicator(
-        modifier = Modifier.size(24.dp),
-        strokeWidth = 2.5.dp,
-        trackColor = Colors.PRIMARY
-    )
+    Box(Modifier.fillMaxWidth(), Alignment.Center){
+        CircularProgressIndicator(
+            modifier = Modifier.size(24.dp),
+            strokeWidth = 2.5.dp,
+            trackColor = Colors.PRIMARY
+        )
+    }
 }
 
 @Composable
@@ -157,7 +156,7 @@ private fun CategoryItem(
 ) {
     val bgColor = if (isSelected) Colors.PRIMARY else Color.Transparent
     val borderColor = if (isSelected) Colors.PRIMARY else Colors.OUTLINE
-    val textColor = if (isSelected) Colors.WHITE else Colors.OUTLINE
+    val textColor = if (isSelected) Colors.WHITE else Colors.SECONDARY_TEXT
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(32.dp))

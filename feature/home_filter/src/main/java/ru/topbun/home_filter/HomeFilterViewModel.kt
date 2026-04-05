@@ -20,13 +20,15 @@ internal class HomeFilterViewModel(
 
     private var loadCategoryJob: Job? = null
 
-    fun changeExpandedCategoryList() = _state.update { it.copy(isExpanded = !_state.value.isExpanded) }
-    fun changeSelectedCategory(id: Int): Unit = with(_state.value){
+    private fun changeExpandedCategoryList() = _state.update { it.copy(isExpanded = !_state.value.isExpanded) }
+    private fun changeSelectedCategory(id: Int): Unit = with(_state.value){
         val newSelectedList = selectedCategoriesIds.toMutableList().apply { if (selectedCategoriesIds.contains(id)) remove(id) else add(id) }
         _state.update {
             it.copy(selectedCategoriesIds = newSelectedList,)
         }
     }
+
+    private fun changeDuration(progress: Float) = _state.update { it.copy(durationProgress = progress) }
 
     private fun loadCategories(): Unit = with(_state){
         loadCategoryJob?.cancel()
@@ -55,6 +57,7 @@ internal class HomeFilterViewModel(
             HomeFilterIntent.ChangeExpandedCategoryList -> changeExpandedCategoryList()
             is HomeFilterIntent.ChangeSelectedCategory -> changeSelectedCategory(intent.id)
             HomeFilterIntent.LoadCategories -> loadCategories()
+            is HomeFilterIntent.ChangeDuration -> changeDuration(intent.progress)
         }
     }
 
