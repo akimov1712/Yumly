@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.koin.compose.viewmodel.koinViewModel
+import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.components.RecipeList
 import ru.topbun.core.ui.theme.Colors
@@ -25,7 +26,7 @@ object HomeScreen: Tab {
     override val options @Composable get() = TabOptions(
         index = 0U,
         title = "Home",
-        icon = painterResource(ru.topbun.core.ui.R.drawable.ic_tabs_home)
+        icon = painterResource(R.drawable.ic_tabs_home)
     )
 
     @Composable
@@ -33,14 +34,16 @@ object HomeScreen: Tab {
         val viewModel: HomeViewModel = koinViewModel()
         val state by viewModel.state.collectAsState()
 
-        HomeFilterDialog {  }
-
         Column(
             modifier = Modifier.fillMaxSize()
                 .background(Colors.BACKGROUND)
                 .statusBarsPadding()
         ) {
-            Header(state.search) { viewModel.sendIntent(HomeIntent.ChangeSearch(it)) }
+            Header(
+                text = state.search,
+                isFilterChanged = state.isFilterChanged,
+                onClickFilter = { viewModel.sendIntent(HomeIntent.ChangeShowFilterDialog(true)) }
+            ) { viewModel.sendIntent(HomeIntent.ChangeSearch(it)) }
             Height(10.dp)
             SearchTypeBar(
                 types = state.searchTypeList,
@@ -53,6 +56,18 @@ object HomeScreen: Tab {
                 state = state.recipeListState
             )
         }
+
+        if (state.showFilterDialog){
+            HomeFilterDialog(
+                filter = state.recipeFilters,
+                onApplyFilters = {
+                    viewModel.sendIntent(HomeIntent.ChangeRecipeFilter(it))
+                    viewModel.sendIntent(HomeIntent.ChangeShowFilterDialog(false))
+                },
+                onDismissRequest = { viewModel.sendIntent(HomeIntent.ChangeShowFilterDialog(false)) }
+            )
+        }
+
     }
 
 

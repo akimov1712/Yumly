@@ -23,6 +23,8 @@ internal class HomeViewModel(
 
     private fun changeSearch(value: String){ _state.update { it.copy(search = value) } }
     private fun changeSearchType(index: Int){ _state.update { it.copy(selectedSearchTypeIndex = index) } }
+    private fun changeShowFilterDialog(value: Boolean){ _state.update { it.copy(showFilterDialog = value) } }
+    private fun changeRecipeFilter(filters: GetRecipeFilterEntity){ _state.update { it.copy(recipeFilters = filters) } }
 
     private fun loadRecipes() = with(state.value){
         viewModelScope.launch{
@@ -55,6 +57,8 @@ internal class HomeViewModel(
         when(intent){
             is HomeIntent.ChangeSearch -> changeSearch(intent.value)
             is HomeIntent.ChangeSearchType -> changeSearchType(intent.index)
+            is HomeIntent.ChangeShowFilterDialog -> changeShowFilterDialog(intent.value)
+            is HomeIntent.ChangeRecipeFilter -> changeRecipeFilter(intent.filters)
         }
     }
 

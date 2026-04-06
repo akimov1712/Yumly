@@ -11,6 +11,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,6 +24,8 @@ fun AppButton(
     modifier: Modifier,
     enabled: Boolean = true,
     isLoading: Boolean = false,
+    containerColor: Color = Colors.PRIMARY,
+    contentColor: Color = Colors.WHITE,
     onClick: () -> Unit
 ) {
     Button(
@@ -31,22 +34,22 @@ fun AppButton(
         onClick = onClick,
         enabled = enabled && !isLoading,
         colors = ButtonColors(
-            containerColor = Colors.PRIMARY,
-            contentColor = Colors.WHITE,
-            disabledContainerColor = Colors.PRIMARY.copy(0.7f),
-            disabledContentColor = Colors.WHITE
+            containerColor = containerColor,
+            contentColor = contentColor,
+            disabledContainerColor = containerColor.copy(0.7f),
+            disabledContentColor = contentColor
         ),
     ) {
         if (isLoading){
             CircularProgressIndicator(
                 modifier = Modifier.size(20.dp),
-                color = Colors.WHITE,
+                color = contentColor,
                 strokeWidth = 2.5.dp
             )
         } else {
             Text(
                 text = text,
-                color = Colors.WHITE,
+                color = contentColor,
                 fontFamily = Fonts.INTER,
                 fontWeight = FontWeight.Bold,
                 fontSize = 15.sp,
