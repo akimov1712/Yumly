@@ -18,14 +18,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.koin.compose.viewmodel.koinViewModel
 import ru.topbun.core.ui.components.AppButton
 import ru.topbun.core.ui.components.AppTextButton
 import ru.topbun.core.ui.components.Height
@@ -34,14 +31,17 @@ import ru.topbun.core.ui.theme.Typography
 import ru.topbun.core.ui.utils.rippleClickable
 import ru.topbun.domain.entity.recipe.tag.TagRecipeEntity
 import ru.topbun.home_filter.HomeFilterIntent
+import ru.topbun.home_filter.HomeFilterState
 import ru.topbun.home_filter.HomeFilterState.CategoryUiState.*
-import ru.topbun.home_filter.HomeFilterViewModel
 
 @Composable
-internal fun CategorySection() = Column {
-    val viewModel: HomeFilterViewModel = koinViewModel()
-    val state by viewModel.state.collectAsState()
-
+internal fun CategorySection(
+    isExpanded: Boolean,
+    categoryUiState: HomeFilterState.CategoryUiState,
+    sortedCategories: List<TagRecipeEntity>,
+    selectedCategoriesIds: List<Int>,
+    sendIntent: (HomeFilterIntent) -> Unit,
+) = Column {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -55,15 +55,20 @@ internal fun CategorySection() = Column {
             style = Typography.H2
         )
         AppTextButton(
-            text = if (state.isExpanded) "Скрыть" else "Показать все"
-        ) { viewModel.sendIntent(HomeFilterIntent.ChangeExpandedCategoryList) }
+            text = if (isExpanded) "Скрыть" else "Показать все"
+        ) { sendIntent(HomeFilterIntent.ChangeExpandedCategoryList) }
     }
     Height(16.dp)
-    when(state.categoryUiState){
+    when(categoryUiState){
         Idle -> {}
-        Error -> CategoryError{ viewModel.sendIntent(HomeFilterIntent.LoadCategories) }
+        Error -> CategoryError{ sendIntent(HomeFilterIntent.LoadCategories) }
         Loading -> CategoryLoading()
-        Success -> CategorySuccess()
+        Success -> CategorySuccess(
+            isExpanded = isExpanded,
+            sortedCategories = sortedCategories,
+            selectedCategoriesIds = selectedCategoriesIds,
+            sendIntent = sendIntent
+        )
     }
 
 }
@@ -90,17 +95,19 @@ private fun CategoryLoading() {
 }
 
 @Composable
-private fun CategorySuccess() {
-    val viewModel: HomeFilterViewModel = koinViewModel()
-    val state by viewModel.state.collectAsState()
-
-    if (state.isExpanded){
-        CategoryFlowColumn(state.sortedCategories, state.selectedCategoriesIds){
-            viewModel.sendIntent(HomeFilterIntent.ChangeSelectedCategory(it))
+private fun CategorySuccess(
+    isExpanded: Boolean,
+    sortedCategories: List<TagRecipeEntity>,
+    selectedCategoriesIds: List<Int>,
+    sendIntent: (HomeFilterIntent) -> Unit
+) {
+    if (isExpanded){
+        CategoryFlowColumn(sortedCategories, selectedCategoriesIds){
+            sendIntent(HomeFilterIntent.ChangeSelectedCategory(it))
         }
     } else {
-        CategoryLazyRow(state.sortedCategories, state.selectedCategoriesIds){
-            viewModel.sendIntent(HomeFilterIntent.ChangeSelectedCategory(it))
+        CategoryLazyRow(sortedCategories, selectedCategoriesIds){
+            sendIntent(HomeFilterIntent.ChangeSelectedCategory(it))
         }
     }
 }

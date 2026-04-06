@@ -96,7 +96,18 @@ private fun Information(recipe: RecipeEntity) {
 @Composable
 private fun Title(recipe: RecipeEntity) {
     Text(
-        text = recipe.title,
+        text = buildAnnotatedString {
+            append(recipe.title)
+//            withStyle(SpanStyle(
+//                color = when(recipe.difficulty){
+//                    Easy -> Colors.GREEN
+//                    Normal -> Colors.ORANGE
+//                    Hard -> Colors.RED
+//                }
+//            )){
+//                append(" (${formatRecipeDifficulty(recipe.difficulty)})")
+//            }
+        },
         style = Typography.H2,
         lineHeight = 22.sp,
         color = Colors.BLUE_TEXT

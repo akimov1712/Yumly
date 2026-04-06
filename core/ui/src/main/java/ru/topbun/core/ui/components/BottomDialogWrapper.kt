@@ -11,10 +11,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.SecureFlagPolicy
 import ru.topbun.core.ui.theme.Colors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,6 +25,7 @@ fun BottomDialogWrapper(
     onDismissRequest: () -> Unit,
     content: @Composable ColumnScope.() -> Unit
 ) {
+
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
