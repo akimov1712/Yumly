@@ -27,7 +27,7 @@ internal class RecipeRepositoryImpl(
             val response = api.getRecipes(data.toRequest())
             val recipes = response.body()
             if (response.isSuccessful && recipes != null){
-                insertHistoryQuery(data.q)
+                insertHistoryQuery(data.q, data.offset)
                 Result.Success(recipes.toEntityList())
             } else {
                 val error = when(response.code()){
@@ -38,8 +38,8 @@ internal class RecipeRepositoryImpl(
             }
         }
 
-    private suspend fun insertHistoryQuery(q: String?){
-        if (q != null){
+    private suspend fun insertHistoryQuery(q: String?, offset: Int){
+        if (!q.isNullOrBlank() && offset == 0){
             val dbo = HistoryDbo(query = q)
             historyDao.addHistory(dbo)
         }

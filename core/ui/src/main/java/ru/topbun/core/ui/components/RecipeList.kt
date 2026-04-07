@@ -7,14 +7,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +33,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import ru.topbun.core.ui.utils.formatCookingTime
 import ru.topbun.core.ui.utils.formatIngredientCount
 import ru.topbun.core.ui.utils.formatStepCount
@@ -68,6 +73,115 @@ fun ColumnScope.RecipeList(
 }
 
 @Composable
+fun ColumnScope.RecipeList(
+    recipes: LazyPagingItems<RecipeEntity>,
+    state: LazyListState = remember { LazyListState() },
+) {
+    LazyColumn(
+        state = state,
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+        contentPadding = PaddingValues(
+            start = 12.dp,
+            end = 12.dp,
+            top = 15.dp,
+            bottom = LocalBottomBarPadding.current
+        )
+    ) {
+        items(
+            count = recipes.itemCount,
+            key = { index -> recipes[index]?.id ?: index }
+        ) { index ->
+            val recipe = recipes[index]
+            if (recipe != null) {
+                RecipeItem(recipe)
+            }
+        }
+
+        when {
+            recipes.loadState.refresh is LoadState.Loading && recipes.itemCount == 0 -> items(6) {
+                RecipeShimmer()
+            }
+
+            recipes.loadState.refresh is LoadState.Error && recipes.itemCount == 0 -> item {
+                RecipeListError {
+                    recipes.retry()
+                }
+            }
+
+            recipes.loadState.append is LoadState.Loading -> item {
+                RecipeListLoader()
+            }
+
+            recipes.loadState.append is LoadState.Error -> item {
+                RecipeListError {
+                    recipes.retry()
+                }
+            }
+            recipes.itemCount == 0 -> item {
+                RecipeListEmpty()
+            }
+        }
+    }
+}
+
+@Composable
+private fun RecipeListEmpty() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Список пуст",
+            color = Colors.BLUE_TEXT,
+            style = Typography.H2
+        )
+    }
+}
+
+@Composable
+private fun RecipeListError(
+    modifier: Modifier = Modifier,
+    onClickReload: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        AppButton(
+            modifier = Modifier.wrapContentSize(),
+            text = "Загрузить снова",
+        ) {
+            onClickReload()
+        }
+    }
+}
+
+@Composable
+private fun RecipeListLoader(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.size(24.dp),
+            strokeWidth = 2.5.dp,
+            trackColor = Colors.PRIMARY
+        )
+    }
+}
+
+@Composable
 private fun RecipeItem(recipe: RecipeEntity) {
     Row(
         modifier = Modifier
@@ -96,18 +210,7 @@ private fun Information(recipe: RecipeEntity) {
 @Composable
 private fun Title(recipe: RecipeEntity) {
     Text(
-        text = buildAnnotatedString {
-            append(recipe.title)
-//            withStyle(SpanStyle(
-//                color = when(recipe.difficulty){
-//                    Easy -> Colors.GREEN
-//                    Normal -> Colors.ORANGE
-//                    Hard -> Colors.RED
-//                }
-//            )){
-//                append(" (${formatRecipeDifficulty(recipe.difficulty)})")
-//            }
-        },
+        text = recipe.title,
         style = Typography.H2,
         lineHeight = 22.sp,
         color = Colors.BLUE_TEXT

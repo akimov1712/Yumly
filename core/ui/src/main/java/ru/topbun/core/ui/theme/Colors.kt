@@ -13,6 +13,7 @@ object Colors {
     val ERROR = Color(0xffCC1F22)
     val FORM = Color(0xffF4F5F7)
     val BACKGROUND = Color(0xffF4F5F7)
+    val SHIMMER = Color(0xffD9D9D9)
 
     val WHITE = Color(0xffffffff)
     val BLACK = Color(0xff000000)

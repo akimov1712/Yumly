@@ -11,7 +11,7 @@ internal data class HomeState(
     val selectedSearchTypeIndex: Int = 0,
     val searchTypeList: List<SearchType> = SearchType.entries,
     val recipeFilters: GetRecipeFilterEntity = GetRecipeFilterEntity(),
-    val showFilterDialog: Boolean = true
+    val showFilterDialog: Boolean = true,
 ){
 
     val isFilterChanged: Boolean

@@ -41,7 +41,7 @@ fun HomeFilterDialog(
             .fillMaxWidth()
     ) {
         Title()
-        Height(20.dp)
+        Height(10.dp)
         FilterContent(
             filter = filter,
             onApplyFilters = onApplyFilters

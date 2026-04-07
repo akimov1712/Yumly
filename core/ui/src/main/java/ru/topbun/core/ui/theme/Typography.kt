@@ -49,8 +49,8 @@ object Typography {
     val S = TextStyle(
         fontFamily = Fonts.INTER,
         fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
         lineHeight = 15.sp,
+        fontSize = 12.sp,
         color = Colors.MAIN_TEXT
     )
 
