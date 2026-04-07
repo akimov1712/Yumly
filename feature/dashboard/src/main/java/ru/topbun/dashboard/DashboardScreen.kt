@@ -3,6 +3,9 @@ package ru.topbun.dashboard
 import android.R
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -35,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -88,7 +92,7 @@ object DashboardScreen: Screen{
                         .fillMaxSize()
                         .background(Colors.BACKGROUND)
                 ) {
-                   CurrentTab()
+                   CurrentTabTransition(it, tabs)
 
                     BottomBar(
                         tabs = tabs,
@@ -142,11 +146,33 @@ object DashboardScreen: Screen{
         selected: Boolean,
         onClick: () -> Unit
     ) {
-        val color = if (selected) Colors.PRIMARY else Colors.SECONDARY_TEXT
+        val color by animateColorAsState(
+            targetValue = if (selected) Colors.PRIMARY else Colors.SECONDARY_TEXT,
+            animationSpec = tween(durationMillis = 220),
+            label = "bottom_bar_item_color"
+        )
+        val scale by animateFloatAsState(
+            targetValue = if (selected) 1f else 0.94f,
+            animationSpec = spring(
+                dampingRatio = 0.8f,
+                stiffness = 500f
+            ),
+            label = "bottom_bar_item_scale"
+        )
+        val textAlpha by animateFloatAsState(
+            targetValue = if (selected) 1f else 0.72f,
+            animationSpec = tween(durationMillis = 180),
+            label = "bottom_bar_item_text_alpha"
+        )
+
         Column(
             modifier = Modifier
                 .weight(1f)
                 .padding(vertical = 16.dp)
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                }
                 .noRippleClickable(onClick),
             verticalArrangement = Arrangement.spacedBy(5.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -161,12 +187,14 @@ object DashboardScreen: Screen{
                 text = title,
                 color = color,
                 style = Typography.S,
+                modifier = Modifier.graphicsLayer {
+                    alpha = textAlpha
+                },
                 maxLines = 1,
                 overflow = TextOverflow.Clip
             )
         }
     }
-
 
     @Composable
     private fun CurrentTabTransition(tabNavigator: TabNavigator, tabs: List<Tab>) {
