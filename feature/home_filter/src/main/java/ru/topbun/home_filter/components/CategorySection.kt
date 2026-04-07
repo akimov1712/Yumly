@@ -58,7 +58,7 @@ internal fun CategorySection(
             text = if (isExpanded) "Скрыть" else "Показать все"
         ) { sendIntent(HomeFilterIntent.ChangeExpandedCategoryList) }
     }
-    Height(16.dp)
+    Height(10.dp)
     when(categoryUiState){
         Idle -> {}
         Error -> CategoryError{ sendIntent(HomeFilterIntent.LoadCategories) }
@@ -75,11 +75,13 @@ internal fun CategorySection(
 
 @Composable
 private fun CategoryError(onClick: () -> Unit) {
-    AppButton(
-        modifier = Modifier.wrapContentSize(),
-        text = "Загрузить снова",
-    ) {
-        onClick()
+    Box(Modifier.fillMaxWidth(), Alignment.Center){
+        AppButton(
+            modifier = Modifier.wrapContentSize(),
+            text = "Загрузить снова",
+        ) {
+            onClick()
+        }
     }
 }
 

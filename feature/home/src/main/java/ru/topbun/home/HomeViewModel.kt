@@ -3,6 +3,10 @@ package ru.topbun.home
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.topbun.core.android.MVI
@@ -33,7 +37,7 @@ internal class HomeViewModel(
                 val getRecipeData = GetRecipeEntity(
                     q = search,
                     offset = recipes.size,
-                    recipeFilter = GetRecipeFilterEntity()
+                    recipeFilter = recipeFilters
                 )
                 val result = getRecipeUseCase(getRecipeData)
                 result.onSuccess { recipes ->
@@ -62,8 +66,23 @@ internal class HomeViewModel(
         }
     }
 
+
     init {
-        loadRecipes()
+        observeSearchChanges()
+    }
+
+    private fun observeSearchChanges() {
+        viewModelScope.launch {
+            combine(
+                state.map { it.search }.distinctUntilChanged(),
+                state.map { it.selectedSearchTypeIndex }.distinctUntilChanged(),
+                state.map { it.recipeFilters }.distinctUntilChanged()
+            ) { search, type, filters ->
+                Triple(search, type, filters)
+            }.debounce(500).collect {
+                loadRecipes()
+            }
+        }
     }
 
 }
