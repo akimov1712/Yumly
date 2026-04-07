@@ -11,3 +11,4 @@ gradle.properties
 .cxx
 local.properties
 /.gradle-user-home/
+/.gradle-home/
