@@ -29,15 +29,14 @@ import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
 import ru.topbun.core.ui.utils.rippleClickable
+import ru.topbun.domain.ScreenUiState
 import ru.topbun.domain.entity.recipe.tag.TagRecipeEntity
 import ru.topbun.home_filter.HomeFilterIntent
-import ru.topbun.home_filter.HomeFilterState
-import ru.topbun.home_filter.HomeFilterState.CategoryUiState.*
 
 @Composable
 internal fun CategorySection(
     isExpanded: Boolean,
-    categoryUiState: HomeFilterState.CategoryUiState,
+    categoryUiState: ScreenUiState,
     sortedCategories: List<TagRecipeEntity>,
     selectedCategoriesIds: List<Int>,
     sendIntent: (HomeFilterIntent) -> Unit,
@@ -60,15 +59,15 @@ internal fun CategorySection(
     }
     Height(10.dp)
     when(categoryUiState){
-        Idle -> {}
-        Error -> CategoryError{ sendIntent(HomeFilterIntent.LoadCategories) }
-        Loading -> CategoryLoading()
-        Success -> CategorySuccess(
+        ScreenUiState.Error -> CategoryError{ sendIntent(HomeFilterIntent.LoadCategories) }
+        ScreenUiState.Loading -> CategoryLoading()
+        ScreenUiState.Success -> CategorySuccess(
             isExpanded = isExpanded,
             sortedCategories = sortedCategories,
             selectedCategoriesIds = selectedCategoriesIds,
             sendIntent = sendIntent
         )
+        else -> {}
     }
 
 }

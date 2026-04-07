@@ -10,6 +10,7 @@ import ru.topbun.core.android.SnackbarManager
 import ru.topbun.core.common.error.DataError
 import ru.topbun.core.common.onError
 import ru.topbun.core.common.onSuccess
+import ru.topbun.domain.ScreenUiState
 import ru.topbun.domain.entity.recipe.RecipeDifficulty
 import ru.topbun.domain.entity.recipe.getRecipe.GetRecipeFilterEntity
 import ru.topbun.domain.useCases.recipe.GetTagsUseCase
@@ -57,10 +58,10 @@ internal class HomeFilterViewModel(
     private fun loadCategories(): Unit = with(_state){
         loadCategoryJob?.cancel()
         loadCategoryJob = viewModelScope.launch(SupervisorJob()) {
-            update{ it.copy(categoryUiState = HomeFilterState.CategoryUiState.Loading) }
+            update{ it.copy(categoryUiState = ScreenUiState.Loading) }
             val result = getTagsUseCase()
             result.onSuccess { tags ->
-                update{ it.copy(categories = tags, categoryUiState = HomeFilterState.CategoryUiState.Success) }
+                update{ it.copy(categories = tags, categoryUiState = ScreenUiState.Success) }
             }.onError { error, _ ->
                 val message = when(error){
                     DataError.Network.REQUEST_TIMEOUT -> "Время ожидание превышено. Проверьте интернет соединение или попробуйте позже"
@@ -70,7 +71,7 @@ internal class HomeFilterViewModel(
                     else -> "Произошла ошибка. Попробуйте позже"
                 }
                 snackbarManager.showMessage(message)
-                update{ it.copy(categoryUiState = HomeFilterState.CategoryUiState.Error) }
+                update{ it.copy(categoryUiState = ScreenUiState.Error) }
             }
         }
     }

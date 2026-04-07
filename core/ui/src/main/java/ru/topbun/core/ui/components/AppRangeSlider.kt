@@ -1,7 +1,5 @@
 package ru.topbun.core.ui.components
 
-import android.R.attr.maxWidth
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background

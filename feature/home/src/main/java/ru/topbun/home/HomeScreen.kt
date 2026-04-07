@@ -10,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.koin.compose.viewmodel.koinViewModel
@@ -34,7 +33,6 @@ object HomeScreen: Tab {
     override fun Content() {
         val viewModel: HomeViewModel = koinViewModel()
         val state by viewModel.state.collectAsState()
-        val recipes = viewModel.recipes.collectAsLazyPagingItems()
 
         Column(
             modifier = Modifier.fillMaxSize()
@@ -54,8 +52,12 @@ object HomeScreen: Tab {
             ) { viewModel.sendIntent(HomeIntent.ChangeSearchType(it)) }
             Height(5.dp)
             RecipeList(
-                recipes = recipes,
-                state = state.recipeListState
+                recipes = state.recipeList.recipes,
+                status = state.recipeList.status,
+                isEndList = state.recipeList.isEndList,
+                state = state.recipeListState,
+                onLoadMore = { viewModel.sendIntent(HomeIntent.LoadRecipe) },
+                onRefresh = { viewModel.sendIntent(HomeIntent.RefreshRecipe) }
             )
         }
 

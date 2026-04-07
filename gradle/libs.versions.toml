@@ -20,7 +20,6 @@ systemuicontroller = "0.36.0"
 voyager = "1.1.0-beta03"
 koin-bom = "4.1.1"
 coilCompose = "3.3.0"
-paging = "3.3.6"
 composeShimmer = "1.3.3"
 
 # Default Library Version
@@ -62,8 +61,6 @@ koin-compose = { module = "io.insert-koin:koin-compose" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
-androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
-androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
 compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "composeShimmer" }
 
 

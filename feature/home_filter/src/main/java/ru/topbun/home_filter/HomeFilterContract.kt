@@ -1,5 +1,6 @@
 package ru.topbun.home_filter
 
+import ru.topbun.domain.ScreenUiState
 import ru.topbun.domain.entity.recipe.RecipeDifficulty
 import ru.topbun.domain.entity.recipe.getRecipe.GetRecipeFilterEntity
 import ru.topbun.domain.entity.recipe.tag.TagRecipeEntity
@@ -13,7 +14,7 @@ internal data class HomeFilterState(
     val maxCaloriesProgress: Float = 1f,
     val difficultyList: List<RecipeDifficulty> = RecipeDifficulty.entries,
     val selectedDifficultyIndex: Int? = null,
-    val categoryUiState: CategoryUiState = CategoryUiState.Idle
+    val categoryUiState: ScreenUiState = ScreenUiState.Idle
 ){
 
     val minCaloriesFromProgress: Int
@@ -34,9 +35,6 @@ internal data class HomeFilterState(
     val sortedCategories: List<TagRecipeEntity>
         get() = categories.toList().sortedByDescending { selectedCategoriesIds.contains(it.id) }
 
-    enum class CategoryUiState{
-        Idle, Loading, Error, Success
-    }
 
     companion object {
 
