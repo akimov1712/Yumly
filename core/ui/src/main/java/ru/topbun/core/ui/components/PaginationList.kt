@@ -1,0 +1,179 @@
+package ru.topbun.core.ui.components
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import ru.topbun.core.ui.theme.Colors
+import ru.topbun.core.ui.theme.Typography
+import ru.topbun.domain.ScreenUiState
+
+@Composable
+fun <T>PaginationList(
+    items: List<T>,
+    status: ScreenUiState,
+    isEndList: Boolean,
+    modifier: Modifier = Modifier,
+    state: LazyListState = rememberLazyListState(),
+    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    onLoadMore: () -> Unit,
+    shimmerContent: LazyListScope.() -> Unit = {},
+    content: LazyListScope.(items: List<T>) -> Unit,
+) {
+    PreloadTrigger(
+        state = state,
+        status = status,
+        isEndList = isEndList,
+        onLoadMore = onLoadMore
+    )
+
+    LazyColumn(
+        state = state,
+        modifier = modifier,
+        userScrollEnabled = items.isNotEmpty() || !status.isLoading,
+        verticalArrangement = verticalArrangement,
+        horizontalAlignment = horizontalAlignment,
+        contentPadding = contentPadding
+    ) {
+        if (items.isEmpty() && status.isLoading) {
+            shimmerContent()
+        } else {
+            content(items)
+        }
+
+        ListFooter(
+            status = status,
+            isEndList = isEndList,
+            isEmpty = items.isEmpty(),
+            onLoadMore = onLoadMore
+        )
+    }
+}
+
+
+private fun LazyListScope.ListFooter(
+    status: ScreenUiState,
+    isEndList: Boolean,
+    isEmpty: Boolean,
+    onLoadMore: () -> Unit
+) {
+
+    when (status) {
+        ScreenUiState.Error -> item {
+            FooterContentError(onLoadMore)
+        }
+        ScreenUiState.Loading -> if (!isEndList) item {
+            FooterContentLoading()
+        }
+        ScreenUiState.Success -> if (isEmpty) item {
+            FooterContentEmptyList()
+        }
+
+        else -> Unit
+    }
+
+
+}
+
+@Composable
+private fun FooterContentEmptyList() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Список пуст",
+            color = Colors.BLUE_TEXT,
+            style = Typography.H2
+        )
+    }
+}
+
+@Composable
+private fun FooterContentLoading() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.size(24.dp),
+            strokeWidth = 2.5.dp,
+            trackColor = Colors.PRIMARY
+        )
+    }
+}
+
+@Composable
+private fun FooterContentError(onLoadMore: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        AppButton(
+            modifier = Modifier.wrapContentSize(),
+            text = "Загрузить снова",
+        ) {
+            onLoadMore()
+        }
+    }
+}
+
+
+@Composable
+private fun PreloadTrigger(
+    state: LazyListState,
+    status: ScreenUiState,
+    isEndList: Boolean,
+    onLoadMore: () -> Unit
+) {
+    val shouldLoadMore = remember(state) {
+        derivedStateOf {
+            val layoutInfo = state.layoutInfo
+
+            val lastVisibleItemIndex =
+                layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: return@derivedStateOf false
+
+            val totalItemsCount = layoutInfo.totalItemsCount
+
+            lastVisibleItemIndex >= totalItemsCount - 3
+        }
+    }
+
+    LaunchedEffect(shouldLoadMore.value) {
+        if (
+            shouldLoadMore.value &&
+            !status.isLoading &&
+            !status.isError &&
+            !isEndList
+        ) {
+            onLoadMore()
+        }
+    }
+}

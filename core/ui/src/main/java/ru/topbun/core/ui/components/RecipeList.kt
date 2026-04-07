@@ -1,5 +1,6 @@
 package ru.topbun.core.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,175 +12,81 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
-import ru.topbun.core.ui.utils.formatCookingTime
-import ru.topbun.core.ui.utils.formatIngredientCount
-import ru.topbun.core.ui.utils.formatStepCount
+import coil3.compose.AsyncImagePainter
+import com.valentinilk.shimmer.shimmer
 import ru.topbun.core.ui.R
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
 import ru.topbun.core.ui.utils.LocalBottomBarPadding
-import ru.topbun.core.ui.utils.formatRecipeDifficulty
-import ru.topbun.domain.entity.recipe.RecipeDifficulty.Easy
-import ru.topbun.domain.entity.recipe.RecipeDifficulty.Hard
-import ru.topbun.domain.entity.recipe.RecipeDifficulty.Normal
+import ru.topbun.core.ui.utils.formatCookingTime
+import ru.topbun.core.ui.utils.formatIngredientCount
+import ru.topbun.core.ui.utils.formatStepCount
+import ru.topbun.domain.ScreenUiState
 import ru.topbun.domain.entity.recipe.RecipeEntity
 
 @Composable
 fun ColumnScope.RecipeList(
     recipes: List<RecipeEntity>,
-    state: LazyListState = remember { LazyListState() },
+    status: ScreenUiState,
+    state: LazyListState,
+    isEndList: Boolean,
+    onRefresh: () -> Unit,
+    onLoadMore: () -> Unit
 ) {
-    LazyColumn(
-        state = state,
+    AppPullRefresh(
         modifier = Modifier
             .fillMaxWidth()
             .weight(1f),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-        contentPadding = PaddingValues(
-            start = 12.dp,
-            end = 12.dp,
-            top = 15.dp,
-            bottom = LocalBottomBarPadding.current
-        )
+        onRefresh = onRefresh
     ) {
-        items(items = recipes, key = { it.id }) {
-            RecipeItem(it)
-        }
-    }
-}
-
-@Composable
-fun ColumnScope.RecipeList(
-    recipes: LazyPagingItems<RecipeEntity>,
-    state: LazyListState = remember { LazyListState() },
-) {
-    LazyColumn(
-        state = state,
-        modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-        contentPadding = PaddingValues(
-            start = 12.dp,
-            end = 12.dp,
-            top = 15.dp,
-            bottom = LocalBottomBarPadding.current
-        )
-    ) {
-        items(
-            count = recipes.itemCount,
-            key = { index -> recipes[index]?.id ?: index }
-        ) { index ->
-            val recipe = recipes[index]
-            if (recipe != null) {
-                RecipeItem(recipe)
-            }
-        }
-
-        when {
-            recipes.loadState.refresh is LoadState.Loading && recipes.itemCount == 0 -> items(6) {
-                RecipeShimmer()
-            }
-
-            recipes.loadState.refresh is LoadState.Error && recipes.itemCount == 0 -> item {
-                RecipeListError {
-                    recipes.retry()
+        PaginationList(
+            items = recipes,
+            modifier = Modifier.fillMaxSize(),
+            status = status,
+            isEndList = isEndList,
+            onLoadMore = onLoadMore,
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            contentPadding = PaddingValues(
+                start = 12.dp,
+                end = 12.dp,
+                top = 15.dp,
+                bottom = LocalBottomBarPadding.current
+            ),
+            state = state,
+            shimmerContent = { items(6) { RecipeShimmer() } },
+            content = {
+                itemsIndexed(
+                    items = it,
+                    key = {index, item ->
+                        "id:${item.id} index:$index"
+                    }
+                ) { _, item ->
+                    RecipeItem(item)
                 }
-            }
-
-            recipes.loadState.append is LoadState.Loading -> item {
-                RecipeListLoader()
-            }
-
-            recipes.loadState.append is LoadState.Error -> item {
-                RecipeListError {
-                    recipes.retry()
-                }
-            }
-            recipes.itemCount == 0 -> item {
-                RecipeListEmpty()
-            }
-        }
-    }
-}
-
-@Composable
-private fun RecipeListEmpty() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Список пуст",
-            color = Colors.BLUE_TEXT,
-            style = Typography.H2
+            },
         )
     }
 }
 
-@Composable
-private fun RecipeListError(
-    modifier: Modifier = Modifier,
-    onClickReload: () -> Unit
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        AppButton(
-            modifier = Modifier.wrapContentSize(),
-            text = "Загрузить снова",
-        ) {
-            onClickReload()
-        }
-    }
-}
-
-@Composable
-private fun RecipeListLoader(
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier.size(24.dp),
-            strokeWidth = 2.5.dp,
-            trackColor = Colors.PRIMARY
-        )
-    }
-}
 
 @Composable
 private fun RecipeItem(recipe: RecipeEntity) {
@@ -286,13 +193,39 @@ private fun Chip(
 
 @Composable
 private fun Preview(url: String?) {
-    AppAsyncImage(
-        url = url,
-        modifier = Modifier
-            .size(100.dp)
-            .clip(RoundedCornerShape(24.dp))
-            .background(Colors.FORM),
-        contentScale = ContentScale.Crop,
-    )
+    var isLoad by remember { mutableStateOf(true) }
+    var isError by remember { mutableStateOf(true) }
+    val loaderModifier = if (isLoad) Modifier.shimmer() else Modifier
+
+    Box(
+        modifier = Modifier.size(100.dp),
+        contentAlignment = Alignment.Center
+    ){
+        AppAsyncImage(
+            url = url,
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(24.dp))
+                .then(loaderModifier)
+                .background(Colors.FORM),
+            contentScale = ContentScale.Crop,
+            onState = {
+                isLoad = it !is AsyncImagePainter.State.Success
+                isError = it is AsyncImagePainter.State.Error
+                if (it is AsyncImagePainter.State.Error) {
+                    Log.e("Async Image", it.result.throwable.message ?: "???")
+                }
+            },
+        )
+        if (isError){
+            Icon(
+                modifier = Modifier.fillMaxSize().padding(16.dp),
+                painter = painterResource(R.drawable.ic_recipe_preview_placeholder),
+                contentDescription = null,
+                tint = Colors.SECONDARY_TEXT
+            )
+        }
+    }
+
 }
 
