@@ -12,7 +12,6 @@ import ru.topbun.navigation.auth.AuthStartScreen
 
 class SplashViewModel(
     private val getStatusFirstStartUseCase: GetStatusFirstStartUseCase,
-    private val hasSessionUseCase: HasSessionUseCase
 ): ViewModel() {
 
     private val _events = Channel<SplashEvent>()
@@ -24,12 +23,10 @@ class SplashViewModel(
 
     private fun handleFirstStart() = viewModelScope.launch {
         val firstStatus = getStatusFirstStartUseCase()
-        val hasSession = hasSessionUseCase()
         delay(1500)
         val event = when{
             firstStatus -> SplashEvent.NavigateToAuth(AuthStartScreen.WELCOME)
-            hasSession -> SplashEvent.NavigateToMain
-            else -> SplashEvent.NavigateToAuth(AuthStartScreen.LOGIN)
+            else -> SplashEvent.NavigateToMain
         }
         _events.send(event)
     }

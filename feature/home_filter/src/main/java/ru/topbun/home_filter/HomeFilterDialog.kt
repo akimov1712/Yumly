@@ -50,7 +50,7 @@ fun HomeFilterDialog(
 }
 
 @Composable
-internal fun FilterContent(filter: GetRecipeFilterEntity, onApplyFilters: (GetRecipeFilterEntity) -> Unit,) {
+internal fun FilterContent(filter: GetRecipeFilterEntity, onApplyFilters: (GetRecipeFilterEntity) -> Unit) {
 
     val viewModel: HomeFilterViewModel = koinViewModel{ parametersOf(filter) }
     val state by viewModel.state.collectAsState()
@@ -79,7 +79,7 @@ internal fun FilterContent(filter: GetRecipeFilterEntity, onApplyFilters: (GetRe
             selectedCategoriesIds = state.selectedCategoriesIds,
             sendIntent = { viewModel.sendIntent(it) }
         )
-        Height(20.dp)
+        Height(30.dp)
         DurationSection(
             durationFromProgress = state.durationFromProgress,
             durationProgress = state.durationProgress,
