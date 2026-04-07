@@ -1,10 +1,13 @@
 package ru.topbun.home_filter
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,11 +37,14 @@ fun HomeFilterDialog(
     onApplyFilters: (GetRecipeFilterEntity) -> Unit,
     onDismissRequest: () -> Unit,
 ) = BottomDialogWrapper(
-    onDismissRequest = onDismissRequest
+    onDismissRequest = onDismissRequest,
+    containerColor = Colors.BACKGROUND
 ){
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .background(Colors.BACKGROUND)
+            .padding(bottom = 8.dp)
     ) {
         Title()
         Height(10.dp)
@@ -70,40 +76,50 @@ internal fun FilterContent(filter: GetRecipeFilterEntity, onApplyFilters: (GetRe
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
-            .padding(top = 20.dp, bottom = 32.dp)
+            .padding(top = 20.dp, bottom = 12.dp)
     ) {
-        CategorySection(
-            isExpanded = state.isExpanded,
-            categoryUiState = state.categoryUiState,
-            sortedCategories = state.sortedCategories,
-            selectedCategoriesIds = state.selectedCategoriesIds,
-            sendIntent = { viewModel.sendIntent(it) }
-        )
-        Height(30.dp)
-        DurationSection(
-            durationFromProgress = state.durationFromProgress,
-            durationProgress = state.durationProgress,
-            sendIntent = { viewModel.sendIntent(it) }
-        )
-        Height(20.dp)
-        CaloriesSection(
-            minCaloriesFromProgress = state.minCaloriesFromProgress,
-            maxCaloriesFromProgress = state.maxCaloriesFromProgress,
-            minCaloriesProgress = state.minCaloriesProgress,
-            maxCaloriesProgress = state.maxCaloriesProgress,
-            sendIntent = { viewModel.sendIntent(it) }
-        )
-        Height(20.dp)
-        DifficultySection(
-            difficultyList = state.difficultyList,
-            selectedDifficultyIndex = state.selectedDifficultyIndex,
-            sendIntent = { viewModel.sendIntent(it) }
-        )
-        Height(32.dp)
-        Buttons(
-            onClickClear = { viewModel.sendIntent(HomeFilterIntent.ClickClear) },
-            onClickDone = { viewModel.sendIntent(HomeFilterIntent.ClickDone) }
-        )
+        FilterIsland {
+            CategorySection(
+                isExpanded = state.isExpanded,
+                categoryUiState = state.categoryUiState,
+                sortedCategories = state.sortedCategories,
+                selectedCategoriesIds = state.selectedCategoriesIds,
+                sendIntent = { viewModel.sendIntent(it) }
+            )
+        }
+        Height(16.dp)
+        FilterIsland {
+            DurationSection(
+                durationFromProgress = state.durationFromProgress,
+                durationProgress = state.durationProgress,
+                sendIntent = { viewModel.sendIntent(it) }
+            )
+        }
+        Height(16.dp)
+        FilterIsland {
+            CaloriesSection(
+                minCaloriesFromProgress = state.minCaloriesFromProgress,
+                maxCaloriesFromProgress = state.maxCaloriesFromProgress,
+                minCaloriesProgress = state.minCaloriesProgress,
+                maxCaloriesProgress = state.maxCaloriesProgress,
+                sendIntent = { viewModel.sendIntent(it) }
+            )
+        }
+        Height(16.dp)
+        FilterIsland {
+            DifficultySection(
+                difficultyList = state.difficultyList,
+                selectedDifficultyIndex = state.selectedDifficultyIndex,
+                sendIntent = { viewModel.sendIntent(it) }
+            )
+        }
+        Height(24.dp)
+        FilterIsland {
+            Buttons(
+                onClickClear = { viewModel.sendIntent(HomeFilterIntent.ClickClear) },
+                onClickDone = { viewModel.sendIntent(HomeFilterIntent.ClickDone) }
+            )
+        }
     }
 }
 
@@ -117,6 +133,24 @@ private fun Title() {
         style = Typography.H2,
         textAlign = TextAlign.Center
     )
+}
+
+@Composable
+private fun FilterIsland(
+    content: @Composable () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .background(
+                color = Colors.WHITE,
+                shape = RoundedCornerShape(28.dp)
+            )
+            .padding(vertical = 20.dp)
+    ) {
+        content()
+    }
 }
 
 

@@ -15,6 +15,7 @@ import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.SecureFlagPolicy
 import ru.topbun.core.ui.theme.Colors
@@ -23,13 +24,14 @@ import ru.topbun.core.ui.theme.Colors
 @Composable
 fun BottomDialogWrapper(
     onDismissRequest: () -> Unit,
+    containerColor: Color = Colors.WHITE,
     content: @Composable ColumnScope.() -> Unit
 ) {
 
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
-        containerColor = Colors.WHITE,
+        containerColor = containerColor,
         contentColor = Colors.PRIMARY,
         dragHandle = {
             Box(
