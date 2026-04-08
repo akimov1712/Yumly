@@ -194,7 +194,6 @@ private fun Chip(
 @Composable
 private fun Preview(url: String?) {
     var isLoad by remember { mutableStateOf(true) }
-    var isError by remember { mutableStateOf(true) }
     val loaderModifier = if (isLoad) Modifier.shimmer() else Modifier
 
     Box(
@@ -211,13 +210,12 @@ private fun Preview(url: String?) {
             contentScale = ContentScale.Crop,
             onState = {
                 isLoad = it !is AsyncImagePainter.State.Success
-                isError = it is AsyncImagePainter.State.Error
                 if (it is AsyncImagePainter.State.Error) {
                     Log.e("Async Image", it.result.throwable.message ?: "???")
                 }
             },
         )
-        if (isError){
+        if (url.isNullOrEmpty()){
             Icon(
                 modifier = Modifier.fillMaxSize().padding(16.dp),
                 painter = painterResource(R.drawable.ic_recipe_preview_placeholder),
