@@ -13,7 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import ru.topbun.core.ui.theme.Colors
@@ -28,6 +30,8 @@ fun AppTextField(
     error: String? = null,
     endIcon: (@Composable () -> Unit)? = null,
     singleLine: Boolean = true,
+    shape: Shape = RoundedCornerShape(32.dp),
+    textStyle: TextStyle = Typography.Placeholder,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onFocused: () -> Unit = {},
@@ -78,8 +82,8 @@ fun AppTextField(
                 Width(8.dp)
             }
         },
-        textStyle = Typography.Placeholder,
-        shape = RoundedCornerShape(32.dp),
+        textStyle = textStyle,
+        shape = shape,
         colors = TextFieldDefaults.colors().copy(
             cursorColor = Colors.PRIMARY,
             focusedTextColor = Colors.MAIN_TEXT,

@@ -1,35 +1,25 @@
 package ru.topbun.upload
 
-import android.R.attr.top
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import ru.topbun.core.ui.R
-import ru.topbun.core.ui.components.AppTextButton
 import ru.topbun.core.ui.components.Height
-import ru.topbun.core.ui.components.Weight
 import ru.topbun.core.ui.theme.Colors
-import ru.topbun.core.ui.theme.Typography
 import ru.topbun.core.ui.utils.LocalBottomBarPadding
 import ru.topbun.upload.components.Header
-import ru.topbun.upload.fragments.UploadFragments
-import ru.topbun.upload.fragments.basic.BasicScreen
+import ru.topbun.upload.UploadFragments
+import ru.topbun.upload.basic.BasicScreen
 
 object UploadScreen: Tab {
 

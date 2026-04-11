@@ -15,7 +15,7 @@ import ru.topbun.core.ui.components.AppTextButton
 import ru.topbun.core.ui.components.Weight
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
-import ru.topbun.upload.fragments.UploadFragments
+import ru.topbun.upload.UploadFragments
 
 @Composable
 internal fun Header(
