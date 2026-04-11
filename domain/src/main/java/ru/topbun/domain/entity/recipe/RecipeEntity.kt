@@ -1,7 +1,7 @@
 package ru.topbun.domain.entity.recipe
 
 import ru.topbun.domain.entity.account.ProfileEntity
-import ru.topbun.domain.entity.recipe.tag.TagRecipeEntity
+import ru.topbun.domain.entity.recipe.tag. TagRecipeEntity
 
 data class RecipeEntity(
     val id: Int,
