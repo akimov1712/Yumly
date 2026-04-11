@@ -25,6 +25,7 @@ fun AppOutlinedTextField(
     error: String? = null,
     endIcon: (@Composable () -> Unit)? = null,
     singleLine: Boolean = true,
+    shape: RoundedCornerShape = RoundedCornerShape(32.dp),
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onFocused: () -> Unit = {},
@@ -76,7 +77,7 @@ fun AppOutlinedTextField(
             }
         },
         textStyle = Typography.Placeholder,
-        shape = RoundedCornerShape(32.dp),
+        shape = shape,
         colors = OutlinedTextFieldDefaults.colors().copy(
             cursorColor = Colors.PRIMARY,
             focusedTextColor = Colors.MAIN_TEXT,

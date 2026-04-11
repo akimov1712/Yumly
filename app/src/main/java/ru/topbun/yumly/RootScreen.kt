@@ -2,6 +2,8 @@ package ru.topbun.yumly
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -32,7 +34,10 @@ fun RootScreen() {
         snackbarHostState.showSnackbar(it)
     }
 
-    Box {
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .imePadding()
+    ){
         Surface(
             contentColor = Colors.MAIN_TEXT,
             color = Colors.WHITE

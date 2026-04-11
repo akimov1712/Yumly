@@ -41,13 +41,17 @@ android {
 
 dependencies {
 
-
+    // UI
     implementation(libs.compose.shimmer)
-
-    implementation(libs.coil.compose)
-    implementation(libs.coil.network.okhttp)
+    implementation(libs.datepicker)
+    implementation(libs.wheelview)
     implementation(libs.accompanist.systemuicontroller)
 
+    // Coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
+    // Default
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
