@@ -1,4 +1,4 @@
-package ru.topbun.upload.fragments
+package ru.topbun.upload
 
 internal enum class UploadFragments {
 
