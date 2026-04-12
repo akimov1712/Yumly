@@ -1,6 +1,10 @@
 package ru.topbun.core.ui.components
 
+import android.R.attr.textStyle
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
@@ -12,7 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
 
@@ -22,7 +28,8 @@ fun AppOutlinedTextField(
     placeholder: String,
     modifier: Modifier = Modifier,
     startIcon: Painter? = null,
-    error: String? = null,
+    errorText: String? = null,
+    supportText: String? = null,
     endIcon: (@Composable () -> Unit)? = null,
     singleLine: Boolean = true,
     shape: RoundedCornerShape = RoundedCornerShape(32.dp),
@@ -36,17 +43,18 @@ fun AppOutlinedTextField(
         value = text,
         onValueChange = onValueChange,
         visualTransformation = visualTransformation,
-        isError = error != null,
+        isError = errorText != null,
         singleLine = singleLine,
-        supportingText = error?.let{
+        supportingText = if (errorText != null || supportText != null){
             {
                 Text(
-                    text = it,
-                    color = Colors.ERROR,
-                    style = Typography.P2
+                    modifier = Modifier.fillMaxWidth().padding(4.dp),
+                    text = errorText ?: supportText ?: "",
+                    color = if (errorText != null) Colors.ERROR else Colors.BLUE_TEXT.copy(0.5f),
+                    style = Typography.P2.copy(fontSize = 14.sp),
                 )
             }
-        },
+        } else null,
         placeholder = {
             Text(
                 text = placeholder,

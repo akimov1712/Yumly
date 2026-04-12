@@ -11,6 +11,7 @@ import ru.topbun.core.android.snackbarModule
 import ru.topbun.feature.splash.di.splashModule
 import ru.topbun.home.di.homeModule
 import ru.topbun.home_filter.di.homeFilterModule
+import ru.topbun.upload.di.uploadModule
 
 val featureModule = module {
     includes(
@@ -23,6 +24,7 @@ val featureModule = module {
         confirmModule,
         resetModule,
         homeModule,
-        homeFilterModule
+        homeFilterModule,
+        uploadModule
     )
 }

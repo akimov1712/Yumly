@@ -40,6 +40,9 @@ android {
 
 dependencies {
 
+    // Coil
+    implementation(libs.coil.compose)
+
     // Voyager
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.koin)

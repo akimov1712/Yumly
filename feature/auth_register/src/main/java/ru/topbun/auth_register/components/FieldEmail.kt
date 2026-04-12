@@ -20,7 +20,7 @@ internal fun FieldEmail(
 ) {
     AppOutlinedTextField(
         text = value,
-        error = error,
+        errorText = error,
         onValueChange = onValueChange,
         onFocused = onFocused,
         placeholder = "Email",

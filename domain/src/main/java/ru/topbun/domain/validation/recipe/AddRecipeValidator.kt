@@ -9,14 +9,14 @@ class AddRecipeValidator : Validator<AddRecipeEntity> {
 
     override fun validate(data: AddRecipeEntity): Result<Unit, ValidatorError> {
         val error = when {
-            data.title.length > 48 -> AddRecipeValidatorError.TITLE_LENGTH
+            data.title.length > 72 -> AddRecipeValidatorError.TITLE_LENGTH
             (data.description?.length ?: 0) > 500 -> AddRecipeValidatorError.DESCRIPTION_LENGTH
             data.cookingTime > 14400 -> AddRecipeValidatorError.COOKING_TIME
             data.ingredients.size !in (1..32) -> AddRecipeValidatorError.COUNT_INGREDIENTS
             data.steps.size !in (1..32) -> AddRecipeValidatorError.COUNT_STEPS
-            data.protein > 5000 -> AddRecipeValidatorError.COUNT_PROTEIN
-            data.carb > 5000 -> AddRecipeValidatorError.COUNT_CARBS
-            data.fat > 5000 -> AddRecipeValidatorError.COUNT_FAT
+            data.protein > 100 -> AddRecipeValidatorError.COUNT_PROTEIN
+            data.carb > 100 -> AddRecipeValidatorError.COUNT_CARBS
+            data.fat > 100 -> AddRecipeValidatorError.COUNT_FAT
             else -> null
         }
         return error?.let { Result.Error(error) } ?: run { Result.Success(Unit) }

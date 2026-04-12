@@ -16,11 +16,12 @@ fun Modifier.noRippleClickable(onClick: () -> Unit) = this.clickable(
 )
 
 @Composable
-fun Modifier.rippleClickable(color: Color = Colors.PRIMARY, onClick: () -> Unit): Modifier {
+fun Modifier.rippleClickable(color: Color = Colors.PRIMARY, enabled: Boolean = true, onClick: () -> Unit): Modifier {
     val interactionSource = remember { MutableInteractionSource() }
     return this.clickable(
         interactionSource = interactionSource,
         indication = ripple(color = color),
+        enabled = enabled,
         role = Role.Button,
         onClick = onClick
     )

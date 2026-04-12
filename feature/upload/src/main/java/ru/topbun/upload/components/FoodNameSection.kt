@@ -8,10 +8,15 @@ import androidx.compose.ui.unit.dp
 import ru.topbun.core.ui.components.AppOutlinedTextField
 
 @Composable
-internal fun FoodNameSection() = SectionWrapper("Название рецепта"){
+internal fun FoodNameSection(
+    name: String,
+    onChangeName: (String) -> Unit
+) = SectionWrapper("Название рецепта"){
     AppOutlinedTextField(
         modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 56.dp),
-        text = "",
-        placeholder = "Введите название рецепта"
-    ) { }
+        text = name,
+        placeholder = "Введите название рецепта",
+        onValueChange = onChangeName,
+        supportText = "${name.length}/72"
+    )
 }
