@@ -106,7 +106,7 @@ private fun RowScope.DifficultyItem(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
                 .background(color.copy(0.05f))
-                .rippleClickable(color, onClick)
+                .rippleClickable(color = color, onClick = onClick)
                 .border(
                     width = 2.dp,
                     color = color.copy(if (selected) 1f else 0.3f),

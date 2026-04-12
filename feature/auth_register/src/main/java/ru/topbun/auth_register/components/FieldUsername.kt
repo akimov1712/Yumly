@@ -18,7 +18,7 @@ internal fun FieldUsername(
 ) {
     AppOutlinedTextField(
         text = value,
-        error = error,
+        errorText = error,
         onFocused = onFocused,
         onValueChange = onValueChange,
         placeholder = "Username",

@@ -33,7 +33,7 @@ internal fun FieldPassword(
         text = value,
         onValueChange = onChangeValue,
         onFocused = onFocused,
-        error = error,
+        errorText = error,
         placeholder = placeholder,
         modifier = Modifier
             .fillMaxWidth()

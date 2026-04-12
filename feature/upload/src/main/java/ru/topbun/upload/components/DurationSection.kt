@@ -2,10 +2,6 @@ package ru.topbun.upload.components
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -19,22 +15,18 @@ import ru.topbun.core.ui.theme.Typography
 import ru.topbun.core.ui.utils.formatCookingTime
 
 @Composable
-internal fun DurationSection() = SectionWrapper(
+internal fun DurationSection(cookingTime: Int, onChangeDuration: (Int) -> Unit) = SectionWrapper(
     title = "Время приготовления"
 ){
-    var minutes by remember { mutableIntStateOf(0) }
-    AppTimePicker(
-        startTimeMinutes = 30,
-        onTimeChanged = { hour, minute, _ ->
-            minutes = (hour * 60) + minute
-        }
-    )
+    AppTimePicker{ hour, minute, _ ->
+        onChangeDuration((hour * 60) + minute)
+    }
     Height(20.dp)
     Text(
         text = buildAnnotatedString {
             append("Выбрано: ")
             withStyle(SpanStyle(color = Colors.PRIMARY, fontFamily = Fonts.INTER, fontWeight = FontWeight.Bold)){
-                append(formatCookingTime(minutes))
+                append(formatCookingTime(cookingTime))
             }
         },
         color = Colors.MAIN_TEXT,
