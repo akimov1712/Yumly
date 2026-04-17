@@ -1,7 +1,6 @@
 package ru.topbun.core.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -16,58 +15,62 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.Modifier.Companion
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ozcanalasalvar.datepicker.compose.component.SelectorView
 import com.ozcanalasalvar.datepicker.model.Time
-import com.ozcanalasalvar.datepicker.ui.theme.PickerTheme
 import com.ozcanalasalvar.datepicker.ui.theme.colorLightOnBackground
 import com.ozcanalasalvar.datepicker.ui.theme.colorLightPrimary
-import com.ozcanalasalvar.datepicker.ui.theme.colorLightTextPrimary
 import com.ozcanalasalvar.datepicker.ui.theme.lightPallet
 import com.ozcanalasalvar.wheelview.SelectorOptions
 import com.ozcanalasalvar.wheelview.WheelView
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
 
-
 @Composable
 fun AppTimePicker(
-    offset: Int = 2,
-    startTimeMinutes: Int = 0,
-    textSize: Int = 16,
-    onTimeChanged: (Int, Int, String?) -> Unit = { _, _, _ -> },
+    startTimeMinutes: Int,
+    onTimeChanged: (hours: Int, minutes: Int) -> Unit,
 ) {
-    val startTime = Time(hour = startTimeMinutes / 60, minute = startTimeMinutes % 60)
-    var selectedTime by remember { mutableStateOf(startTime) }
+    val offset = 2
+    val textSize = 16
+    val fontSize = maxOf(13, minOf(19, textSize)).sp
 
-    val hours = mutableListOf<Int>().apply {
-        for (hour in 0..23) {
-            add(hour)
-        }
+    val hours = remember { (0..23).toList() }
+    val minutes = remember { (0..59).toList() }
+
+    var selectedTime by remember {
+        mutableStateOf(
+            Time(
+                hour = startTimeMinutes / 60,
+                minute = startTimeMinutes % 60
+            )
+        )
     }
 
-    val minutes = mutableListOf<Int>().apply {
-        for (minute in 0..59) {
-            add(minute)
-        }
+    // 👉 синхронизация при reset
+    LaunchedEffect(startTimeMinutes) {
+        selectedTime = Time(
+            hour = startTimeMinutes / 60,
+            minute = startTimeMinutes % 60
+        )
     }
-    val fontSize = maxOf(13, minOf(19, textSize))
 
+    // 👉 callback наружу
     LaunchedEffect(selectedTime) {
-        onTimeChanged(selectedTime.hour, selectedTime.minute, selectedTime.format)
+        onTimeChanged(selectedTime.hour, selectedTime.minute)
     }
+
+    val itemHeight = (fontSize.value + 10).dp
 
     Box(
         modifier = Modifier
@@ -77,118 +80,97 @@ fun AppTimePicker(
         contentAlignment = Alignment.Center
     ) {
 
-        val height=( fontSize + 10) .dp
-
-
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 100.dp, end = 100.dp)
+                .padding(horizontal = 100.dp)
         ) {
 
-
-            WheelView(modifier = Modifier.weight(3f),
-                itemSize = DpSize(200.dp, height),
-                selection = 0,
-                itemCount = hours.size,
-                rowOffset = offset,
-                selectorOption = SelectorOptions().copy(selectEffectEnabled = true, enabled = false),
-                onFocusItem = {
-                    selectedTime = selectedTime.copy(hour = hours[it])
-                },
-                content = {
+            key(selectedTime.hour) {
+                WheelView(
+                    modifier = Modifier.weight(1f),
+                    itemSize = DpSize(200.dp, itemHeight),
+                    selection = selectedTime.hour,
+                    itemCount = hours.size,
+                    rowOffset = offset,
+                    selectorOption = SelectorOptions().copy(
+                        selectEffectEnabled = true,
+                        enabled = false
+                    ),
+                    onFocusItem = {
+                        selectedTime = selectedTime.copy(hour = hours[it])
+                    }
+                ) {
                     Text(
-                        text = (if (hours[it] < 10) "0${hours[it]}" else "${hours[it]}") + " ч",
+                        text = "%02d ч".format(hours[it]),
                         textAlign = TextAlign.Start,
                         modifier = Modifier.width(200.dp),
-                        fontSize = fontSize.sp,
+                        fontSize = fontSize,
                         style = Typography.P2,
                         color = Colors.MAIN_TEXT
                     )
-                })
+                }
+            }
 
-
-            WheelView(modifier = Modifier.weight(3f),
-                itemSize = DpSize(200.dp, height),
-                selection = 0,
-                itemCount = minutes.size,
-                rowOffset = offset,
-                selectorOption = SelectorOptions().copy(selectEffectEnabled = true, enabled = false),
-                onFocusItem = {
-                    selectedTime = selectedTime.copy(minute = minutes[it])
-                },
-                content = {
+            key(selectedTime.minute) {
+                WheelView(
+                    modifier = Modifier.weight(1f),
+                    itemSize = DpSize(200.dp, itemHeight),
+                    selection = selectedTime.minute,
+                    itemCount = minutes.size,
+                    rowOffset = offset,
+                    selectorOption = SelectorOptions().copy(
+                        selectEffectEnabled = true,
+                        enabled = false
+                    ),
+                    onFocusItem = {
+                        selectedTime = selectedTime.copy(minute = minutes[it])
+                    }
+                ) {
                     Text(
-                        text = (if (minutes[it] < 10) "0${minutes[it]}" else "${minutes[it]}") + " мин",
+                        text = "%02d мин".format(minutes[it]),
                         textAlign = TextAlign.End,
                         modifier = Modifier.width(200.dp),
-                        fontSize = fontSize.sp,
+                        fontSize = fontSize,
                         style = Typography.P2,
                         color = Colors.MAIN_TEXT
                     )
-                })
+                }
+            }
         }
 
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .matchParentSize()
                 .background(
-                    brush = Brush.verticalGradient(
-                        colors =  lightPallet
-                    )
-                ),
-        ) {}
+                    Brush.verticalGradient(colors = lightPallet)
+                )
+        )
 
-        Column(
-            Modifier.fillMaxSize()
-        ) {
+        Column(Modifier.fillMaxSize()) {
 
             Box(
-                modifier = Modifier
+                Modifier
                     .weight(offset.toFloat())
                     .fillMaxWidth()
-                    .background(colorLightOnBackground),
+                    .background(colorLightOnBackground)
             )
 
-
-            Column(
-                modifier = Modifier
-                    .weight(1.13f)
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Box(
-                    Modifier.fillMaxSize()
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Colors.MAIN_TEXT.copy(0.07f))
-
-                )
-//                Box(
-//                    modifier = Modifier
-//                        .height(0.5.dp)
-//                        .alpha(0.2f)
-//                        .background(colorLightTextPrimary)
-//                        .fillMaxWidth()
-//                )
-//                Box(
-//                    modifier = Modifier
-//                        .height(0.5.dp)
-//                        .alpha(0.2f)
-//                        .background(colorLightTextPrimary)
-//                        .fillMaxWidth()
-//                )
-
-            }
-
-
+            Box(
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Colors.MAIN_TEXT.copy(alpha = 0.07f))
+            )
 
             Box(
-                modifier = Modifier
+                Modifier
                     .weight(offset.toFloat())
                     .fillMaxWidth()
-                    .background(colorLightOnBackground),
+                    .background(colorLightOnBackground)
             )
         }
-
     }
 }
