@@ -7,8 +7,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.components.AppTimePicker
+import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Fonts
 import ru.topbun.core.ui.theme.Typography
@@ -18,7 +18,7 @@ import ru.topbun.core.ui.utils.formatCookingTime
 internal fun DurationSection(cookingTime: Int, onChangeDuration: (Int) -> Unit) = SectionWrapper(
     title = "Время приготовления"
 ){
-    AppTimePicker{ hour, minute, _ ->
+    AppTimePicker(cookingTime){ hour, minute ->
         onChangeDuration((hour * 60) + minute)
     }
     Height(20.dp)

@@ -1,33 +1,26 @@
-package ru.topbun.home_filter.components
+package ru.topbun.upload.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ru.topbun.core.ui.components.DifficultyItem
-import ru.topbun.core.ui.components.Height
-import ru.topbun.core.ui.theme.Colors
-import ru.topbun.core.ui.theme.Typography
 import ru.topbun.domain.entity.recipe.RecipeDifficulty
-import ru.topbun.home_filter.HomeFilterIntent
 
 @Composable
 internal fun DifficultySection(
     difficultyList: List<RecipeDifficulty>,
     selectedDifficultyIndex: Int?,
-    sendIntent: (HomeFilterIntent) -> Unit
-) = Column {
-    Title()
-    Height(16.dp)
+    changeDifficultyIndex: (Int) -> Unit
+) = SectionWrapper(
+    title = "Сложность приготовления"
+) {
     DifficultyList(
         difficultyList = difficultyList,
         selectedDifficultyIndex = selectedDifficultyIndex,
-        sendIntent = sendIntent
+        changeDifficultyIndex = changeDifficultyIndex
     )
 }
 
@@ -35,30 +28,18 @@ internal fun DifficultySection(
 private fun DifficultyList(
     difficultyList: List<RecipeDifficulty>,
     selectedDifficultyIndex: Int?,
-    sendIntent: (HomeFilterIntent) -> Unit
+    changeDifficultyIndex: (Int) -> Unit
 ) {
 
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         difficultyList.forEachIndexed { index, difficulty ->
             DifficultyItem(
                 difficulty = difficulty,
                 selected = selectedDifficultyIndex == index
-            ) { sendIntent(HomeFilterIntent.ChangeSelectDifficultyIndex(index)) }
+            ) { changeDifficultyIndex(index) }
         }
     }
 }
-
-
-@Composable
-private fun Title() {
-    Text(
-        text = "Сложность приготовления",
-        modifier = Modifier.padding(horizontal = 24.dp),
-        color = Colors.MAIN_TEXT,
-        style = Typography.H2
-    )
-}
-

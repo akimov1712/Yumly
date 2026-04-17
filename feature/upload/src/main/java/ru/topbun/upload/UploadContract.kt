@@ -1,14 +1,25 @@
 package ru.topbun.upload
 
 import android.net.Uri
+import ru.topbun.domain.entity.recipe.RecipeDifficulty
+import ru.topbun.upload.fragments.UploadFragments
 
 internal data class UploadState(
+    val selectedFragment: UploadFragments = UploadFragments.Basic,
+    val fragments: List<UploadFragments> = UploadFragments.entries,
+    val showDialogClearData: Boolean = false,
+
     val preview: Uri? = null,
     val name: String = "",
     val description: String = "",
-    val cookingTime: Int = 30,
-    val nutrients: Map<NutrientsEnum, Int> = NutrientsEnum.createNutrientMap()
+    val cookingTime: Int = 0,
+    val nutrients: Map<NutrientsEnum, Int> = NutrientsEnum.createNutrientMap(),
+    val difficultyList: List<RecipeDifficulty> = RecipeDifficulty.entries,
+    val selectedDifficultyIndex: Int? = null,
 ){
+
+    val selectedOrderFragments: Int
+        get() = UploadFragments.entries.indexOf(selectedFragment) + 1
 
     val totalCalories: Int
         get() = nutrients.map { (nutrient, value) -> value * nutrient.calories }.sum()
@@ -34,11 +45,16 @@ internal data class UploadState(
 
 internal sealed interface UploadIntent{
 
+    data object ClearData: UploadIntent
+    data class ChangeShowDialogClearData(val value: Boolean): UploadIntent
+
     data class ChangePreview(val uri: Uri?): UploadIntent
     data class ChangeName(val value: String): UploadIntent
     data class ChangeDescription(val value: String): UploadIntent
     data class ChangeCookingTime(val minutes: Int): UploadIntent
     data class ChangeNutrientValue(val nutrient: UploadState.NutrientsEnum, val value: Int): UploadIntent
+    data class ChangeSelectDifficultyIndex(val index: Int): UploadIntent
+    data class ChangeFragment(val fragment: UploadFragments): UploadIntent
 
 }
 

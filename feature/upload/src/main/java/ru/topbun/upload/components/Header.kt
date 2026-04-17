@@ -15,12 +15,11 @@ import ru.topbun.core.ui.components.AppTextButton
 import ru.topbun.core.ui.components.Weight
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
-import ru.topbun.upload.UploadFragments
 
 @Composable
 internal fun Header(
-    selectedFragment: UploadFragments,
-    fragments: List<UploadFragments>,
+    selectedOrder: Int,
+    fragmentsSize: Int,
     onClickClear: () -> Unit
 ) {
     Row(
@@ -37,9 +36,8 @@ internal fun Header(
         Weight(1f)
         Text(
             text = buildAnnotatedString {
-                val order = fragments.indexOf(selectedFragment) + 1
-                append("$order/")
-                withStyle(SpanStyle(color = Colors.SECONDARY_TEXT)) { append(fragments.size.toString()) }
+                append("$selectedOrder/")
+                withStyle(SpanStyle(color = Colors.SECONDARY_TEXT)) { append(fragmentsSize.toString()) }
             },
             style = Typography.H2,
             color = Colors.MAIN_TEXT
