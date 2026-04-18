@@ -60,6 +60,8 @@ internal fun ClearDataDialog(
             ) {
                 AppOutlinedButton(
                     text = "Отмена",
+                    borderColor = Colors.OUTLINE,
+                    contentColor = Colors.BLUE_TEXT,
                     modifier = Modifier.weight(1f).defaultMinSize(minHeight = 48.dp),
                     onClick = onDismissRequest
                 )

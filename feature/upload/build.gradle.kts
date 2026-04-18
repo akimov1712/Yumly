@@ -40,6 +40,9 @@ android {
 
 dependencies {
 
+    // UI
+    implementation(libs.reorderable)
+
     // Coil
     implementation(libs.coil.compose)
 

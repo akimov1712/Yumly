@@ -25,6 +25,8 @@ import ru.topbun.core.ui.utils.LocalBottomBarPadding
 import ru.topbun.upload.components.ClearDataDialog
 import ru.topbun.upload.components.Header
 import ru.topbun.upload.fragments.BasicFragment
+import ru.topbun.upload.fragments.ContentFragment
+import ru.topbun.upload.fragments.UploadFragments
 
 object UploadScreen: Tab {
 
@@ -55,7 +57,10 @@ object UploadScreen: Tab {
                 onClickClear = { viewModel.sendIntent(UploadIntent.ChangeShowDialogClearData(true)) },
             )
             Height(24.dp)
-            BasicFragment()
+            when (state.selectedFragment) {
+                UploadFragments.Basic -> BasicFragment()
+                UploadFragments.Content -> ContentFragment()
+            }
         }
 
         if (state.showDialogClearData) {

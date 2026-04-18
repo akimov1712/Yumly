@@ -1,7 +1,9 @@
 package ru.topbun.upload.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,26 +24,30 @@ internal fun SectionWrapper(
     title: String,
     content: @Composable () -> Unit
 ) {
-    SectionWrapper(buildAnnotatedString { append(title) }, content)
+    SectionWrapper(title = buildAnnotatedString { append(title) }, content = content)
 }
 
 @Composable
 internal fun SectionWrapper(
     title: AnnotatedString,
+    padding: PaddingValues = PaddingValues(horizontal = 24.dp),
     content: @Composable () -> Unit
 ) {
     Column(
        modifier = Modifier.fillMaxWidth()
            .clip(RoundedCornerShape(28.dp))
            .background(Colors.WHITE)
-           .padding(horizontal = 24.dp).padding(top = 20.dp, bottom = 24.dp)
+           .padding(top = 20.dp, bottom = 24.dp)
     ) {
         Text(
+            modifier = Modifier.padding(horizontal = 24.dp),
             text = title,
             color = Colors.MAIN_TEXT,
             style = Typography.H2
         )
         Height(20.dp)
-        content()
+        Column(Modifier.padding(padding)){
+            content()
+        }
     }
 }
