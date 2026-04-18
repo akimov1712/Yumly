@@ -57,7 +57,6 @@ fun AppTimePicker(
         )
     }
 
-    // 👉 синхронизация при reset
     LaunchedEffect(startTimeMinutes) {
         selectedTime = Time(
             hour = startTimeMinutes / 60,
@@ -65,7 +64,6 @@ fun AppTimePicker(
         )
     }
 
-    // 👉 callback наружу
     LaunchedEffect(selectedTime) {
         onTimeChanged(selectedTime.hour, selectedTime.minute)
     }
