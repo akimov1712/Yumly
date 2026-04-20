@@ -119,7 +119,9 @@ private fun ReorderableListItemScope.IngredientItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        ReorderHandle()
+        Box(Modifier.draggableHandle()){
+            ReorderHandle()
+        }
         IngredientValue(ingredient)
         RoundActionButton(
             iconRes = R.drawable.ic_minus,
@@ -153,59 +155,6 @@ private fun RowScope.IngredientValue(ingredient: IngredientEntity) {
             },
             style = Typography.H3,
             color = Colors.BLUE_TEXT
-        )
-    }
-}
-
-@Composable
-private fun ReorderableListItemScope.ReorderHandle() {
-    Column(
-        modifier = Modifier.draggableHandle(
-            onDragStarted = {
-
-            },
-            onDragStopped = {
-
-            },
-        ),
-        verticalArrangement = Arrangement.spacedBy(3.dp)
-    ) {
-        repeat(3) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(3.dp)
-            ) {
-                repeat(2) {
-                    Box(
-                        modifier = Modifier
-                            .size(4.dp)
-                            .clip(CircleShape)
-                            .background(Colors.SECONDARY_TEXT)
-                    )
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-private fun RoundActionButton(
-    iconRes: Int,
-    containerColor: Color,
-    onClick: () -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .size(30.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(containerColor)
-            .rippleClickable(color = Colors.BLACK, onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            painter = painterResource(iconRes),
-            contentDescription = null,
-            tint = Colors.WHITE
         )
     }
 }
