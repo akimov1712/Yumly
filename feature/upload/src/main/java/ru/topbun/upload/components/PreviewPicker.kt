@@ -113,7 +113,7 @@ private fun Placeholder() {
         )
         Height(10.dp)
         Text(
-            text = "(до 12 Mb)",
+            text = "(до 8 Mb)",
             color = Colors.SECONDARY_TEXT,
             style = Typography.S
         )

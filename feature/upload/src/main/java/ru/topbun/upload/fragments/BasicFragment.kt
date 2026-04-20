@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -54,8 +55,11 @@ internal fun BasicFragment(
         viewModel.sendIntent(UploadIntent.ChangeSelectDifficultyIndex(it))
     }
     AppButton(
-        modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 56.dp),
-        text = "Далее"
+        modifier = Modifier.fillMaxWidth()
+            .defaultMinSize(minHeight = 56.dp)
+            .padding(horizontal = 24.dp),
+        enabled = state.nextButtonEnabled,
+        text = "Далее",
     ) {
         viewModel.sendIntent(UploadIntent.ChangeFragment(UploadFragments.Content))
     }

@@ -10,7 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 object ImagePickerHelper {
 
-    private const val MAX_SIZE_BYTES = 12 * 1024 * 1024
+    private const val MAX_SIZE_BYTES = 8 * 1024 * 1024
 
     @Composable
     fun createImagePickerLauncher(
@@ -63,7 +63,7 @@ object ImagePickerHelper {
         if (size != null && size <= MAX_SIZE_BYTES) {
             onImagePicked(uri)
         } else {
-            onError("Файл больше 12 МБ или не удалось определить размер")
+            onError("Файл больше 8 МБ или не удалось определить размер")
         }
     }
 

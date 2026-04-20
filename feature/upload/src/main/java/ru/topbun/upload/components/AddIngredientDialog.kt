@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import ru.topbun.core.ui.components.AppButton
 import ru.topbun.core.ui.components.BottomDialogWrapper
 import ru.topbun.core.ui.components.AppOutlinedButton
@@ -35,81 +36,75 @@ internal fun AddIngredientDialog(
 
     BottomDialogWrapper(
         onDismissRequest = onDismissRequest,
-        containerColor = Colors.BACKGROUND
+        containerColor = Colors.WHITE
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Colors.BACKGROUND)
-                .padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
+                .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
-            Column(
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Добавить ингредиент",
+                style = Typography.H2,
+                color = Colors.MAIN_TEXT,
+                textAlign = TextAlign.Center
+            )
+            Height(10.dp)
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Укажите название и количество ингредиента",
+                style = Typography.P2,
+                lineHeight = 17.sp,
+                color = Colors.SECONDARY_TEXT,
+                textAlign = TextAlign.Center
+            )
+            Height(20.dp)
+            AppOutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 24.dp)
-            ) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Добавить ингредиент",
-                    style = Typography.H2,
-                    color = Colors.MAIN_TEXT,
-                    textAlign = TextAlign.Center
-                )
-                Height(8.dp)
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Укажите название и количество ингредиента",
-                    style = Typography.P2,
-                    color = Colors.SECONDARY_TEXT,
-                    textAlign = TextAlign.Center
-                )
-                Height(20.dp)
-                AppOutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .defaultMinSize(minHeight = 56.dp),
-                    text = name,
-                    placeholder = "Например, Яйцо",
-                    supportText = "${name.length}/32",
-                    onValueChange = {
-                        if (it.length <= 32) name = it
-                    }
-                )
-                Height(12.dp)
-                AppOutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .defaultMinSize(minHeight = 56.dp),
-                    text = value,
-                    placeholder = "Например, 2 шт",
-                    supportText = "${value.length}/24",
-                    onValueChange = {
-                        if (it.length <= 24) value = it
-                    }
-                )
-                Height(20.dp)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    AppOutlinedButton(
-                        text = "Отмена",
-                        modifier = Modifier
-                            .weight(1f)
-                            .defaultMinSize(minHeight = 48.dp),
-                        onClick = onDismissRequest,
-                        borderColor = Colors.OUTLINE,
-                        contentColor = Colors.BLUE_TEXT,
-                    )
-                    AppButton(
-                        text = "Добавить",
-                        modifier = Modifier
-                            .weight(1f)
-                            .defaultMinSize(minHeight = 48.dp),
-                        enabled = buttonEnabled,
-                        onClick = { onClickConfirm(name, value) }
-                    )
+                    .defaultMinSize(minHeight = 56.dp),
+                text = name,
+                placeholder = "Например, Яйцо",
+                supportText = "${name.length}/32",
+                onValueChange = {
+                    if (it.length <= 32) name = it
                 }
+            )
+            Height(12.dp)
+            AppOutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .defaultMinSize(minHeight = 56.dp),
+                text = value,
+                placeholder = "Например, 2 шт",
+                supportText = "${value.length}/24",
+                onValueChange = {
+                    if (it.length <= 24) value = it
+                }
+            )
+            Height(20.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                AppOutlinedButton(
+                    text = "Отмена",
+                    modifier = Modifier
+                        .weight(1f)
+                        .defaultMinSize(minHeight = 48.dp),
+                    onClick = onDismissRequest,
+                    borderColor = Colors.OUTLINE,
+                    contentColor = Colors.BLUE_TEXT,
+                )
+                AppButton(
+                    text = "Добавить",
+                    modifier = Modifier
+                        .weight(1f)
+                        .defaultMinSize(minHeight = 48.dp),
+                    enabled = buttonEnabled,
+                    onClick = { onClickConfirm(name, value) }
+                )
             }
         }
     }
