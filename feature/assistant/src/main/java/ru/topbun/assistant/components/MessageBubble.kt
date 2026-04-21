@@ -40,10 +40,9 @@ internal fun MessageBubble(message: GptMessageEntity) {
                 .background(if (isUser) Colors.PRIMARY else Colors.WHITE)
                 .padding(16.dp)
         ) {
-            Text(
+            FormattedMessageText(
                 text = message.text,
-                color = if (isUser) Colors.WHITE else Colors.MAIN_TEXT,
-                style = Typography.P2
+                color = if (isUser) Colors.WHITE else Colors.MAIN_TEXT
             )
             Height(8.dp)
             Text(
