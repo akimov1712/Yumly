@@ -31,14 +31,14 @@ internal fun MessageBubble(message: GptMessageEntity) {
                 .fillMaxWidth(0.82f)
                 .clip(
                     RoundedCornerShape(
-                        topStart = 24.dp,
-                        topEnd = 24.dp,
-                        bottomStart = if (isUser) 24.dp else 8.dp,
-                        bottomEnd = if (isUser) 8.dp else 24.dp
+                        topStart = 26.dp,
+                        topEnd = 26.dp,
+                        bottomStart = if (isUser) 26.dp else 10.dp,
+                        bottomEnd = if (isUser) 10.dp else 26.dp
                     )
                 )
                 .background(if (isUser) Colors.PRIMARY else Colors.WHITE)
-                .padding(16.dp)
+                .padding(horizontal = 18.dp, vertical = 14.dp)
         ) {
             FormattedMessageText(
                 text = message.text,

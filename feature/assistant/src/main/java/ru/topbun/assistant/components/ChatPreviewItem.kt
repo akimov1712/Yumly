@@ -1,10 +1,13 @@
 package ru.topbun.assistant.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.topbun.core.ui.components.Height
+import ru.topbun.core.ui.components.Width
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
 import ru.topbun.core.ui.utils.rippleClickable
@@ -29,14 +33,21 @@ internal fun ChatPreviewItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(28.dp))
-            .background(if (selected) Colors.PRIMARY.copy(alpha = 0.12f) else Colors.FORM)
+            .clip(RoundedCornerShape(24.dp))
+            .background(if (selected) Colors.PRIMARY.copy(alpha = 0.14f) else Colors.WHITE)
             .rippleClickable(onClick = onClick)
             .padding(16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Box(
+                modifier = Modifier
+                    .size(10.dp)
+                    .clip(CircleShape)
+                    .background(if (selected) Colors.PRIMARY else Colors.SECONDARY_TEXT.copy(alpha = 0.45f))
+            )
+            Width(10.dp)
             Text(
                 modifier = Modifier.weight(1f),
                 text = "Чат #${chat.id}",
