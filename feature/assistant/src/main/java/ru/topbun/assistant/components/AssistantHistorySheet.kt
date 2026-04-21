@@ -1,6 +1,5 @@
 package ru.topbun.assistant.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,25 +16,23 @@ import ru.topbun.assistant.AssistantState
 import ru.topbun.core.ui.components.AppPullRefresh
 import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.components.PaginationList
-import ru.topbun.core.ui.theme.Colors
 
 @Composable
-internal fun AssistantChatDrawer(
+internal fun AssistantHistorySheet(
     state: AssistantState,
     onIntent: (AssistantIntent) -> Unit,
-    onCloseDrawer: () -> Unit
+    onClose: () -> Unit
 ) {
     Column(
         modifier = Modifier
-            .width(320.dp)
-            .fillMaxHeight()
-            .background(Colors.WHITE)
-            .padding(top = 24.dp)
+            .fillMaxWidth()
+            .fillMaxHeight(0.86f)
+            .padding(top = 8.dp)
     ) {
-        DrawerHeader(
+        HistoryHeader(
             onClickNewChat = {
                 onIntent(AssistantIntent.StartNewChat)
-                onCloseDrawer()
+                onClose()
             }
         )
         Height(12.dp)
@@ -53,7 +49,7 @@ internal fun AssistantChatDrawer(
                 isEndList = state.chatList.isEndList,
                 state = state.chatListState,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
                 onLoadMore = { onIntent(AssistantIntent.LoadChats) },
                 shimmerContent = {
                     items(8) {
@@ -70,7 +66,7 @@ internal fun AssistantChatDrawer(
                             selected = state.selectedChat?.id == chat.id,
                             onClick = {
                                 onIntent(AssistantIntent.SelectChat(chat))
-                                onCloseDrawer()
+                                onClose()
                             }
                         )
                     }
