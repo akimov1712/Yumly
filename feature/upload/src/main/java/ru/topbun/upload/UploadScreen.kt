@@ -33,6 +33,7 @@ import ru.topbun.upload.UploadState.UploadUiState.NEED_AUTH
 import ru.topbun.upload.UploadState.UploadUiState.SUCCESS
 import ru.topbun.upload.components.ClearDataDialog
 import ru.topbun.upload.components.Header
+import ru.topbun.upload.components.SuccessPublishRecipeDialog
 import ru.topbun.upload.fragments.BasicFragment
 import ru.topbun.upload.fragments.ContentFragment
 import ru.topbun.upload.fragments.UploadFragments.Basic
@@ -80,6 +81,13 @@ object UploadScreen: Tab {
                     viewModel.sendIntent(UploadIntent.ClearData)
                     Toast.makeText(context, "Данные успешно очищены", Toast.LENGTH_SHORT).show()
                 }
+            )
+        }
+
+        state.publishedRecipeId?.let {
+            SuccessPublishRecipeDialog(
+                onDismissRequest = { viewModel.sendIntent(UploadIntent.ChangeShowDialogSuccessPublish(null)) },
+                onClickOpenRecipe = {  }
             )
         }
     }

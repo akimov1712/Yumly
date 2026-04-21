@@ -33,6 +33,11 @@ internal class UploadViewModel(
     private fun changeShowDialogAddIngredient(value: Boolean) = _state.update { it.copy(showDialogAddIngredient = value) }
     private fun changeShowDialogAddStep(value: Boolean) = _state.update { it.copy(showDialogAddStep = value) }
 
+    private fun changeShowDialogSuccessPublish(value: Int?) = _state.update {
+        val newPublishRecipeUiState = value?.let { UploadState.PublishRecipeUiState.Success(it) } ?: UploadState.PublishRecipeUiState.None
+        it.copy(publishRecipeUiState = newPublishRecipeUiState)
+    }
+
     private fun changeNutrientValue(nutrient: UploadState.NutrientsEnum, value: Int){
         val newNutrients = _state.value.nutrients.toMutableMap()
         newNutrients[nutrient] = value
@@ -178,9 +183,13 @@ internal class UploadViewModel(
             tagIds = emptyList(),
         )
         val result = addRecipeUseCase(recipe)
-        result.onSuccess {
-            snackbarManager.showMessage("Рецепт добавлен")
-            _state.update { UploadState() }
+        result.onSuccess { recipe ->
+            _state.update {
+                UploadState(
+                    uploadUiState = UploadState.UploadUiState.SUCCESS,
+                    publishRecipeUiState = UploadState.PublishRecipeUiState.Success(recipe.id),
+                )
+            }
         }.onError { error, _ ->
             val message = when(error){
                 DataError.Network.UNAUTHORIZED -> "Пользователь не авторизован"
@@ -217,6 +226,7 @@ internal class UploadViewModel(
             is UploadIntent.ReorderStep -> reorderSteps(intent.fromIndex, intent.toIndex)
             UploadIntent.PublishRecipe -> publishRecipe()
             UploadIntent.CheckSession -> checkSession()
+            is UploadIntent.ChangeShowDialogSuccessPublish -> changeShowDialogSuccessPublish(intent.recipeId)
         }
     }
 }

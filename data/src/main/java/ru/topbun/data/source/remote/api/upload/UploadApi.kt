@@ -10,7 +10,7 @@ import ru.topbun.data.source.remote.dto.upload.UploadResponse
 internal interface UploadApi {
 
     @Multipart
-    @POST("/upload")
+    @POST("/v1/upload")
     suspend fun uploadImage(
         @Part file: MultipartBody.Part
     ): Response<UploadResponse>
