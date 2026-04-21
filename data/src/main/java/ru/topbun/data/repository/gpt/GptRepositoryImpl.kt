@@ -19,7 +19,7 @@ internal class GptRepositoryImpl(
 
     override suspend fun getChats(limit: Int, offset: Int): Result<List<GptChatEntity>, DataError> =
         context.exceptionWrapper {
-            val request = GetGptChatsRequest(limit, offset)
+            val request = GetGptChatsRequest(offset = offset, limit = limit)
             val response = api.getChats(request)
             val chats = response.body()
             if (response.isSuccessful && chats != null) {
