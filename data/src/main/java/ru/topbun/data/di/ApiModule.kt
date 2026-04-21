@@ -37,5 +37,6 @@ val apiModule = module {
     api { notificationApi }
     api { recipeApi }
     api { signUpApi }
+    api { uploadApi }
     api { verificationApi }
 }

@@ -14,6 +14,7 @@ import ru.topbun.data.repository.notification.NotificationRepositoryImpl
 import ru.topbun.data.repository.recipe.RecipeRepositoryImpl
 import ru.topbun.data.repository.session.SessionRepositoryImpl
 import ru.topbun.data.repository.signUp.SignUpRepositoryImpl
+import ru.topbun.data.repository.upload.UploadRepositoryImpl
 import ru.topbun.data.repository.verification.VerificationRepositoryImpl
 import ru.topbun.domain.repository.account.AccountRepository
 import ru.topbun.domain.repository.config.ConfigRepository
@@ -26,6 +27,7 @@ import ru.topbun.domain.repository.notification.NotificationRepository
 import ru.topbun.domain.repository.recipe.RecipeRepository
 import ru.topbun.domain.repository.session.SessionRepository
 import ru.topbun.domain.repository.signUp.SignUpRepository
+import ru.topbun.domain.repository.upload.UploadRepository
 import ru.topbun.domain.repository.verification.VerificationRepository
 
 val repositoryModule = module {
@@ -40,5 +42,6 @@ val repositoryModule = module {
     factoryOf(::NotificationRepositoryImpl) bind NotificationRepository::class
     factoryOf(::RecipeRepositoryImpl) bind RecipeRepository::class
     factoryOf(::SignUpRepositoryImpl) bind SignUpRepository::class
+    factoryOf(::UploadRepositoryImpl) bind UploadRepository::class
     factoryOf(::VerificationRepositoryImpl) bind VerificationRepository::class
 }

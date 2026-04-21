@@ -23,8 +23,10 @@ internal data class UploadState(
     val ingredients: List<IngredientEntity> = emptyList(),
     val steps: List<StepEntity> = emptyList(),
 
-    val uploadUiState: UploadUiState? = null
+    val uploadUiState: UploadUiState? = null,
+    val publishLoading: Boolean = false
 ){
+
 
     val publishButtonEnabled: Boolean
         get() = nextButtonEnabled && listOf(ingredients, steps).all { it.isNotEmpty() }
