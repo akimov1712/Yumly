@@ -24,9 +24,12 @@ internal data class UploadState(
     val steps: List<StepEntity> = emptyList(),
 
     val uploadUiState: UploadUiState? = null,
-    val publishLoading: Boolean = false
+    val publishLoading: Boolean = false,
+    val publishRecipeUiState: PublishRecipeUiState = PublishRecipeUiState.None,
 ){
 
+    val publishedRecipeId: Int?
+        get() = if (publishRecipeUiState is PublishRecipeUiState.Success) publishRecipeUiState.id else null
 
     val publishButtonEnabled: Boolean
         get() = nextButtonEnabled && listOf(ingredients, steps).all { it.isNotEmpty() }
@@ -50,9 +53,9 @@ internal data class UploadState(
         val title: String,
         val calories: Int,
     ){
-        Protein("Белки", 4),
-        Fat("Жиры", 9),
-        Carbs("Углеводы", 4);
+        Protein("Белки", PROTEIN_CALORIES_VALUE),
+        Fat("Жиры", FAT_CALORIES_VALUE),
+        Carbs("Углеводы", CARBS_CALORIES_VALUE);
 
         companion object{
             fun createNutrientMap() = entries.associateWith { 0 }
@@ -62,6 +65,17 @@ internal data class UploadState(
 
     enum class UploadUiState{
         SUCCESS, NEED_AUTH
+    }
+
+    sealed interface PublishRecipeUiState{
+        object None: PublishRecipeUiState
+        data class Success(val id: Int): PublishRecipeUiState
+    }
+
+    companion object{
+        private const val PROTEIN_CALORIES_VALUE = 4
+        private const val FAT_CALORIES_VALUE = 9
+        private const val CARBS_CALORIES_VALUE = 4
     }
 
 }
@@ -74,6 +88,7 @@ internal sealed interface UploadIntent{
     data class ChangeShowDialogClearData(val value: Boolean): UploadIntent
     data class ChangeShowDialogAddIngredient(val value: Boolean): UploadIntent
     data class ChangeShowDialogAddStep(val value: Boolean): UploadIntent
+    data class ChangeShowDialogSuccessPublish(val recipeId: Int?): UploadIntent
 
     data class ChangePreview(val uri: Uri?): UploadIntent
     data class ChangeName(val value: String): UploadIntent
@@ -92,6 +107,5 @@ internal sealed interface UploadIntent{
 }
 
 internal sealed interface UploadEvent{
-
 
 }
