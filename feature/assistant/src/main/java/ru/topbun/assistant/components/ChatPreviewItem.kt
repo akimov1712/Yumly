@@ -53,7 +53,7 @@ internal fun ChatPreviewItem(
         }
         Height(8.dp)
         Text(
-            text = chat.messages.firstOrNull()?.text?.ifBlank { "Без текста" } ?: "Новый диалог",
+            text = chat.messages.firstOrNull()?.text?.toPlainMessagePreview()?.ifBlank { "Без текста" } ?: "Новый диалог",
             color = Colors.MAIN_TEXT,
             style = Typography.P2.copy(lineHeight = 20.sp),
             maxLines = 2,
