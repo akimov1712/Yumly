@@ -40,6 +40,9 @@ android {
 
 dependencies {
 
+    // UI
+    implementation(libs.compose.shimmer)
+
     // Voyager
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.tab.navigator)
@@ -59,7 +62,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.compose.shimmer)
 
     // Project Modules
     implementation(project(":core:ui"))
