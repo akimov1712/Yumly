@@ -1,20 +1,20 @@
 package ru.topbun.upload
 
 import android.net.Uri
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import ru.topbun.core.android.MVI
 import ru.topbun.core.android.SnackbarManager
+import ru.topbun.core.common.error.DataError
+import ru.topbun.core.common.onError
+import ru.topbun.core.common.onSuccess
 import ru.topbun.domain.entity.recipe.IngredientEntity
 import ru.topbun.domain.entity.recipe.RecipeDifficulty
 import ru.topbun.domain.entity.recipe.StepEntity
+import ru.topbun.domain.entity.recipe.addRecipe.AddRecipeEntity
 import ru.topbun.domain.useCases.recipe.AddRecipeUseCase
 import ru.topbun.domain.useCases.session.HasSessionUseCase
 import ru.topbun.domain.useCases.upload.UploadFileUseCase
 import ru.topbun.upload.fragments.UploadFragments
-import ru.topbun.upload.fragments.UploadFragments.Basic
-import ru.topbun.upload.fragments.UploadFragments.Content
 
 internal class UploadViewModel(
     private val hasSessionUseCase: HasSessionUseCase,
@@ -80,9 +80,7 @@ internal class UploadViewModel(
         val stepDescription = description.trim()
         if (stepDescription.isBlank()) return
 
-        val nextId = (_state.value.steps.maxOfOrNull { it.id } ?: 0) + 1
         val newStep = StepEntity(
-            id = nextId,
             description = stepDescription,
             previewUrl = previewUri?.takeIf { it.isNotBlank() }
         )
@@ -137,8 +135,65 @@ internal class UploadViewModel(
         _state.update { it.copy(uploadUiState = uploadUiState) }
     }
 
+    private suspend fun uploadImage(fileUri: String): String?{
+        val result = uploadFileUseCase(fileUri)
+        result.onSuccess {
+             return it
+        }.onError { error, _ ->
+            val message = when(error){
+                DataError.Network.UNAUTHORIZED -> "Пользователь не авторизован"
+                DataError.Network.INVALID_DATA -> "Файл превышает размер 8 мб, либо не верный формат файла"
+                DataError.Network.REQUEST_TIMEOUT -> "Время ожидания превышено. Проверьте интернет-соединение или попробуйте позже"
+                DataError.Network.SERIALIZATION -> "При получении данных произошла ошибка"
+                DataError.Network.SERVER_ERROR -> "Произошла ошибка на сервере. Попробуйте позже"
+                DataError.Network.NO_INTERNET -> "Отсутствует интернет-соединение"
+                else -> "Произошла ошибка. Попробуйте позже"
+            }
+            snackbarManager.showMessage(message)
+        }
+        return null
+    }
+
     private suspend fun publishRecipe() = with(_state.value){
-        val previewUrl = preview?.let { uploadFileUseCase(it) }
+        _state.update { it.copy(publishLoading = true) }
+        val previewUrl = preview?.let { uploadImage(it.toString()) ?: return@with }
+        val protein = nutrients.getValue(UploadState.NutrientsEnum.Protein).toDouble()
+        val fat = nutrients.getValue(UploadState.NutrientsEnum.Fat).toDouble()
+        val carbs = nutrients.getValue(UploadState.NutrientsEnum.Carbs).toDouble()
+        val steps = steps.map {
+            val previewUrl = it.previewUrl?.let { uploadImage(it) ?: return@with }
+            StepEntity( description = it.description, previewUrl = previewUrl)
+        }
+        val recipe = AddRecipeEntity(
+            previewUrl = previewUrl,
+            title = name,
+            description = description,
+            cookingTime = cookingTime,
+            kcal = totalCalories,
+            protein = protein,
+            fat = fat,
+            carb = carbs,
+            ingredients = ingredients,
+            steps = steps,
+            tagIds = emptyList(),
+        )
+        val result = addRecipeUseCase(recipe)
+        result.onSuccess {
+            snackbarManager.showMessage("Рецепт добавлен")
+            _state.update { UploadState() }
+        }.onError { error, _ ->
+            val message = when(error){
+                DataError.Network.UNAUTHORIZED -> "Пользователь не авторизован"
+                DataError.Network.INVALID_DATA -> "Введённые данные не прошли валидацию. Проверьте их корректность"
+                DataError.Network.REQUEST_TIMEOUT -> "Время ожидания превышено. Проверьте интернет-соединение или попробуйте позже"
+                DataError.Network.SERIALIZATION -> "При получении данных произошла ошибка"
+                DataError.Network.SERVER_ERROR -> "Произошла ошибка на сервере. Попробуйте позже"
+                DataError.Network.NO_INTERNET -> "Отсутствует интернет-соединение"
+                else -> "Произошла ошибка. Попробуйте позже"
+            }
+            snackbarManager.showMessage(message)
+            _state.update { it.copy(publishLoading = false) }
+        }
     }
 
     override suspend fun handleIntent(intent: UploadIntent) {
@@ -160,7 +215,7 @@ internal class UploadViewModel(
             is UploadIntent.AddStep -> addStep(intent.description, intent.previewUri)
             is UploadIntent.RemoveStep -> removeStep(intent.index)
             is UploadIntent.ReorderStep -> reorderSteps(intent.fromIndex, intent.toIndex)
-            UploadIntent.PublishRecipe -> {}
+            UploadIntent.PublishRecipe -> publishRecipe()
             UploadIntent.CheckSession -> checkSession()
         }
     }

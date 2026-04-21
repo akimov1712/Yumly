@@ -25,14 +25,16 @@ internal fun Header(
     selectedOrder: Int,
     fragmentsSize: Int,
     showBackButton: Boolean,
-    enablePublishButton: Boolean,
+    publishButtonEnabled: Boolean,
+    publishButtonLoading: Boolean,
     onClickClear: () -> Unit,
     onClickBack: () -> Unit,
+    onClickPublish: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp),
+            .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -56,8 +58,9 @@ internal fun Header(
             AppButton(
                 text = "Опубликовать",
                 modifier = Modifier.defaultMinSize(minHeight = 40.dp),
-                enabled = enablePublishButton,
-                onClick = {}
+                enabled = publishButtonEnabled,
+                isLoading = publishButtonLoading,
+                onClick = onClickPublish
             )
         } else {
             Text(

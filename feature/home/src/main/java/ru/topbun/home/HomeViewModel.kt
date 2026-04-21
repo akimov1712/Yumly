@@ -83,8 +83,7 @@ internal class HomeViewModel(
     }
 
     private fun DataError.toMessage(): String = when(this){
-        DataError.Network.BAD_REQUEST,
-        DataError.Network.INVALID_DATA -> "Проверьте корректность введённых данных"
+        DataError.Network.BAD_REQUEST, DataError.Network.INVALID_DATA -> "Проверьте корректность введённых данных"
         DataError.Network.REQUEST_TIMEOUT -> "Время ожидания превышено. Проверьте интернет-соединение или попробуйте позже"
         DataError.Network.SERIALIZATION -> "При получении данных произошла ошибка"
         DataError.Network.SERVER_ERROR -> "Произошла ошибка на сервере. Попробуйте позже"
