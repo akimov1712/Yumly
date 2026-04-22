@@ -88,7 +88,7 @@ internal fun HistoryDialog(
                     ) { chat ->
                         ChatPreviewItem(
                             chat = chat,
-                            selected = state.selectedChat?.id == chat.id,
+                            selected = state.activeChatId == chat.id,
                             onClick = {
                                 onIntent(AssistantIntent.SelectChat(chat))
                                 onDismissRequest()
@@ -226,4 +226,3 @@ private fun ChatPreviewShimmer() {
         )
     }
 }
-

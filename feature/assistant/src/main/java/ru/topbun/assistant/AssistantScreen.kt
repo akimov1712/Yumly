@@ -4,18 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,17 +36,16 @@ import ru.topbun.assistant.AssistantState.AssistantUiState.NEED_AUTH
 import ru.topbun.assistant.AssistantState.AssistantUiState.SUCCESS
 import ru.topbun.assistant.components.AssistantInputBar
 import ru.topbun.assistant.components.AssistantPlaceholder
+import ru.topbun.assistant.components.ChatLoadError
+import ru.topbun.assistant.components.ChatLoadingList
 import ru.topbun.assistant.components.Header
 import ru.topbun.assistant.components.HistoryDialog
 import ru.topbun.assistant.components.MessageLimitBlock
 import ru.topbun.assistant.components.MessageList
-import ru.topbun.assistant.components.RecentChatsSection
-import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.components.UnauthorizedSection
 import ru.topbun.core.ui.theme.Colors
-import ru.topbun.core.ui.utils.useBottomBarPadding
+import ru.topbun.domain.ScreenUiState
 import ru.topbun.navigation.auth.AuthScreenProvider
-import java.nio.file.Files.size
 
 object AssistantScreen: Tab {
 
@@ -93,11 +88,16 @@ private fun AssistantContent(
     val selectedChat = state.selectedChat
     val visibleMessages = state.visibleMessages
     val messageListState = rememberLazyListState()
-
     val density = LocalDensity.current
     val insets = WindowInsets.systemBars.asPaddingValues()
     var topBarHeight by remember { mutableStateOf(0.dp) }
     var bottomBarHeight by remember { mutableStateOf(0.dp) }
+    val chatContentPadding = PaddingValues(
+        start = 12.dp,
+        end = 12.dp,
+        top = 20.dp + topBarHeight + insets.calculateTopPadding(),
+        bottom = 20.dp + bottomBarHeight + 20.dp
+    )
 
     LaunchedEffect(visibleMessages.size, visibleMessages.lastOrNull()?.id) {
         if (visibleMessages.isNotEmpty()) {
@@ -110,17 +110,24 @@ private fun AssistantContent(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            if (visibleMessages.isNotEmpty()) {
-                MessageList(
-                    messages = visibleMessages,
-                    state = messageListState,
-                    contentPadding = PaddingValues(
-                        start = 12.dp,
-                        end = 12.dp,
-                        top = 20.dp + topBarHeight + insets.calculateTopPadding(),
-                        bottom = 20.dp + bottomBarHeight + 20.dp
-                    )
+            when {
+                state.selectedChatStatus.isLoading -> ChatLoadingList(contentPadding = chatContentPadding)
+                state.selectedChatStatus.isError -> ChatLoadError(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            top = topBarHeight + insets.calculateTopPadding(),
+                            bottom = bottomBarHeight
+                        ),
+                    onRetry = { viewModel.sendIntent(AssistantIntent.RetryLoadSelectedChat) }
                 )
+                visibleMessages.isNotEmpty() -> {
+                    MessageList(
+                        messages = visibleMessages,
+                        state = messageListState,
+                        contentPadding = chatContentPadding
+                    )
+                }
             }
         }
 
@@ -135,7 +142,12 @@ private fun AssistantContent(
                 onClickNewChat = { viewModel.sendIntent(AssistantIntent.StartNewChat) }
             )
 
-            if (selectedChat == null && visibleMessages.isEmpty()) {
+            if (
+                selectedChat == null &&
+                visibleMessages.isEmpty() &&
+                state.selectedChatStatus != ScreenUiState.Loading &&
+                state.selectedChatStatus != ScreenUiState.Error
+            ) {
                 Box(
                     modifier = Modifier.weight(1f)
                         .fillMaxWidth()
@@ -154,7 +166,11 @@ private fun AssistantContent(
             if (state.isMessageLimitReached) {
                 MessageLimitBlock()
             }
-            if (!state.isMessageLimitReached && !state.sendMessageStatus.isLoading){
+            if (
+                !state.isMessageLimitReached &&
+                !state.selectedChatStatus.isLoading &&
+                !state.selectedChatStatus.isError
+            ){
                 AssistantInputBar(
                     modifier = Modifier.onGloballyPositioned { coordinates ->
                         bottomBarHeight = with(density) { coordinates.size.height.toDp() }

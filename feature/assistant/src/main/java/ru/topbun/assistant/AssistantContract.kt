@@ -9,6 +9,8 @@ internal data class AssistantState(
     val chatList: ChatListUiState = ChatListUiState(),
     val chatListState: LazyListState = LazyListState(),
     val selectedChat: GptChatEntity? = null,
+    val selectedChatId: Int? = null,
+    val selectedChatStatus: ScreenUiState = ScreenUiState.Idle,
     val messageText: String = "",
     val assistantUiState: AssistantUiState? = null,
     val sendMessageStatus: ScreenUiState = ScreenUiState.Idle,
@@ -20,7 +22,14 @@ internal data class AssistantState(
         get() = selectedChat?.let { it.messages.size >= it.maxLimitMessages } ?: false
 
     val canSendMessage: Boolean
-        get() = messageText.isNotBlank() && !sendMessageStatus.isLoading && !isMessageLimitReached
+        get() = messageText.isNotBlank() &&
+                !sendMessageStatus.isLoading &&
+                !selectedChatStatus.isLoading &&
+                !isMessageLimitReached &&
+                (selectedChatId == null || selectedChat != null)
+
+    val activeChatId: Int?
+        get() = selectedChat?.id ?: selectedChatId
 
     val visibleMessages: List<GptMessageEntity>
         get() = selectedChat?.messages.orEmpty() + optimisticMessages
@@ -43,6 +52,7 @@ internal sealed interface AssistantIntent {
     data object RefreshChats: AssistantIntent
     data object StartNewChat: AssistantIntent
     data object SendMessage: AssistantIntent
+    data object RetryLoadSelectedChat: AssistantIntent
     data class SelectChat(val chat: GptChatEntity): AssistantIntent
     data class ChangeMessageText(val value: String): AssistantIntent
     data class ChangeShowHistoryDialog(val value: Boolean): AssistantIntent
