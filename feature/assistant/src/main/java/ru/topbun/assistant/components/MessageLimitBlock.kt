@@ -10,11 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
 import ru.topbun.core.ui.utils.LocalBottomBarPadding
+import ru.topbun.core.ui.utils.useBottomBarPadding
 
 @Composable
 internal fun MessageLimitBlock() {
@@ -22,8 +25,14 @@ internal fun MessageLimitBlock() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
-            .padding(bottom = LocalBottomBarPadding.current)
-            .clip(RoundedCornerShape(28.dp))
+            .useBottomBarPadding()
+            .dropShadow(
+                shape = RoundedCornerShape(28.dp),
+                Shadow(
+                    radius = 4.dp,
+                    alpha = 0.1f
+                )
+            ).clip(RoundedCornerShape(28.dp))
             .background(Colors.WHITE)
             .padding(18.dp),
         contentAlignment = Alignment.Center

@@ -15,12 +15,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -64,6 +67,7 @@ import kotlin.collections.indexOf
 
 object DashboardScreen: Screen{
 
+    @OptIn(ExperimentalLayoutApi::class)
     @Composable
     override fun Content() {
         changeStatusBarColor(StatusBarColor.DARK)
@@ -92,11 +96,11 @@ object DashboardScreen: Screen{
                         .fillMaxSize()
                         .background(Colors.BACKGROUND)
                 ) {
-                   CurrentTabTransition(it, tabs)
+                    CurrentTabTransition(it, tabs)
 
-                    BottomBar(
-                        tabs = tabs,
-                    )
+                    if (!WindowInsets.isImeVisible){
+                        BottomBar(tabs = tabs)
+                    }
                 }
             }
         }

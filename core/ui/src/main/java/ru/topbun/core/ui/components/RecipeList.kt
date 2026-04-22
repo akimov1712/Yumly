@@ -40,6 +40,7 @@ import ru.topbun.core.ui.utils.LocalBottomBarPadding
 import ru.topbun.core.ui.utils.formatCookingTime
 import ru.topbun.core.ui.utils.formatIngredientCount
 import ru.topbun.core.ui.utils.formatStepCount
+import ru.topbun.core.ui.utils.getBottomBarPadding
 import ru.topbun.domain.ScreenUiState
 import ru.topbun.domain.entity.recipe.RecipeEntity
 
@@ -69,7 +70,7 @@ fun ColumnScope.RecipeList(
                 start = 12.dp,
                 end = 12.dp,
                 top = 15.dp,
-                bottom = LocalBottomBarPadding.current
+                bottom = getBottomBarPadding()
             ),
             state = state,
             shimmerContent = { items(6) { RecipeShimmer() } },
