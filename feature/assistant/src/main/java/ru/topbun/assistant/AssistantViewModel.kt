@@ -15,6 +15,7 @@ import ru.topbun.domain.entity.gpt.GptChatEntity
 import ru.topbun.domain.entity.gpt.GptMessageEntity
 import ru.topbun.domain.entity.gpt.GptMessageRoleType
 import ru.topbun.domain.entity.gpt.SendMessageEntity
+import ru.topbun.domain.useCases.gpt.GetGptChatByIdUseCase
 import ru.topbun.domain.useCases.gpt.GetGptChatsUseCase
 import ru.topbun.domain.useCases.gpt.SendGptMessageUseCase
 import ru.topbun.domain.useCases.session.HasSessionUseCase
@@ -23,11 +24,13 @@ import java.time.LocalDateTime
 internal class AssistantViewModel(
     private val hasSessionUseCase: HasSessionUseCase,
     private val getGptChatsUseCase: GetGptChatsUseCase,
+    private val getGptChatByIdUseCase: GetGptChatByIdUseCase,
     private val sendGptMessageUseCase: SendGptMessageUseCase,
     private val snackbarManager: SnackbarManager,
 ): MVI<AssistantIntent, AssistantState, AssistantEvent>(AssistantState()) {
 
     private var chatLoadJob: Job? = null
+    private var selectedChatLoadJob: Job? = null
     private var sendMessageJob: Job? = null
 
     private fun changeShowHistoryDialog(value: Boolean) = _state.update { it.copy(showHistoryDialog = value) }
@@ -64,12 +67,8 @@ internal class AssistantViewModel(
                     val mergedChats = (current.chatList.chats + chats)
                         .distinctBy { it.id }
                         .sortedByDescending { it.createdAt }
-                    val selectedChat = current.selectedChat?.let { selected ->
-                        mergedChats.firstOrNull { it.id == selected.id } ?: selected
-                    }
 
                     current.copy(
-                        selectedChat = selectedChat,
                         chatList = current.chatList.copy(
                             chats = mergedChats,
                             status = ScreenUiState.Success,
@@ -93,25 +92,72 @@ internal class AssistantViewModel(
     }
 
     private fun selectChat(chat: GptChatEntity) {
+        loadSelectedChat(chat.id)
+    }
+
+    private fun retryLoadSelectedChat() {
+        state.value.selectedChatId?.let(::loadSelectedChat)
+    }
+
+    private fun loadSelectedChat(chatId: Int) {
         sendMessageJob?.cancel()
+        selectedChatLoadJob?.cancel()
+
         _state.update {
             it.copy(
-                selectedChat = chat,
+                selectedChat = null,
+                selectedChatId = chatId,
+                selectedChatStatus = ScreenUiState.Loading,
                 messageText = "",
                 sendMessageStatus = ScreenUiState.Idle,
-                optimisticMessages = emptyList()
+                optimisticMessages = emptyList(),
+                showHistoryDialog = false
             )
+        }
+
+        selectedChatLoadJob = viewModelScope.launch(SupervisorJob()) {
+            getGptChatByIdUseCase(chatId).onSuccess { chat ->
+                _state.update { current ->
+                    val chats = (listOf(chat) + current.chatList.chats.filterNot { it.id == chat.id })
+                        .sortedByDescending { it.createdAt }
+
+                    current.copy(
+                        selectedChat = chat,
+                        selectedChatId = chat.id,
+                        selectedChatStatus = ScreenUiState.Success,
+                        chatList = current.chatList.copy(
+                            chats = chats,
+                            status = ScreenUiState.Success
+                        )
+                    )
+                }
+            }.onError { error, _ ->
+                snackbarManager.showMessage(error.toMessage())
+                _state.update {
+                    it.copy(
+                        selectedChat = null,
+                        selectedChatId = chatId,
+                        selectedChatStatus = ScreenUiState.Error,
+                        optimisticMessages = emptyList(),
+                        sendMessageStatus = ScreenUiState.Idle
+                    )
+                }
+            }
         }
     }
 
     private fun startNewChat() {
+        selectedChatLoadJob?.cancel()
         sendMessageJob?.cancel()
         _state.update {
             it.copy(
                 selectedChat = null,
+                selectedChatId = null,
+                selectedChatStatus = ScreenUiState.Idle,
                 messageText = "",
                 sendMessageStatus = ScreenUiState.Idle,
-                optimisticMessages = emptyList()
+                optimisticMessages = emptyList(),
+                showHistoryDialog = false
             )
         }
     }
@@ -125,7 +171,13 @@ internal class AssistantViewModel(
     private fun sendMessage() {
         val currentState = state.value
         val text = currentState.messageText.trim()
-        if (text.isBlank() || currentState.sendMessageStatus.isLoading || currentState.isMessageLimitReached) return
+        if (
+            text.isBlank() ||
+            currentState.sendMessageStatus.isLoading ||
+            currentState.selectedChatStatus.isLoading ||
+            currentState.isMessageLimitReached ||
+            (currentState.selectedChatId != null && currentState.selectedChat == null)
+        ) return
 
         sendMessageJob?.cancel()
         sendMessageJob = viewModelScope.launch(SupervisorJob()) {
@@ -164,6 +216,8 @@ internal class AssistantViewModel(
 
                     current.copy(
                         selectedChat = chat,
+                        selectedChatId = chat.id,
+                        selectedChatStatus = ScreenUiState.Success,
                         messageText = "",
                         sendMessageStatus = ScreenUiState.Success,
                         optimisticMessages = emptyList(),
@@ -193,6 +247,7 @@ internal class AssistantViewModel(
             AssistantIntent.RefreshChats -> refreshChats()
             AssistantIntent.StartNewChat -> startNewChat()
             AssistantIntent.SendMessage -> sendMessage()
+            AssistantIntent.RetryLoadSelectedChat -> retryLoadSelectedChat()
             is AssistantIntent.SelectChat -> selectChat(intent.chat)
             is AssistantIntent.ChangeMessageText -> changeMessageText(intent.value)
             is AssistantIntent.ChangeShowHistoryDialog -> changeShowHistoryDialog(intent.value)
