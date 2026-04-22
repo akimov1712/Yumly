@@ -3,6 +3,7 @@ package ru.topbun.assistant
 import androidx.compose.foundation.lazy.LazyListState
 import ru.topbun.domain.ScreenUiState
 import ru.topbun.domain.entity.gpt.GptChatEntity
+import ru.topbun.domain.entity.gpt.GptMessageEntity
 
 internal data class AssistantState(
     val chatList: ChatListUiState = ChatListUiState(),
@@ -11,6 +12,8 @@ internal data class AssistantState(
     val messageText: String = "",
     val assistantUiState: AssistantUiState? = null,
     val sendMessageStatus: ScreenUiState = ScreenUiState.Idle,
+    val showHistoryDialog: Boolean = false,
+    val optimisticMessages: List<GptMessageEntity> = emptyList()
 ) {
 
     val isMessageLimitReached: Boolean
@@ -18,6 +21,9 @@ internal data class AssistantState(
 
     val canSendMessage: Boolean
         get() = messageText.isNotBlank() && !sendMessageStatus.isLoading && !isMessageLimitReached
+
+    val visibleMessages: List<GptMessageEntity>
+        get() = selectedChat?.messages.orEmpty() + optimisticMessages
 
     data class ChatListUiState(
         val chats: List<GptChatEntity> = emptyList(),
@@ -39,6 +45,7 @@ internal sealed interface AssistantIntent {
     data object SendMessage: AssistantIntent
     data class SelectChat(val chat: GptChatEntity): AssistantIntent
     data class ChangeMessageText(val value: String): AssistantIntent
+    data class ChangeShowHistoryDialog(val value: Boolean): AssistantIntent
 
 }
 

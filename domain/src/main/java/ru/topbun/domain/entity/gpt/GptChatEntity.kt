@@ -1,11 +1,11 @@
 package ru.topbun.domain.entity.gpt
 
-import java.util.Date
+import java.time.LocalDateTime
 
 data class GptChatEntity(
     val id: Int,
     val userId: Int,
     val messages: List<GptMessageEntity>,
     val maxLimitMessages: Int,
-    val createdAt: Date,
+    val createdAt: LocalDateTime,
 )

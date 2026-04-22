@@ -12,10 +12,13 @@ import ru.topbun.core.common.onError
 import ru.topbun.core.common.onSuccess
 import ru.topbun.domain.ScreenUiState
 import ru.topbun.domain.entity.gpt.GptChatEntity
+import ru.topbun.domain.entity.gpt.GptMessageEntity
+import ru.topbun.domain.entity.gpt.GptMessageRoleType
 import ru.topbun.domain.entity.gpt.SendMessageEntity
 import ru.topbun.domain.useCases.gpt.GetGptChatsUseCase
 import ru.topbun.domain.useCases.gpt.SendGptMessageUseCase
 import ru.topbun.domain.useCases.session.HasSessionUseCase
+import java.time.LocalDateTime
 
 internal class AssistantViewModel(
     private val hasSessionUseCase: HasSessionUseCase,
@@ -26,6 +29,8 @@ internal class AssistantViewModel(
 
     private var chatLoadJob: Job? = null
     private var sendMessageJob: Job? = null
+
+    private fun changeShowHistoryDialog(value: Boolean) = _state.update { it.copy(showHistoryDialog = value) }
 
     private fun checkSession() {
         val hasSession = hasSessionUseCase()
@@ -88,21 +93,25 @@ internal class AssistantViewModel(
     }
 
     private fun selectChat(chat: GptChatEntity) {
+        sendMessageJob?.cancel()
         _state.update {
             it.copy(
                 selectedChat = chat,
                 messageText = "",
-                sendMessageStatus = ScreenUiState.Idle
+                sendMessageStatus = ScreenUiState.Idle,
+                optimisticMessages = emptyList()
             )
         }
     }
 
     private fun startNewChat() {
+        sendMessageJob?.cancel()
         _state.update {
             it.copy(
                 selectedChat = null,
                 messageText = "",
-                sendMessageStatus = ScreenUiState.Idle
+                sendMessageStatus = ScreenUiState.Idle,
+                optimisticMessages = emptyList()
             )
         }
     }
@@ -120,7 +129,28 @@ internal class AssistantViewModel(
 
         sendMessageJob?.cancel()
         sendMessageJob = viewModelScope.launch(SupervisorJob()) {
-            _state.update { it.copy(sendMessageStatus = ScreenUiState.Loading) }
+            val optimisticMessages = listOf(
+                GptMessageEntity(
+                    id = PENDING_USER_MESSAGE_ID,
+                    role = GptMessageRoleType.USER,
+                    text = text,
+                    createdAt = LocalDateTime.now()
+                ),
+                GptMessageEntity(
+                    id = PENDING_ASSISTANT_MESSAGE_ID,
+                    role = GptMessageRoleType.ASSISTANT,
+                    text = "",
+                    createdAt = LocalDateTime.now()
+                )
+            )
+
+            _state.update {
+                it.copy(
+                    messageText = "",
+                    sendMessageStatus = ScreenUiState.Loading,
+                    optimisticMessages = optimisticMessages
+                )
+            }
 
             sendGptMessageUseCase(
                 SendMessageEntity(
@@ -136,6 +166,7 @@ internal class AssistantViewModel(
                         selectedChat = chat,
                         messageText = "",
                         sendMessageStatus = ScreenUiState.Success,
+                        optimisticMessages = emptyList(),
                         chatList = current.chatList.copy(
                             chats = chats,
                             status = ScreenUiState.Success
@@ -144,7 +175,13 @@ internal class AssistantViewModel(
                 }
             }.onError { error, _ ->
                 snackbarManager.showMessage(error.toMessage())
-                _state.update { it.copy(sendMessageStatus = ScreenUiState.Error) }
+                _state.update {
+                    it.copy(
+                        messageText = text,
+                        sendMessageStatus = ScreenUiState.Error,
+                        optimisticMessages = emptyList()
+                    )
+                }
             }
         }
     }
@@ -158,12 +195,14 @@ internal class AssistantViewModel(
             AssistantIntent.SendMessage -> sendMessage()
             is AssistantIntent.SelectChat -> selectChat(intent.chat)
             is AssistantIntent.ChangeMessageText -> changeMessageText(intent.value)
+            is AssistantIntent.ChangeShowHistoryDialog -> changeShowHistoryDialog(intent.value)
         }
     }
 
     private fun DataError.toMessage(): String = when(this) {
         DataError.Network.UNAUTHORIZED -> "Пользователь не авторизован"
-        DataError.Network.BAD_REQUEST, DataError.Network.INVALID_DATA -> "Проверьте корректность введённых данных"
+        DataError.Network.BAD_REQUEST -> "Произошла ошибка при получении ответа от ассистента"
+        DataError.Network.INVALID_DATA -> "Проверьте корректность введённых данных"
         DataError.Network.NOT_FOUND -> "Чат не найден"
         DataError.Network.FORBIDDEN -> "Нет доступа к этому чату"
         DataError.Network.REQUEST_TIMEOUT -> "Время ожидания превышено. Проверьте интернет-соединение или попробуйте позже"
@@ -176,5 +215,7 @@ internal class AssistantViewModel(
     companion object {
         private const val CHAT_PAGE_SIZE = 20
         private const val MAX_MESSAGE_LENGTH = 1000
+        private const val PENDING_USER_MESSAGE_ID = -1
+        private const val PENDING_ASSISTANT_MESSAGE_ID = -2
     }
 }

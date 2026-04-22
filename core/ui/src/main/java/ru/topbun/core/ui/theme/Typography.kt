@@ -34,7 +34,7 @@ object Typography {
         fontFamily = Fonts.INTER,
         fontWeight = FontWeight.Medium,
         fontSize = 17.sp,
-        lineHeight = 27.sp,
+        lineHeight = 23.sp,
         color = Colors.MAIN_TEXT
     )
 
@@ -42,7 +42,7 @@ object Typography {
         fontFamily = Fonts.INTER,
         fontWeight = FontWeight.Medium,
         fontSize = 15.sp,
-        lineHeight = 25.sp,
+        lineHeight = 20.sp,
         color = Colors.MAIN_TEXT
     )
 

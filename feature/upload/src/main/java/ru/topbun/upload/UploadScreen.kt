@@ -28,6 +28,7 @@ import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.UnauthorizedSection
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.utils.LocalBottomBarPadding
+import ru.topbun.core.ui.utils.useBottomBarPadding
 import ru.topbun.navigation.auth.AuthScreenProvider
 import ru.topbun.upload.UploadState.UploadUiState.NEED_AUTH
 import ru.topbun.upload.UploadState.UploadUiState.SUCCESS
@@ -119,7 +120,7 @@ private fun UploadContent(
                 .fillMaxWidth()
                 .background(Colors.BACKGROUND)
                 .verticalScroll(rememberScrollState())
-                .padding(bottom = LocalBottomBarPadding.current)
+                .useBottomBarPadding()
         ) {
             when (state.selectedFragment) {
                 Basic -> BasicFragment()

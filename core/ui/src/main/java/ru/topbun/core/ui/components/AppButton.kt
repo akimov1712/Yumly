@@ -22,7 +22,7 @@ import ru.topbun.core.ui.theme.Fonts
 @Composable
 fun AppButton(
     text: String,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     isLoading: Boolean = false,
     containerColor: Color = Colors.PRIMARY,

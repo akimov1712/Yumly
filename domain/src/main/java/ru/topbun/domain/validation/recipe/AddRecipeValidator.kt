@@ -7,7 +7,7 @@ import ru.topbun.domain.entity.recipe.addRecipe.AddRecipeEntity
 
 class AddRecipeValidator : Validator<AddRecipeEntity> {
 
-    override fun validate(data: AddRecipeEntity): Result<Unit, ValidatorError> {
+    override fun validate(data: AddRecipeEntity): Result<Unit, AddRecipeValidatorError> {
         val error = when {
             data.title.length > 72 -> AddRecipeValidatorError.TITLE_LENGTH
             (data.description?.length ?: 0) > 500 -> AddRecipeValidatorError.DESCRIPTION_LENGTH

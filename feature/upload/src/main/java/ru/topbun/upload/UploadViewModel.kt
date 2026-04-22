@@ -1,7 +1,10 @@
 package ru.topbun.upload
 
 import android.net.Uri
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import ru.topbun.core.android.MVI
 import ru.topbun.core.android.SnackbarManager
 import ru.topbun.core.common.error.DataError
@@ -14,14 +17,19 @@ import ru.topbun.domain.entity.recipe.addRecipe.AddRecipeEntity
 import ru.topbun.domain.useCases.recipe.AddRecipeUseCase
 import ru.topbun.domain.useCases.session.HasSessionUseCase
 import ru.topbun.domain.useCases.upload.UploadFileUseCase
+import ru.topbun.domain.validation.recipe.AddRecipeValidator
+import ru.topbun.domain.validation.recipe.AddRecipeValidatorError.*
 import ru.topbun.upload.fragments.UploadFragments
 
 internal class UploadViewModel(
     private val hasSessionUseCase: HasSessionUseCase,
     private val addRecipeUseCase: AddRecipeUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
-    private val snackbarManager: SnackbarManager
+    private val snackbarManager: SnackbarManager,
+    private val addRecipeValidator: AddRecipeValidator
 ): MVI<UploadIntent, UploadState, UploadEvent>(UploadState()){
+
+    private var publishRecipeJob: Job? = null
 
     private fun changePreview(uri: Uri?) = _state.update { it.copy(preview = uri) }
     private fun changeTitle(value: String){ if (value.length <= 72) _state.update { it.copy(name = value) } }
@@ -160,48 +168,67 @@ internal class UploadViewModel(
     }
 
     private suspend fun publishRecipe() = with(_state.value){
-        _state.update { it.copy(publishLoading = true) }
-        val previewUrl = preview?.let { uploadImage(it.toString()) ?: return@with }
-        val protein = nutrients.getValue(UploadState.NutrientsEnum.Protein).toDouble()
-        val fat = nutrients.getValue(UploadState.NutrientsEnum.Fat).toDouble()
-        val carbs = nutrients.getValue(UploadState.NutrientsEnum.Carbs).toDouble()
-        val steps = steps.map {
-            val previewUrl = it.previewUrl?.let { uploadImage(it) ?: return@with }
-            StepEntity( description = it.description, previewUrl = previewUrl)
-        }
-        val recipe = AddRecipeEntity(
-            previewUrl = previewUrl,
-            title = name,
-            description = description,
-            cookingTime = cookingTime,
-            kcal = totalCalories,
-            protein = protein,
-            fat = fat,
-            carb = carbs,
-            ingredients = ingredients,
-            steps = steps,
-            tagIds = emptyList(),
-        )
-        val result = addRecipeUseCase(recipe)
-        result.onSuccess { recipe ->
-            _state.update {
-                UploadState(
-                    uploadUiState = UploadState.UploadUiState.SUCCESS,
-                    publishRecipeUiState = UploadState.PublishRecipeUiState.Success(recipe.id),
-                )
+        publishRecipeJob?.cancel()
+        publishRecipeJob = viewModelScope.launch {
+            _state.update { it.copy(publishLoading = true) }
+            val previewUrl = preview?.let { uploadImage(it.toString()) ?: return@launch }
+            val protein = nutrients.getValue(UploadState.NutrientsEnum.Protein).toDouble()
+            val fat = nutrients.getValue(UploadState.NutrientsEnum.Fat).toDouble()
+            val carbs = nutrients.getValue(UploadState.NutrientsEnum.Carbs).toDouble()
+            val steps = steps.map {
+                val previewUrl = it.previewUrl?.let { uploadImage(it) ?: return@launch }
+                StepEntity( description = it.description, previewUrl = previewUrl)
             }
-        }.onError { error, _ ->
-            val message = when(error){
-                DataError.Network.UNAUTHORIZED -> "Пользователь не авторизован"
-                DataError.Network.INVALID_DATA -> "Введённые данные не прошли валидацию. Проверьте их корректность"
-                DataError.Network.REQUEST_TIMEOUT -> "Время ожидания превышено. Проверьте интернет-соединение или попробуйте позже"
-                DataError.Network.SERIALIZATION -> "При получении данных произошла ошибка"
-                DataError.Network.SERVER_ERROR -> "Произошла ошибка на сервере. Попробуйте позже"
-                DataError.Network.NO_INTERNET -> "Отсутствует интернет-соединение"
-                else -> "Произошла ошибка. Попробуйте позже"
+            val recipe = AddRecipeEntity(
+                previewUrl = previewUrl,
+                title = name,
+                description = description,
+                cookingTime = cookingTime,
+                kcal = totalCalories,
+                protein = protein,
+                fat = fat,
+                carb = carbs,
+                ingredients = ingredients,
+                steps = steps,
+                tagIds = emptyList(),
+            )
+            val validation = addRecipeValidator.validate(recipe)
+            validation.onError { error, _ ->
+                val message = when (error) {
+                    TITLE_LENGTH -> "Название не должно превышать 72 символа"
+                    DESCRIPTION_LENGTH -> "Описание не должно превышать 500 символов"
+                    COOKING_TIME -> "Время приготовления не должно превышать 4 часа"
+                    COUNT_INGREDIENTS -> "Количество ингредиентов должно быть от 1 до 32"
+                    COUNT_STEPS -> "Количество шагов должно быть от 1 до 32"
+                    COUNT_PROTEIN -> "Белки не должны превышать 100 г"
+                    COUNT_CARBS -> "Углеводы не должны превышать 100 г"
+                    COUNT_FAT -> "Жиры не должны превышать 100 г"
+                }
+
+                snackbarManager.showMessage(message)
+                return@launch
             }
-            snackbarManager.showMessage(message)
-            _state.update { it.copy(publishLoading = false) }
+            val result = addRecipeUseCase(recipe)
+            result.onSuccess { recipe ->
+                _state.update {
+                    UploadState(
+                        uploadUiState = UploadState.UploadUiState.SUCCESS,
+                        publishRecipeUiState = UploadState.PublishRecipeUiState.Success(recipe.id),
+                    )
+                }
+            }.onError { error, _ ->
+                val message = when(error){
+                    DataError.Network.UNAUTHORIZED -> "Пользователь не авторизован"
+                    DataError.Network.INVALID_DATA -> "Введённые данные не прошли валидацию. Проверьте их корректность"
+                    DataError.Network.REQUEST_TIMEOUT -> "Время ожидания превышено. Проверьте интернет-соединение или попробуйте позже"
+                    DataError.Network.SERIALIZATION -> "При получении данных произошла ошибка"
+                    DataError.Network.SERVER_ERROR -> "Произошла ошибка на сервере. Попробуйте позже"
+                    DataError.Network.NO_INTERNET -> "Отсутствует интернет-соединение"
+                    else -> "Произошла ошибка. Попробуйте позже"
+                }
+                snackbarManager.showMessage(message)
+                _state.update { it.copy(publishLoading = false) }
+            }
         }
     }
 
