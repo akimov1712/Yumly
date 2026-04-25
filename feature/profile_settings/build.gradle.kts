@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.topbun.profile"
+    namespace = "ru.topbun.profile_settings"
     compileSdk {
         version = release(libs.versions.compileSdk.get().toInt())
     }
@@ -41,7 +41,6 @@ android {
 dependencies {
 
     // UI
-    implementation(libs.compose.shimmer)
     implementation(libs.coil.compose)
 
     // Voyager

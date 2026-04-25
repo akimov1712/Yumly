@@ -14,11 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,13 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.shadow.Shadow
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -48,7 +41,6 @@ import ru.topbun.core.ui.components.AppOutlinedButton
 import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Fonts
-import ru.topbun.core.ui.utils.rippleClickable
 import ru.topbun.domain.entity.recipe.StepEntity
 import sh.calvin.reorderable.ReorderableColumn
 import sh.calvin.reorderable.ReorderableListItemScope
@@ -179,7 +171,7 @@ private fun RowScope.StepValue(step: StepEntity) {
                 text = step.description,
                 fontFamily = Fonts.INTER,
                 fontSize = 13.sp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Medium,
                 color = Colors.MAIN_TEXT,
                 lineHeight = 15.sp,
                 letterSpacing = 0.5.sp

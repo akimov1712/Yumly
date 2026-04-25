@@ -92,5 +92,6 @@ dependencies {
     implementation(project(":feature:assistant"))
     implementation(project(":feature:notification"))
     implementation(project(":feature:profile"))
+    implementation(project(":feature:profile_settings"))
 
 }
