@@ -3,6 +3,7 @@ package ru.topbun.data
 import android.content.Context
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSyntaxException
+import kotlinx.coroutines.CancellationException
 import ru.topbun.core.android.isInternetAvailable
 import ru.topbun.core.common.error.DataError
 import ru.topbun.core.common.Result
@@ -20,6 +21,8 @@ internal suspend fun <T> Context.exceptionWrapper(data: T? = null, block: suspen
         withInternetCheck(this){
             block()
         }
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: NoInternetException) {
         e.printStackTrace()
         Result.Error(DataError.Network.NO_INTERNET, data)
