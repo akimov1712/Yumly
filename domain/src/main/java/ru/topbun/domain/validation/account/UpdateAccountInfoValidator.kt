@@ -8,7 +8,7 @@ import ru.topbun.domain.entity.account.UpdateAccountInfoEntity
 class UpdateAccountInfoValidator: Validator<UpdateAccountInfoEntity> {
 
 
-    override fun validate(data: UpdateAccountInfoEntity): Result<Unit, ValidatorError> {
+    override fun validate(data: UpdateAccountInfoEntity): Result<Unit, UpdateAccountInfoValidatorError> {
         val error = when{
             data.username.length < 4 -> UpdateAccountInfoValidatorError.USERNAME_SHORT
             else -> null

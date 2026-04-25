@@ -9,4 +9,6 @@ internal class SessionRepositoryImpl(
 
     override fun hasSession(): Boolean = tokenManager.hasToken()
 
+    override fun clearSession() = tokenManager.clearToken()
+
 }

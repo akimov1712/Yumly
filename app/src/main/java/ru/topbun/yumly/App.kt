@@ -18,10 +18,13 @@ import ru.topbun.dashboard.DashboardScreen
 import ru.topbun.feature.splash.SplashScreen
 import ru.topbun.home.HomeScreen
 import ru.topbun.navigation.DashboardScreenProvider
+import ru.topbun.navigation.ProfileScreenProvider
 import ru.topbun.navigation.RootScreenProvider
 import ru.topbun.navigation.auth.AuthScreenProvider
 import ru.topbun.notification.NotificationScreen
 import ru.topbun.profile.ProfileScreen
+import ru.topbun.profile.ProfileScreenContent
+import ru.topbun.profile_settings.ProfileSettingsScreen
 import ru.topbun.upload.UploadScreen
 import ru.topbun.yumly.di.appModule
 
@@ -61,6 +64,9 @@ class App : Application() {
             register<DashboardScreenProvider.Assistant> { AssistantScreen as Screen }
             register<DashboardScreenProvider.Notification> { NotificationScreen as Screen }
             register<DashboardScreenProvider.Profile> { ProfileScreen as Screen }
+
+            register<ProfileScreenProvider.User> { ProfileScreenContent(it.userId) }
+            register<ProfileScreenProvider.Settings> { ProfileSettingsScreen }
 
         }
     }

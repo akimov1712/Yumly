@@ -27,6 +27,7 @@ import ru.topbun.domain.useCases.recipe.GetRecipeByUserIdUseCase
 import ru.topbun.domain.useCases.recipe.GetRecipeUseCase
 import ru.topbun.domain.useCases.recipe.GetTagsUseCase
 import ru.topbun.domain.useCases.session.HasSessionUseCase
+import ru.topbun.domain.useCases.session.LogoutUseCase
 import ru.topbun.domain.useCases.signUp.SignUpUseCase
 import ru.topbun.domain.useCases.upload.UploadFileUseCase
 import ru.topbun.domain.useCases.verification.ConfirmVerificationUseCase
@@ -56,6 +57,7 @@ val useCaseModule = module {
     singleOf(::GetRecipeByUserIdUseCase)
     singleOf(::GetRecipeUseCase)
     singleOf(::HasSessionUseCase)
+    singleOf(::LogoutUseCase)
     singleOf(::SignUpUseCase)
     singleOf(::UploadFileUseCase)
     singleOf(::ConfirmVerificationUseCase)
