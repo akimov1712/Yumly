@@ -85,6 +85,7 @@ internal sealed interface UploadIntent{
     data object PublishRecipe: UploadIntent
     data object ClearData: UploadIntent
     data object CheckSession: UploadIntent
+    data object OpenPublishedRecipe: UploadIntent
     data class ChangeShowDialogClearData(val value: Boolean): UploadIntent
     data class ChangeShowDialogAddIngredient(val value: Boolean): UploadIntent
     data class ChangeShowDialogAddStep(val value: Boolean): UploadIntent
@@ -107,5 +108,7 @@ internal sealed interface UploadIntent{
 }
 
 internal sealed interface UploadEvent{
+
+    data class NavigateToRecipe(val recipeId: Int): UploadEvent
 
 }

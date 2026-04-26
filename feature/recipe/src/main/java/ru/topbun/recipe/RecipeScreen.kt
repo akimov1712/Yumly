@@ -1,7 +1,5 @@
 package ru.topbun.recipe
 
-import android.content.Intent
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,7 +21,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,10 +28,8 @@ import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import ru.topbun.core.android.SnackbarManager
 import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.AppButton
 import ru.topbun.core.ui.components.AppPullRefresh
@@ -42,8 +37,7 @@ import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
 import ru.topbun.core.ui.utils.ObserveAsEvents
 import ru.topbun.navigation.ProfileScreenProvider
-import ru.topbun.recipe.components.CookCtaButton
-import ru.topbun.recipe.components.CookingTimerCard
+import ru.topbun.recipe.components.DeleteRecipeDialog
 import ru.topbun.recipe.components.DescriptionSection
 import ru.topbun.recipe.components.HeroSection
 import ru.topbun.recipe.components.IngredientsSection
@@ -51,6 +45,7 @@ import ru.topbun.recipe.components.NutritionCard
 import ru.topbun.recipe.components.QuickStatsRow
 import ru.topbun.recipe.components.RecipeShimmerScreen
 import ru.topbun.recipe.components.StepsSection
+import ru.topbun.recipe.components.TimerSection
 
 data class RecipeScreen(
     private val recipeId: Int,
@@ -61,8 +56,6 @@ data class RecipeScreen(
         val viewModel: RecipeViewModel = koinViewModel { parametersOf(recipeId) }
         val state by viewModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
-        val context = LocalContext.current
-        val snackbarManager = koinInject<SnackbarManager>()
 
         LaunchedEffect(Unit) {
             viewModel.sendIntent(RecipeIntent.LoadRecipe)
@@ -74,21 +67,8 @@ data class RecipeScreen(
                     val screen = ScreenRegistry.get(ProfileScreenProvider.User(event.userId))
                     navigator.push(screen)
                 }
-                is RecipeEvent.Share -> {
-                    val intent = Intent(Intent.ACTION_SEND).apply {
-                        type = "text/plain"
-                        putExtra(Intent.EXTRA_TEXT, event.text)
-                    }
-                    context.startActivity(Intent.createChooser(intent, "Поделиться рецептом"))
-                }
-                RecipeEvent.CookingDone -> {
-                    snackbarManager.showMessage("Готово! Время приготовления вышло")
-                }
+                RecipeEvent.RecipeDeleted -> navigator.pop()
             }
-        }
-
-        if (state.isCookingMode) {
-            BackHandler { viewModel.sendIntent(RecipeIntent.StopCooking) }
         }
 
         Box(
@@ -110,6 +90,14 @@ data class RecipeScreen(
                 else -> Unit
             }
         }
+
+        if (state.showDeleteDialog) {
+            DeleteRecipeDialog(
+                isLoading = state.deleteLoading,
+                onDismissRequest = { viewModel.sendIntent(RecipeIntent.ChangeShowDeleteDialog(false)) },
+                onClickConfirm = { viewModel.sendIntent(RecipeIntent.DeleteRecipe) }
+            )
+        }
     }
 }
 
@@ -121,94 +109,80 @@ private fun RecipeContent(
 ) {
     val recipe = state.recipe ?: return
     val listState = rememberLazyListState()
+    val hasDescription = !recipe.description.isNullOrBlank() || recipe.tags.isNotEmpty()
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        AppPullRefresh(
+    AppPullRefresh(
+        modifier = Modifier.fillMaxSize(),
+        onRefresh = { onIntent(RecipeIntent.Refresh) }
+    ) {
+        LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            onRefresh = { onIntent(RecipeIntent.Refresh) }
+            state = listState,
+            contentPadding = PaddingValues(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = listState,
-                contentPadding = PaddingValues(bottom = 120.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                item("hero") {
-                    HeroSection(
-                        recipe = recipe,
-                        isFavorite = state.isFavorite,
-                        favoriteLoading = state.favoriteLoading,
-                        onClickBack = onBack,
-                        onClickShare = { onIntent(RecipeIntent.ClickShare) },
-                        onClickFavorite = { onIntent(RecipeIntent.ToggleFavorite) },
-                        onClickAuthor = { onIntent(RecipeIntent.ClickAuthor) }
-                    )
-                }
-                item("stats") {
-                    QuickStatsRow(
-                        recipe = recipe,
-                        modifier = Modifier.padding(horizontal = 12.dp)
-                    )
-                }
+            item("hero") {
+                HeroSection(
+                    recipe = recipe,
+                    isFavorite = state.isFavorite,
+                    favoriteLoading = state.favoriteLoading,
+                    isOwnRecipe = state.isOwnRecipe,
+                    onClickBack = onBack,
+                    onClickShare = { onIntent(RecipeIntent.ClickShare) },
+                    onClickFavorite = { onIntent(RecipeIntent.ToggleFavorite) },
+                    onClickDelete = { onIntent(RecipeIntent.ChangeShowDeleteDialog(true)) },
+                    onClickAuthor = { onIntent(RecipeIntent.ClickAuthor) }
+                )
+            }
+            item("stats") {
+                QuickStatsRow(
+                    recipe = recipe,
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                )
+            }
+            if (hasDescription) {
                 item("description") {
                     DescriptionSection(
                         recipe = recipe,
                         modifier = Modifier.padding(horizontal = 12.dp)
                     )
                 }
-                item("nutrition") {
-                    NutritionCard(
-                        recipe = recipe,
-                        modifier = Modifier.padding(horizontal = 12.dp)
-                    )
-                }
-                item("ingredients") {
-                    IngredientsSection(
-                        ingredients = recipe.ingredients,
-                        mode = state.ingredientMode,
-                        checkedIndices = state.checkedForCurrentMode,
-                        progress = state.ingredientProgress,
-                        onChangeMode = { onIntent(RecipeIntent.ChangeIngredientMode(it)) },
-                        onToggleIngredient = { onIntent(RecipeIntent.ToggleIngredient(it)) },
-                        onClickReset = { onIntent(RecipeIntent.ResetIngredients) },
-                        modifier = Modifier.padding(horizontal = 12.dp)
-                    )
-                }
-                item("steps") {
-                    StepsSection(
-                        steps = recipe.steps,
-                        completedSteps = state.completedSteps,
-                        progress = state.stepProgress,
-                        onToggleStep = { onIntent(RecipeIntent.ToggleStep(it)) },
-                        onClickReset = { onIntent(RecipeIntent.ResetSteps) },
-                        modifier = Modifier.padding(horizontal = 12.dp)
-                    )
-                }
             }
-        }
-
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(bottom = 24.dp)
-        ) {
-            if (state.isCookingMode) {
-                CookingTimerCard(
-                    secondsLeft = state.cookingTimerSecondsLeft,
-                    isPaused = state.cookingTimerPaused,
-                    progress = state.cookingTimerProgress,
-                    onPauseToggle = {
-                        if (state.cookingTimerPaused) onIntent(RecipeIntent.ResumeTimer)
-                        else onIntent(RecipeIntent.PauseTimer)
-                    },
-                    onReset = { onIntent(RecipeIntent.ResetTimer) },
-                    onStop = { onIntent(RecipeIntent.StopCooking) },
+            item("nutrition") {
+                NutritionCard(
+                    recipe = recipe,
                     modifier = Modifier.padding(horizontal = 12.dp)
                 )
-            } else {
-                CookCtaButton(
-                    onClick = { onIntent(RecipeIntent.StartCooking) }
+            }
+            item("timer") {
+                TimerSection(
+                    timer = state.timer,
+                    onChangeMode = { onIntent(RecipeIntent.ChangeTimerMode(it)) },
+                    onChangeTarget = { onIntent(RecipeIntent.ChangeTimerTarget(it)) },
+                    onStart = { onIntent(RecipeIntent.StartTimer) },
+                    onPause = { onIntent(RecipeIntent.PauseTimer) },
+                    onReset = { onIntent(RecipeIntent.ResetTimer) },
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                )
+            }
+            item("ingredients") {
+                IngredientsSection(
+                    ingredients = recipe.ingredients,
+                    checkedIndices = state.checkedIngredients,
+                    progress = state.ingredientProgress,
+                    onToggleIngredient = { onIntent(RecipeIntent.ToggleIngredient(it)) },
+                    onClickReset = { onIntent(RecipeIntent.ResetIngredients) },
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                )
+            }
+            item("steps") {
+                StepsSection(
+                    steps = recipe.steps,
+                    completedSteps = state.completedSteps,
+                    progress = state.stepProgress,
+                    onToggleStep = { onIntent(RecipeIntent.ToggleStep(it)) },
+                    onClickReset = { onIntent(RecipeIntent.ResetSteps) },
+                    modifier = Modifier.padding(horizontal = 12.dp)
                 )
             }
         }

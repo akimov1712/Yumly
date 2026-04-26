@@ -78,7 +78,7 @@ internal fun NutritionCard(
                     title = "Белки",
                     grams = recipe.protein,
                     fraction = proteinShare,
-                    color = Colors.PRIMARY
+                    color = Colors.GREEN
                 )
                 NutrientBar(
                     title = "Жиры",
@@ -90,7 +90,7 @@ internal fun NutritionCard(
                     title = "Углеводы",
                     grams = recipe.carb,
                     fraction = carbShare,
-                    color = Colors.BLUE_TEXT
+                    color = Colors.RED
                 )
             }
         }

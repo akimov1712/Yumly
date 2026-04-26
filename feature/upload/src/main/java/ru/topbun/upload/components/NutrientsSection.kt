@@ -1,9 +1,6 @@
 package ru.topbun.upload.components
 
-import android.R.attr.text
-import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,19 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -42,11 +33,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import ru.topbun.core.ui.R
-import ru.topbun.core.ui.components.AppTextField
 import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Fonts
@@ -114,18 +101,18 @@ private fun NutrientItem(
 ) {
     val calories = value * nutrient.calories
 
-    val buttonBackground = when(nutrient){
-        NutrientsEnum.Protein -> listOf(Color(0xFFD2A4A4), Color(0xffEF2626))
-        NutrientsEnum.Fat -> listOf(Color(0xffFFA238), Color(0xffDB7114))
-        NutrientsEnum.Carbs -> listOf(Color(0xff54F4A7), Color(0xff1FCC79))
-    }.let { Brush.linearGradient(it) }
+    val accent = when(nutrient){
+        NutrientsEnum.Protein -> Colors.GREEN
+        NutrientsEnum.Fat -> Colors.ORANGE
+        NutrientsEnum.Carbs -> Colors.RED
+    }
     Column{
         HeaderNutrientItem(nutrient, calories)
         Height(10.dp)
         BottomNutrientItem(
             value = value,
             sumLimitExceeded = sumLimitExceeded,
-            buttonBackground = buttonBackground,
+            accent = accent,
         ){
             onChangeValue(it, nutrient)
         }
@@ -136,7 +123,7 @@ private fun NutrientItem(
 private fun BottomNutrientItem(
     value: Int,
     sumLimitExceeded: Boolean,
-    buttonBackground: Brush,
+    accent: androidx.compose.ui.graphics.Color,
     onValueChange: (Int) -> Unit,
 ) {
     var oldValue by remember { mutableStateOf(0) }
@@ -146,7 +133,7 @@ private fun BottomNutrientItem(
     ) {
         NutrientButton(
             icon = painterResource(R.drawable.ic_minus),
-            background = buttonBackground,
+            accent = accent,
             isEnabled = value > 0,
             onClick = {
                 val newValue = value - 1
@@ -180,7 +167,7 @@ private fun BottomNutrientItem(
         }
         NutrientButton(
             icon = painterResource(R.drawable.ic_plus),
-            background = buttonBackground,
+            accent = accent,
             isEnabled = value < 100 && !sumLimitExceeded,
             onClick = {
                 val newValue = value + 1
@@ -193,7 +180,7 @@ private fun BottomNutrientItem(
 @Composable
 private fun NutrientButton(
     icon: Painter,
-    background: Brush,
+    accent: androidx.compose.ui.graphics.Color,
     isEnabled: Boolean,
     onClick: () -> Unit
 ) {
@@ -202,9 +189,9 @@ private fun NutrientButton(
         modifier = Modifier
             .size(40.dp)
             .clip(RoundedCornerShape(12.dp))
-            .alpha(if(!isEnabled) 0.6f else 1f)
-            .background(background)
-            .rippleClickable(enabled = isEnabled, color = Colors.WHITE){ onClick() }
+            .alpha(if (!isEnabled) 0.6f else 1f)
+            .background(accent)
+            .rippleClickable(enabled = isEnabled, color = Colors.WHITE) { onClick() }
             .padding(14.dp),
         contentAlignment = Alignment.Center
     ) {

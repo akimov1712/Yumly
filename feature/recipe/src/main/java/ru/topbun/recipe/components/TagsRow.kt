@@ -34,7 +34,7 @@ internal fun TagsRow(
                     .clip(RoundedCornerShape(20.dp))
                     .background(Colors.PRIMARY.copy(0.12f))
                     .padding(horizontal = 14.dp, vertical = 8.dp),
-                text = "#${tag.title}",
+                text = tag.name,
                 style = Typography.S,
                 color = Colors.PRIMARY
             )

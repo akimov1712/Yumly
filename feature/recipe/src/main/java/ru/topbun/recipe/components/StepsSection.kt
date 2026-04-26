@@ -233,7 +233,10 @@ private fun StepCard(
                     AppAsyncImage(
                         modifier = Modifier.fillMaxSize(),
                         url = it,
-                        contentScale = ContentScale.Crop
+                        contentScale = ContentScale.Crop,
+                        onState = {
+
+                        }
                     )
                 }
             }

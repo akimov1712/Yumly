@@ -6,7 +6,8 @@ internal data class GetRecipeRequest(
     val q: String?,
     val offset: Int = 0,
     val limit: Int = 20,
-    val recipeFilter: GetRecipeFilterDto
+    val recipeFilter: GetRecipeFilterDto,
+    val onlyFromFollowing: Boolean = false,
 )
 
 internal fun GetRecipeEntity.toRequest() = GetRecipeRequest(
@@ -14,4 +15,5 @@ internal fun GetRecipeEntity.toRequest() = GetRecipeRequest(
     offset = offset,
     limit = limit,
     recipeFilter = recipeFilter.toDto(),
+    onlyFromFollowing = onlyFromFollowing,
 )

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -32,7 +31,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.AppAsyncImage
-import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.components.Width
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
@@ -45,9 +43,11 @@ internal fun HeroSection(
     recipe: RecipeEntity,
     isFavorite: Boolean,
     favoriteLoading: Boolean,
+    isOwnRecipe: Boolean,
     onClickBack: () -> Unit,
     onClickShare: () -> Unit,
     onClickFavorite: () -> Unit,
+    onClickDelete: () -> Unit,
     onClickAuthor: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -59,7 +59,7 @@ internal fun HeroSection(
     ) {
         AppAsyncImage(
             modifier = Modifier.fillMaxSize(),
-            url = recipe.largeImage ?: recipe.smallImage,
+            url = recipe.smallImage,
             contentScale = ContentScale.Crop
         )
         Box(
@@ -84,14 +84,17 @@ internal fun HeroSection(
             TopBar(
                 isFavorite = isFavorite,
                 favoriteLoading = favoriteLoading,
+                isOwnRecipe = isOwnRecipe,
                 onClickBack = onClickBack,
                 onClickShare = onClickShare,
-                onClickFavorite = onClickFavorite
+                onClickFavorite = onClickFavorite,
+                onClickDelete = onClickDelete,
             )
             Spacer(Modifier.weight(1f))
             HeroContent(
                 title = recipe.title,
                 author = recipe.author,
+                isOwnRecipe = isOwnRecipe,
                 onClickAuthor = onClickAuthor
             )
         }
@@ -102,9 +105,11 @@ internal fun HeroSection(
 private fun TopBar(
     isFavorite: Boolean,
     favoriteLoading: Boolean,
+    isOwnRecipe: Boolean,
     onClickBack: () -> Unit,
     onClickShare: () -> Unit,
     onClickFavorite: () -> Unit,
+    onClickDelete: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -115,6 +120,14 @@ private fun TopBar(
             onClick = onClickBack
         )
         Spacer(Modifier.weight(1f))
+        if (isOwnRecipe) {
+            CircleIconButton(
+                iconRes = R.drawable.ic_close,
+                tint = Colors.SECONDARY,
+                onClick = onClickDelete
+            )
+            Width(8.dp)
+        }
         CircleIconButton(
             iconRes = R.drawable.ic_share,
             onClick = onClickShare
@@ -133,6 +146,7 @@ private fun TopBar(
 private fun HeroContent(
     title: String,
     author: ProfileEntity,
+    isOwnRecipe: Boolean,
     onClickAuthor: () -> Unit,
 ) {
     Column(
@@ -146,20 +160,25 @@ private fun HeroContent(
             maxLines = 3,
             overflow = TextOverflow.Ellipsis
         )
-        AuthorPill(author = author, onClick = onClickAuthor)
+        AuthorPill(
+            author = author,
+            isOwnRecipe = isOwnRecipe,
+            onClick = onClickAuthor
+        )
     }
 }
 
 @Composable
 private fun AuthorPill(
     author: ProfileEntity,
+    isOwnRecipe: Boolean,
     onClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(44.dp))
             .background(Colors.WHITE.copy(0.95f))
-            .rippleClickable(onClick = onClick)
+            .rippleClickable(enabled = !isOwnRecipe, onClick = onClick)
             .padding(start = 6.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
@@ -189,9 +208,9 @@ private fun AuthorPill(
         }
         Column {
             Text(
-                text = "Автор",
+                text = if (isOwnRecipe) "Это вы" else "Автор",
                 style = Typography.S,
-                color = Colors.SECONDARY_TEXT
+                color = if (isOwnRecipe) Colors.PRIMARY else Colors.SECONDARY_TEXT
             )
             Text(
                 text = author.username,

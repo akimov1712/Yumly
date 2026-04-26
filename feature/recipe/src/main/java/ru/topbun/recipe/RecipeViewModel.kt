@@ -1,5 +1,7 @@
 package ru.topbun.recipe
 
+import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -12,19 +14,38 @@ import ru.topbun.core.common.error.DataError
 import ru.topbun.core.common.onError
 import ru.topbun.core.common.onSuccess
 import ru.topbun.domain.ScreenUiState
+import ru.topbun.domain.entity.recipe.RecipeEntity
+import ru.topbun.domain.useCases.account.GetAccountInfoUseCase
 import ru.topbun.domain.useCases.favorite.SwitchFavoriteRecipeUseCase
+import ru.topbun.domain.useCases.recipe.DeleteRecipeUseCase
 import ru.topbun.domain.useCases.recipe.GetRecipeByIdUseCase
 
 internal class RecipeViewModel(
     recipeId: Int,
+    private val context: Context,
     private val getRecipeByIdUseCase: GetRecipeByIdUseCase,
     private val switchFavoriteRecipeUseCase: SwitchFavoriteRecipeUseCase,
+    private val deleteRecipeUseCase: DeleteRecipeUseCase,
+    private val getAccountInfoUseCase: GetAccountInfoUseCase,
     private val snackbarManager: SnackbarManager,
 ) : MVI<RecipeIntent, RecipeState, RecipeEvent>(RecipeState(recipeId = recipeId)) {
 
     private var loadJob: Job? = null
     private var favoriteJob: Job? = null
+    private var deleteJob: Job? = null
     private var timerJob: Job? = null
+
+    init {
+        loadCurrentUser()
+    }
+
+    private fun loadCurrentUser() {
+        viewModelScope.launch(SupervisorJob()) {
+            getAccountInfoUseCase().onSuccess { account ->
+                _state.update { it.copy(currentUserId = account.id) }
+            }
+        }
+    }
 
     private fun loadRecipe() {
         loadJob?.cancel()
@@ -36,9 +57,6 @@ internal class RecipeViewModel(
                         recipe = recipe,
                         recipeStatus = ScreenUiState.Success,
                         isFavorite = recipe.isFavorite,
-                        cookingTimerSecondsLeft = if (it.cookingTimerSecondsLeft == 0) {
-                            recipe.cookingTime * 60
-                        } else it.cookingTimerSecondsLeft,
                     )
                 }
             }.onError { error, _ ->
@@ -50,13 +68,7 @@ internal class RecipeViewModel(
 
     private fun refresh() {
         timerJob?.cancel()
-        _state.update {
-            it.copy(
-                isCookingMode = false,
-                cookingTimerSecondsLeft = 0,
-                cookingTimerPaused = false,
-            )
-        }
+        _state.update { it.copy(timer = RecipeState.TimerState()) }
         loadRecipe()
     }
 
@@ -81,26 +93,51 @@ internal class RecipeViewModel(
 
     private fun share() {
         val recipe = state.value.recipe ?: return
-        val text = "Попробуй рецепт «${recipe.title}» в Yumly"
-        viewModelScope.launch { _events.send(RecipeEvent.Share(text)) }
+        val text = buildShareText(recipe)
+
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, text)
+        }
+        context.startActivity(Intent.createChooser(intent, "Поделиться рецептом"))
     }
 
     private fun clickAuthor() {
-        val authorId = state.value.recipe?.author?.userId ?: return
+        val current = state.value
+        val authorId = current.recipe?.author?.userId ?: return
+        if (current.isOwnRecipe) {
+            snackbarManager.showMessage("Это ваш профиль")
+            return
+        }
         viewModelScope.launch { _events.send(RecipeEvent.NavigateToProfile(authorId)) }
     }
 
-    private fun changeIngredientMode(mode: RecipeState.IngredientMode) {
-        _state.update { it.copy(ingredientMode = mode) }
+    private fun changeShowDeleteDialog(value: Boolean) =
+        _state.update { it.copy(showDeleteDialog = value) }
+
+    private fun deleteRecipe() {
+        val current = state.value
+        val recipe = current.recipe ?: return
+        if (!current.isOwnRecipe || current.deleteLoading) return
+
+        deleteJob?.cancel()
+        deleteJob = viewModelScope.launch(SupervisorJob()) {
+            _state.update { it.copy(deleteLoading = true) }
+            deleteRecipeUseCase(recipe.id).onSuccess {
+                _state.update { it.copy(deleteLoading = false, showDeleteDialog = false) }
+                snackbarManager.showMessage("Рецепт удалён")
+                _events.send(RecipeEvent.RecipeDeleted)
+            }.onError { error, _ ->
+                snackbarManager.showMessage(error.toMessage())
+                _state.update { it.copy(deleteLoading = false) }
+            }
+        }
     }
 
     private fun toggleIngredient(index: Int) = _state.update { current ->
-        val mode = current.ingredientMode
-        val checks = current.ingredientChecks.toMutableMap()
-        val set = checks[mode].orEmpty().toMutableSet()
+        val set = current.checkedIngredients.toMutableSet()
         if (!set.add(index)) set.remove(index)
-        checks[mode] = set
-        current.copy(ingredientChecks = checks)
+        current.copy(checkedIngredients = set)
     }
 
     private fun toggleStep(index: Int) = _state.update { current ->
@@ -109,77 +146,78 @@ internal class RecipeViewModel(
         current.copy(completedSteps = set)
     }
 
-    private fun resetIngredients() = _state.update { current ->
-        val mode = current.ingredientMode
-        val checks = current.ingredientChecks.toMutableMap()
-        checks[mode] = emptySet()
-        current.copy(ingredientChecks = checks)
-    }
+    private fun resetIngredients() = _state.update { it.copy(checkedIngredients = emptySet()) }
 
     private fun resetSteps() = _state.update { it.copy(completedSteps = emptySet()) }
 
-    private fun startCooking() {
-        val recipe = state.value.recipe ?: return
-        val secondsLeft = state.value.cookingTimerSecondsLeft.takeIf { it > 0 }
-            ?: (recipe.cookingTime * 60)
-        _state.update {
-            it.copy(
-                isCookingMode = true,
-                cookingTimerSecondsLeft = secondsLeft,
-                cookingTimerPaused = false,
-            )
-        }
-        startTimerTick()
-    }
-
-    private fun stopCooking() {
+    private fun changeTimerMode(mode: RecipeState.TimerMode) {
         timerJob?.cancel()
         _state.update {
             it.copy(
-                isCookingMode = false,
-                cookingTimerPaused = false,
+                timer = it.timer.copy(
+                    mode = mode,
+                    isRunning = false,
+                    elapsedSeconds = 0,
+                )
             )
         }
+    }
+
+    private fun changeTimerTarget(seconds: Int) {
+        if (state.value.timer.isRunning) return
+        _state.update {
+            it.copy(
+                timer = it.timer.copy(
+                    targetSeconds = seconds.coerceAtLeast(0),
+                    elapsedSeconds = 0,
+                )
+            )
+        }
+    }
+
+    private fun startTimer() {
+        if (!state.value.timer.canStart) return
+        _state.update { it.copy(timer = it.timer.copy(isRunning = true)) }
+        startTimerTick()
     }
 
     private fun pauseTimer() {
         timerJob?.cancel()
-        _state.update { it.copy(cookingTimerPaused = true) }
-    }
-
-    private fun resumeTimer() {
-        if (!state.value.isCookingMode) return
-        _state.update { it.copy(cookingTimerPaused = false) }
-        startTimerTick()
+        _state.update { it.copy(timer = it.timer.copy(isRunning = false)) }
     }
 
     private fun resetTimer() {
         timerJob?.cancel()
-        val total = state.value.cookingTimerTotalSeconds
         _state.update {
             it.copy(
-                cookingTimerSecondsLeft = total,
-                cookingTimerPaused = false,
+                timer = it.timer.copy(
+                    isRunning = false,
+                    elapsedSeconds = 0,
+                )
             )
         }
-        if (state.value.isCookingMode) startTimerTick()
     }
 
     private fun startTimerTick() {
         timerJob?.cancel()
         timerJob = viewModelScope.launch {
             while (true) {
-                val current = state.value
-                if (!current.isCookingMode || current.cookingTimerPaused) return@launch
-                if (current.cookingTimerSecondsLeft <= 0) {
-                    _events.send(RecipeEvent.CookingDone)
-                    _state.update { it.copy(cookingTimerPaused = true) }
+                val timer = state.value.timer
+                if (!timer.isRunning) return@launch
+                if (timer.mode == RecipeState.TimerMode.Timer && timer.elapsedSeconds >= timer.targetSeconds) {
+                    _state.update {
+                        it.copy(
+                            timer = it.timer.copy(
+                                isRunning = false,
+                                elapsedSeconds = it.timer.targetSeconds,
+                            )
+                        )
+                    }
+                    snackbarManager.showMessage("Готово! Таймер завершён")
                     return@launch
                 }
                 delay(1000)
-                _state.update {
-                    it.copy(cookingTimerSecondsLeft = (it.cookingTimerSecondsLeft - 1).coerceAtLeast(0))
-                }
+                _state.update { it.copy(timer = it.timer.copy(elapsedSeconds = it.timer.elapsedSeconds + 1)) }
             }
         }
     }
@@ -193,15 +231,38 @@ internal class RecipeViewModel(
             RecipeIntent.ClickAuthor -> clickAuthor()
             RecipeIntent.ResetIngredients -> resetIngredients()
             RecipeIntent.ResetSteps -> resetSteps()
-            RecipeIntent.StartCooking -> startCooking()
-            RecipeIntent.StopCooking -> stopCooking()
+            RecipeIntent.DeleteRecipe -> deleteRecipe()
+            RecipeIntent.StartTimer -> startTimer()
             RecipeIntent.PauseTimer -> pauseTimer()
-            RecipeIntent.ResumeTimer -> resumeTimer()
             RecipeIntent.ResetTimer -> resetTimer()
-            is RecipeIntent.ChangeIngredientMode -> changeIngredientMode(intent.mode)
+            is RecipeIntent.ChangeShowDeleteDialog -> changeShowDeleteDialog(intent.value)
+            is RecipeIntent.ChangeTimerMode -> changeTimerMode(intent.mode)
+            is RecipeIntent.ChangeTimerTarget -> changeTimerTarget(intent.seconds)
             is RecipeIntent.ToggleIngredient -> toggleIngredient(intent.index)
             is RecipeIntent.ToggleStep -> toggleStep(intent.index)
         }
+    }
+
+    private fun buildShareText(recipe: RecipeEntity): String = buildString {
+        appendLine(recipe.title)
+        appendLine()
+        if (recipe.ingredients.isNotEmpty()) {
+            appendLine("Ингредиенты:")
+            recipe.ingredients.forEach { ingredient ->
+                appendLine("• ${ingredient.name} — ${ingredient.value}")
+            }
+            appendLine()
+        }
+        if (recipe.steps.isNotEmpty()) {
+            appendLine("Приготовление:")
+            recipe.steps.forEachIndexed { index, step ->
+                appendLine("${index + 1}. ${step.description}")
+                appendLine()
+            }
+        }
+        appendLine("———")
+        appendLine("Рецепт взят из мобильного приложения Yumly")
+        append("Скачать: $RUSTORE_URL")
     }
 
     private fun DataError.toMessage(): String = when (this) {
@@ -215,5 +276,9 @@ internal class RecipeViewModel(
         DataError.Network.SERVER_ERROR -> "Произошла ошибка на сервере. Попробуйте позже"
         DataError.Network.NO_INTERNET -> "Отсутствует интернет-соединение"
         else -> "Произошла ошибка. Попробуйте позже"
+    }
+
+    companion object {
+        private const val RUSTORE_URL = "https://www.rustore.ru/catalog/app/ru.topbun.yumly"
     }
 }

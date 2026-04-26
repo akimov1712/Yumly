@@ -98,7 +98,7 @@ internal class RecipeRepositoryImpl(
             if (response.isSuccessful){
                 Result.Success(Unit)
             } else{
-                val error = when(response.code){
+                val error = when(response.code()){
                     HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
                     HttpStatusCode.UNAUTHORIZED -> DataError.Network.UNAUTHORIZED
                     HttpStatusCode.FORBIDDEN -> DataError.Network.UNAUTHORIZED

@@ -3,11 +3,12 @@ package ru.topbun.upload
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -27,8 +28,9 @@ import org.koin.compose.viewmodel.koinViewModel
 import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.UnauthorizedSection
 import ru.topbun.core.ui.theme.Colors
-import ru.topbun.core.ui.utils.LocalBottomBarPadding
+import ru.topbun.core.ui.utils.ObserveAsEvents
 import ru.topbun.core.ui.utils.useBottomBarPadding
+import ru.topbun.navigation.RecipeScreenProvider
 import ru.topbun.navigation.auth.AuthScreenProvider
 import ru.topbun.upload.UploadState.UploadUiState.NEED_AUTH
 import ru.topbun.upload.UploadState.UploadUiState.SUCCESS
@@ -40,7 +42,7 @@ import ru.topbun.upload.fragments.ContentFragment
 import ru.topbun.upload.fragments.UploadFragments.Basic
 import ru.topbun.upload.fragments.UploadFragments.Content
 
-object UploadScreen: Tab {
+object UploadScreen : Tab {
 
     override val options @Composable get() = TabOptions(
         index = 1U,
@@ -60,11 +62,20 @@ object UploadScreen: Tab {
             viewModel.sendIntent(UploadIntent.CheckSession)
         }
 
+        ObserveAsEvents(viewModel.events) { event ->
+            when (event) {
+                is UploadEvent.NavigateToRecipe -> {
+                    val screen = ScreenRegistry.get(RecipeScreenProvider.Detail(event.recipeId))
+                    navigator?.push(screen)
+                }
+            }
+        }
+
         BackHandler(enabled = isContentFragmentSelected) {
             viewModel.sendIntent(UploadIntent.ChangeFragment(Basic))
         }
 
-        when(state.uploadUiState){
+        when (state.uploadUiState) {
             SUCCESS -> UploadContent()
             NEED_AUTH -> UnauthorizedSection {
                 val screen = ScreenRegistry.get(AuthScreenProvider.Login)
@@ -72,7 +83,6 @@ object UploadScreen: Tab {
             }
             else -> {}
         }
-
 
         if (state.showDialogClearData) {
             ClearDataDialog(
@@ -88,7 +98,7 @@ object UploadScreen: Tab {
         state.publishedRecipeId?.let {
             SuccessPublishRecipeDialog(
                 onDismissRequest = { viewModel.sendIntent(UploadIntent.ChangeShowDialogSuccessPublish(null)) },
-                onClickOpenRecipe = {  }
+                onClickOpenRecipe = { viewModel.sendIntent(UploadIntent.OpenPublishedRecipe) }
             )
         }
     }
@@ -101,10 +111,12 @@ private fun UploadContent(
     val state by viewModel.state.collectAsState()
     val isContentFragmentSelected = state.selectedFragment == Content
     Column(
-        modifier = Modifier.fillMaxWidth()
-            .systemBarsPadding()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Colors.BACKGROUND)
+            .statusBarsPadding()
             .padding(horizontal = 12.dp)
-    ){
+    ) {
         Header(
             selectedOrder = state.selectedOrderFragments,
             fragmentsSize = state.fragments.size,
@@ -115,12 +127,12 @@ private fun UploadContent(
             onClickBack = { viewModel.sendIntent(UploadIntent.ChangeFragment(Basic)) },
             onClickPublish = { viewModel.sendIntent(UploadIntent.PublishRecipe) }
         )
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Colors.BACKGROUND)
                 .verticalScroll(rememberScrollState())
-                .useBottomBarPadding()
+                .useBottomBarPadding(),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             when (state.selectedFragment) {
                 Basic -> BasicFragment()
@@ -128,5 +140,4 @@ private fun UploadContent(
             }
         }
     }
-
 }

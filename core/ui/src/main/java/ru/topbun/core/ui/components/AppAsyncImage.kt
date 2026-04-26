@@ -8,10 +8,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQuality
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter.State
 import coil3.request.ImageRequest
@@ -50,5 +48,6 @@ fun AppAsyncImage(
         colorFilter = colorFilter,
         filterQuality = filterQuality,
         clipToBounds = clipToBounds,
+
     )
 }

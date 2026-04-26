@@ -22,6 +22,12 @@ internal data class HomeState(
     val searchTypeVisible: Boolean
         get() = recipeListState.firstVisibleItemIndex < 2
 
+    val selectedSearchType: SearchType
+        get() = searchTypeList.getOrElse(selectedSearchTypeIndex) { SearchType.All }
+
+    val isSubscribersFeed: Boolean
+        get() = selectedSearchType == SearchType.Subscribers
+
     enum class SearchType(val title: String){
         All("All"), Subscribers("Subscribers");
     }

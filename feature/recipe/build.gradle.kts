@@ -43,6 +43,10 @@ dependencies {
     // UI
     implementation(libs.compose.shimmer)
 
+    // Coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
     // Voyager
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.tab.navigator)

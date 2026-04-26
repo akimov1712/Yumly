@@ -10,7 +10,10 @@ val recipeModule = module {
             recipeId,
             get(),
             get(),
-            get()
+            get(),
+            get(),
+            get(),
+            get(),
         )
     }
 }

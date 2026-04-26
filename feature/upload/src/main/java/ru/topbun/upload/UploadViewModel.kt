@@ -46,6 +46,12 @@ internal class UploadViewModel(
         it.copy(publishRecipeUiState = newPublishRecipeUiState)
     }
 
+    private fun openPublishedRecipe() {
+        val recipeId = state.value.publishedRecipeId ?: return
+        _state.update { it.copy(publishRecipeUiState = UploadState.PublishRecipeUiState.None) }
+        viewModelScope.launch { _events.send(UploadEvent.NavigateToRecipe(recipeId)) }
+    }
+
     private fun changeNutrientValue(nutrient: UploadState.NutrientsEnum, value: Int){
         val newNutrients = _state.value.nutrients.toMutableMap()
         newNutrients[nutrient] = value
@@ -126,6 +132,7 @@ internal class UploadViewModel(
 
     private fun clearData() = with(state.value){
         val newState = copy(
+            showDialogClearData = false,
             preview = null,
             name = "",
             description = "",
@@ -140,6 +147,7 @@ internal class UploadViewModel(
             showDialogAddStep = false
         )
         _state.update { newState }
+        snackbarManager.showMessage("Данные успешно очищены")
     }
 
     private fun checkSession() {
@@ -206,6 +214,7 @@ internal class UploadViewModel(
                 }
 
                 snackbarManager.showMessage(message)
+                _state.update { it.copy(publishLoading = false) }
                 return@launch
             }
             val result = addRecipeUseCase(recipe)
@@ -253,6 +262,7 @@ internal class UploadViewModel(
             is UploadIntent.ReorderStep -> reorderSteps(intent.fromIndex, intent.toIndex)
             UploadIntent.PublishRecipe -> publishRecipe()
             UploadIntent.CheckSession -> checkSession()
+            UploadIntent.OpenPublishedRecipe -> openPublishedRecipe()
             is UploadIntent.ChangeShowDialogSuccessPublish -> changeShowDialogSuccessPublish(intent.recipeId)
         }
     }

@@ -9,22 +9,26 @@ internal data class RecipeState(
     val recipeStatus: ScreenUiState = ScreenUiState.Idle,
     val isFavorite: Boolean = false,
     val favoriteLoading: Boolean = false,
-    val ingredientMode: IngredientMode = IngredientMode.Stock,
-    val ingredientChecks: Map<IngredientMode, Set<Int>> = IngredientMode.entries.associateWith { emptySet() },
+    val checkedIngredients: Set<Int> = emptySet(),
     val completedSteps: Set<Int> = emptySet(),
-    val isCookingMode: Boolean = false,
-    val cookingTimerSecondsLeft: Int = 0,
-    val cookingTimerPaused: Boolean = false,
+    val timer: TimerState = TimerState(),
+    val currentUserId: Int? = null,
+    val showDeleteDialog: Boolean = false,
+    val deleteLoading: Boolean = false,
 ) {
 
-    val checkedForCurrentMode: Set<Int>
-        get() = ingredientChecks[ingredientMode].orEmpty()
+    val isOwnRecipe: Boolean
+        get() {
+            val authorId = recipe?.author?.userId ?: return false
+            val userId = currentUserId ?: return false
+            return authorId == userId
+        }
 
     val ingredientProgress: Float
         get() {
             val total = recipe?.ingredients?.size ?: 0
             if (total == 0) return 0f
-            return checkedForCurrentMode.size.toFloat() / total
+            return checkedIngredients.size.toFloat() / total
         }
 
     val stepProgress: Float
@@ -34,21 +38,41 @@ internal data class RecipeState(
             return completedSteps.size.toFloat() / total
         }
 
-    val cookingTimerTotalSeconds: Int
-        get() = (recipe?.cookingTime ?: 0) * 60
+    data class TimerState(
+        val mode: TimerMode = TimerMode.Timer,
+        val targetSeconds: Int = DEFAULT_TIMER_SECONDS,
+        val elapsedSeconds: Int = 0,
+        val isRunning: Boolean = false,
+    ) {
 
-    val cookingTimerProgress: Float
-        get() {
-            val total = cookingTimerTotalSeconds
-            if (total == 0) return 0f
-            val passed = total - cookingTimerSecondsLeft
-            return (passed.toFloat() / total).coerceIn(0f, 1f)
-        }
+        val displaySeconds: Int
+            get() = when (mode) {
+                TimerMode.Timer -> (targetSeconds - elapsedSeconds).coerceAtLeast(0)
+                TimerMode.Stopwatch -> elapsedSeconds
+            }
 
-    enum class IngredientMode(val title: String) {
-        Stock("У меня есть"),
-        Shopping("Список покупок"),
-        Cooking("Готовка");
+        val progress: Float
+            get() = when (mode) {
+                TimerMode.Timer -> {
+                    if (targetSeconds <= 0) 0f
+                    else (elapsedSeconds.toFloat() / targetSeconds).coerceIn(0f, 1f)
+                }
+                TimerMode.Stopwatch -> 0f
+            }
+
+        val canStart: Boolean
+            get() = when (mode) {
+                TimerMode.Timer -> targetSeconds > 0 && elapsedSeconds < targetSeconds
+                TimerMode.Stopwatch -> true
+            }
+    }
+
+    enum class TimerMode(val title: String) {
+        Timer("Таймер"), Stopwatch("Секундомер");
+    }
+
+    companion object {
+        const val DEFAULT_TIMER_SECONDS = 5 * 60
     }
 
 }
@@ -60,15 +84,18 @@ internal sealed interface RecipeIntent {
     data object ToggleFavorite : RecipeIntent
     data object ClickShare : RecipeIntent
     data object ClickAuthor : RecipeIntent
-    data class ChangeIngredientMode(val mode: RecipeState.IngredientMode) : RecipeIntent
     data class ToggleIngredient(val index: Int) : RecipeIntent
     data class ToggleStep(val index: Int) : RecipeIntent
     data object ResetIngredients : RecipeIntent
     data object ResetSteps : RecipeIntent
-    data object StartCooking : RecipeIntent
-    data object StopCooking : RecipeIntent
+
+    data class ChangeShowDeleteDialog(val value: Boolean) : RecipeIntent
+    data object DeleteRecipe : RecipeIntent
+
+    data class ChangeTimerMode(val mode: RecipeState.TimerMode) : RecipeIntent
+    data class ChangeTimerTarget(val seconds: Int) : RecipeIntent
+    data object StartTimer : RecipeIntent
     data object PauseTimer : RecipeIntent
-    data object ResumeTimer : RecipeIntent
     data object ResetTimer : RecipeIntent
 
 }
@@ -76,7 +103,6 @@ internal sealed interface RecipeIntent {
 internal sealed interface RecipeEvent {
 
     data class NavigateToProfile(val userId: Int) : RecipeEvent
-    data class Share(val text: String) : RecipeEvent
-    data object CookingDone : RecipeEvent
+    data object RecipeDeleted : RecipeEvent
 
 }

@@ -55,9 +55,10 @@ internal fun BasicFragment(
         viewModel.sendIntent(UploadIntent.ChangeSelectDifficultyIndex(it))
     }
     AppButton(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp)
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = 12.dp),
         enabled = state.nextButtonEnabled,
         text = "Далее",
     ) {

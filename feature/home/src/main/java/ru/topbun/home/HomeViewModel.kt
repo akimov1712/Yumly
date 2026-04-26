@@ -32,14 +32,20 @@ internal class HomeViewModel(
     private fun changeRecipeFilter(filters: GetRecipeFilterEntity){ _state.update { it.copy(recipeFilters = filters) } }
 
     private fun loadRecipes() = with(state.value){
+        if (recipeList.status.isLoading || recipeList.isEndList) return@with
         recipeLoadJob?.cancel()
         recipeLoadJob = viewModelScope.launch(SupervisorJob()) {
             _state.update { it.copy(recipeList = recipeList.copy(status = ScreenUiState.Loading)) }
-            val getRecipeEntity = GetRecipeEntity(q = search, offset = recipeList.recipes.size, recipeFilter = recipeFilters)
+            val getRecipeEntity = GetRecipeEntity(
+                q = search,
+                offset = recipeList.recipes.size,
+                recipeFilter = recipeFilters,
+                onlyFromFollowing = isSubscribersFeed,
+            )
             getRecipeUseCase(getRecipeEntity).onSuccess { recipes ->
                 _state.update { it.copy(
                     recipeList = recipeList.copy(
-                        recipes = it.recipeList.recipes + recipes,
+                        recipes = (it.recipeList.recipes + recipes).distinctBy { recipe -> recipe.id },
                         status = ScreenUiState.Success,
                         isEndList = recipes.isEmpty(),
                     ))
