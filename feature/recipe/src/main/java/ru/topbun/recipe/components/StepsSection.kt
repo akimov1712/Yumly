@@ -1,5 +1,6 @@
 package ru.topbun.recipe.components
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImagePainter
 import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.AppAsyncImage
 import ru.topbun.core.ui.components.AppTextButton
@@ -235,7 +237,9 @@ private fun StepCard(
                         url = it,
                         contentScale = ContentScale.Crop,
                         onState = {
-
+                            if (it is AsyncImagePainter.State.Error){
+                                Log.d("STEPS_PREVIEW_LOAD_ERROR", it.result.throwable.message ?: "Неизвестно")
+                            }
                         }
                     )
                 }
