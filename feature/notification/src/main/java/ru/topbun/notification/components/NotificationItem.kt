@@ -100,8 +100,8 @@ private fun TextBlock(
 ) {
     val username = notification.initiator.username
     val action = when (notification.type) {
-        NotificationType.LIKE -> "лайкнул ваш рецепт"
-        NotificationType.FOLLOW -> "подписался на вас"
+        NotificationType.LIKE -> "лайкнул(а) ваш рецепт"
+        NotificationType.FOLLOW -> "подписал(ся/ась) на вас"
     }
     val time = formatNotificationTime(notification.createdAt)
 
