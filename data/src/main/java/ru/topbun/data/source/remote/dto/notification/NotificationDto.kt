@@ -4,6 +4,7 @@ import ru.topbun.data.source.remote.dto.account.ProfileDto
 import ru.topbun.data.source.remote.dto.recipe.RecipeDto
 import ru.topbun.domain.entity.notification.NotificationEntity
 import ru.topbun.domain.entity.notification.NotificationType
+import java.time.LocalDateTime
 import java.util.Date
 
 internal data class NotificationDto(
@@ -11,7 +12,7 @@ internal data class NotificationDto(
     val type: NotificationType,
     val initiator: ProfileDto,
     val recipe: RecipeDto?,
-    val createdAt: Date
+    val createdAt: LocalDateTime
 ) {
     fun toEntity() = NotificationEntity(
         id = id,
