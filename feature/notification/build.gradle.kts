@@ -40,6 +40,9 @@ android {
 
 dependencies {
 
+    // UI
+    implementation(libs.compose.shimmer)
+
     // Voyager
     implementation(libs.voyager.navigator)
     implementation(libs.voyager.koin)
