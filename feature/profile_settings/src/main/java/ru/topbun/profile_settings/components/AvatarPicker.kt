@@ -6,16 +6,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -45,6 +46,7 @@ internal fun AvatarPicker(
     )
 
     val hasPhoto = photoUri != null || !photoUrl.isNullOrBlank()
+    var showActionsDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -52,7 +54,7 @@ internal fun AvatarPicker(
             .clip(CircleShape)
             .background(Colors.FORM)
             .border(2.dp, Colors.OUTLINE.copy(0.5f), CircleShape)
-            .rippleClickable(Colors.BLACK) { ImagePickerHelper.launchPicker(launcher) },
+            .rippleClickable(Colors.BLACK) { showActionsDialog = true },
         contentAlignment = Alignment.Center
     ) {
         when {
@@ -68,46 +70,26 @@ internal fun AvatarPicker(
                 contentScale = ContentScale.Crop
             )
             else -> Icon(
-                modifier = Modifier.fillMaxSize().padding(36.dp),
-                painter = painterResource(R.drawable.ic_user),
+                modifier = Modifier.size(56.dp),
+                painter = painterResource(R.drawable.ic_camera),
                 contentDescription = null,
                 tint = Colors.SECONDARY_TEXT
             )
         }
+    }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(4.dp)
-                .size(36.dp)
-                .clip(CircleShape)
-                .background(Colors.PRIMARY),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                modifier = Modifier.size(18.dp),
-                painter = painterResource(R.drawable.ic_camera),
-                contentDescription = null,
-                tint = Colors.WHITE
-            )
-        }
-
-        if (hasPhoto) {
-            IconButton(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .background(Color.Black.copy(0.4f)),
-                onClick = onClear
-            ) {
-                Icon(
-                    modifier = Modifier.size(18.dp),
-                    painter = painterResource(R.drawable.ic_close),
-                    contentDescription = null,
-                    tint = Colors.WHITE
-                )
+    if (showActionsDialog) {
+        AvatarActionsDialog(
+            hasPhoto = hasPhoto,
+            onDismissRequest = { showActionsDialog = false },
+            onClickPick = {
+                showActionsDialog = false
+                ImagePickerHelper.launchPicker(launcher)
+            },
+            onClickRemove = {
+                showActionsDialog = false
+                onClear()
             }
-        }
+        )
     }
 }
