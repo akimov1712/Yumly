@@ -21,7 +21,8 @@ fun ColumnScope.RecipeList(
     state: LazyListState,
     isEndList: Boolean,
     onRefresh: () -> Unit,
-    onLoadMore: () -> Unit
+    onLoadMore: () -> Unit,
+    onClickRecipe: ((RecipeEntity) -> Unit)? = null,
 ) {
     AppPullRefresh(
         modifier = Modifier
@@ -51,7 +52,7 @@ fun ColumnScope.RecipeList(
                         "id:${item.id} index:$index"
                     }
                 ) { _, item ->
-                    RecipeItem(item)
+                    RecipeItem(item, onClick = onClickRecipe)
                 }
             },
         )

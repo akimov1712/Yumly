@@ -35,15 +35,23 @@ import ru.topbun.core.ui.theme.Typography
 import ru.topbun.core.ui.utils.formatCookingTime
 import ru.topbun.core.ui.utils.formatIngredientCount
 import ru.topbun.core.ui.utils.formatStepCount
+import ru.topbun.core.ui.utils.rippleClickable
 import ru.topbun.domain.entity.recipe.RecipeEntity
 
 @Composable
-fun RecipeItem(recipe: RecipeEntity) {
+fun RecipeItem(
+    recipe: RecipeEntity,
+    onClick: ((RecipeEntity) -> Unit)? = null,
+) {
+    val clickModifier = if (onClick != null) {
+        Modifier.rippleClickable { onClick(recipe) }
+    } else Modifier
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(32.dp))
             .background(Colors.WHITE)
+            .then(clickModifier)
             .padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
