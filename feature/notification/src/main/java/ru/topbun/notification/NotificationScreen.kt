@@ -22,6 +22,7 @@ import ru.topbun.core.ui.components.UnauthorizedSection
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.utils.ObserveAsEvents
 import ru.topbun.navigation.ProfileScreenProvider
+import ru.topbun.navigation.RecipeScreenProvider
 import ru.topbun.navigation.auth.AuthScreenProvider
 import ru.topbun.notification.NotificationState.NotificationUiState.NEED_AUTH
 import ru.topbun.notification.NotificationState.NotificationUiState.SUCCESS
@@ -53,7 +54,7 @@ object NotificationScreen : Tab {
                     navigator?.push(screen)
                 }
                 is NotificationEvent.NavigateToRecipe -> {
-                    val screen = ScreenRegistry.get(ProfileScreenProvider.User(event.authorUserId))
+                    val screen = ScreenRegistry.get(RecipeScreenProvider.Detail(event.recipeId))
                     navigator?.push(screen)
                 }
             }
