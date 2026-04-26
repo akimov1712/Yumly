@@ -19,12 +19,14 @@ import ru.topbun.feature.splash.SplashScreen
 import ru.topbun.home.HomeScreen
 import ru.topbun.navigation.DashboardScreenProvider
 import ru.topbun.navigation.ProfileScreenProvider
+import ru.topbun.navigation.RecipeScreenProvider
 import ru.topbun.navigation.RootScreenProvider
 import ru.topbun.navigation.auth.AuthScreenProvider
 import ru.topbun.notification.NotificationScreen
 import ru.topbun.profile.ProfileScreen
 import ru.topbun.profile.ProfileScreenContent
 import ru.topbun.profile_settings.ProfileSettingsScreen
+import ru.topbun.recipe.RecipeScreen
 import ru.topbun.upload.UploadScreen
 import ru.topbun.yumly.di.appModule
 
@@ -67,6 +69,8 @@ class App : Application() {
 
             register<ProfileScreenProvider.User> { ProfileScreenContent(it.userId) }
             register<ProfileScreenProvider.Settings> { ProfileSettingsScreen }
+
+            register<RecipeScreenProvider.Detail> { RecipeScreen(it.recipeId) }
 
         }
     }
