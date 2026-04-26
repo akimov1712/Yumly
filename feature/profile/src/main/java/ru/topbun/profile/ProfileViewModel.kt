@@ -213,9 +213,14 @@ internal class ProfileViewModel(
             _state.update { it.copy(profile = optimistic, followLoading = true) }
             switchFollowUserUseCase(mode.userId).onSuccess { isFollow ->
                 _state.update {
+                    val delta = when {
+                        isFollow == previousIsFollow -> 0
+                        isFollow -> 1
+                        else -> -1
+                    }
                     val finalProfile = it.profile?.copy(
                         isFollow = isFollow,
-                        countFollowers = previousFollowers + if (isFollow) 1 else 0
+                        countFollowers = previousFollowers + delta
                     ) ?: it.profile
                     it.copy(profile = finalProfile, followLoading = false)
                 }
