@@ -22,6 +22,7 @@ import ru.topbun.core.ui.components.UnauthorizedSection
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.utils.ObserveAsEvents
 import ru.topbun.navigation.ProfileScreenProvider
+import ru.topbun.navigation.RecipeScreenProvider
 import ru.topbun.navigation.RootScreenProvider
 import ru.topbun.navigation.auth.AuthScreenProvider
 import ru.topbun.navigation.auth.AuthStartScreen
@@ -76,6 +77,10 @@ object ProfileScreen : Tab {
                     onBack = {},
                     onNavigateToSettings = {
                         val screen = ScreenRegistry.get(ProfileScreenProvider.Settings)
+                        navigator?.push(screen)
+                    },
+                    onClickRecipe = { recipeId ->
+                        val screen = ScreenRegistry.get(RecipeScreenProvider.Detail(recipeId))
                         navigator?.push(screen)
                     }
                 )

@@ -39,6 +39,7 @@ internal fun ProfileRecipeList(
     tabsContent: @Composable () -> Unit,
     onRefresh: () -> Unit,
     onLoadMore: () -> Unit,
+    onClickRecipe: ((RecipeEntity) -> Unit)? = null,
 ) {
     PreloadTrigger(
         state = state,
@@ -91,7 +92,7 @@ internal fun ProfileRecipeList(
                     items = recipes,
                     key = { index, item -> "id:${item.id} index:$index" }
                 ) { _, item ->
-                    RecipeItem(item)
+                    RecipeItem(item, onClick = onClickRecipe)
                 }
             }
 

@@ -19,6 +19,7 @@ internal fun ProfileContent(
     showBack: Boolean,
     onBack: () -> Unit,
     onNavigateToSettings: () -> Unit,
+    onClickRecipe: (recipeId: Int) -> Unit = {},
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -85,7 +86,8 @@ internal fun ProfileContent(
                             ProfileIntent.LoadLiked
                         }
                         viewModel.sendIntent(intent)
-                    }
+                    },
+                    onClickRecipe = { recipe -> onClickRecipe(recipe.id) }
                 )
             }
         }

@@ -15,6 +15,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.navigation.ProfileScreenProvider
+import ru.topbun.navigation.RecipeScreenProvider
 import ru.topbun.profile.components.ProfileContent
 
 data class ProfileScreenContent(
@@ -43,6 +44,10 @@ data class ProfileScreenContent(
                 onBack = { navigator.pop() },
                 onNavigateToSettings = {
                     val screen = ScreenRegistry.get(ProfileScreenProvider.Settings)
+                    navigator.push(screen)
+                },
+                onClickRecipe = { recipeId ->
+                    val screen = ScreenRegistry.get(RecipeScreenProvider.Detail(recipeId))
                     navigator.push(screen)
                 }
             )
