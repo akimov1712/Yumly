@@ -31,9 +31,6 @@ internal data class ProfileState(
             is Mode.Other -> mode.userId
         }
 
-    val countRecipes: Int
-        get() = profile?.let { recipeList.recipes.size } ?: 0
-
     val visibleList: RecipeListUiState
         get() = if (selectedTab == ProfileTab.MyRecipes) recipeList else likedList
 

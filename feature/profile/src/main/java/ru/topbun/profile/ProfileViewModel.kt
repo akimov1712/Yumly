@@ -11,6 +11,7 @@ import ru.topbun.core.common.error.DataError
 import ru.topbun.core.common.onError
 import ru.topbun.core.common.onSuccess
 import ru.topbun.domain.ScreenUiState
+import ru.topbun.domain.entity.recipe.getRecipe.GetRecipeByUserIdEntity
 import ru.topbun.domain.useCases.account.GetAccountInfoUseCase
 import ru.topbun.domain.useCases.account.GetProfileUseCase
 import ru.topbun.domain.useCases.favorite.GetFavoriteRecipesUseCase
@@ -145,7 +146,8 @@ internal class ProfileViewModel(
         recipesJob?.cancel()
         recipesJob = viewModelScope.launch(SupervisorJob()) {
             _state.update { it.copy(recipeList = it.recipeList.copy(status = ScreenUiState.Loading)) }
-            getRecipeByUserIdUseCase(userId).onSuccess { recipes ->
+            val data = GetRecipeByUserIdEntity(_state.value.recipeList.recipes.size)
+            getRecipeByUserIdUseCase(userId, data).onSuccess { recipes ->
                 _state.update { current ->
                     val merged = (current.recipeList.recipes + recipes).distinctBy { it.id }
                     current.copy(

@@ -5,6 +5,7 @@ data class ProfileEntity(
     val username: String,
     val email: String,
     val photoUrl: String?,
+    val countRecipes: Int,
     val countFollowing: Int,
     val countFollowers: Int,
     val countLikes: Int,

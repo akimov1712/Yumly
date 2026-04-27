@@ -65,7 +65,6 @@ internal fun ProfileContent(
                         ProfileInfo(
                             profile = state.profile,
                             isSelf = state.isSelf,
-                            countRecipes = state.countRecipes,
                             followLoading = state.followLoading,
                             onClickFollow = { viewModel.sendIntent(ProfileIntent.SwitchFollow) },
                             onClickFollowers = { /* В будущем: экран подписчиков */ },

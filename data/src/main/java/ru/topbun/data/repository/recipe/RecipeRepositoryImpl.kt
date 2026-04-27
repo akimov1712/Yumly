@@ -12,6 +12,7 @@ import ru.topbun.data.source.remote.dto.recipe.addRecipe.toRequest
 import ru.topbun.data.source.remote.dto.recipe.getRecipe.toRequest
 import ru.topbun.domain.entity.recipe.RecipeEntity
 import ru.topbun.domain.entity.recipe.addRecipe.AddRecipeEntity
+import ru.topbun.domain.entity.recipe.getRecipe.GetRecipeByUserIdEntity
 import ru.topbun.domain.entity.recipe.getRecipe.GetRecipeEntity
 import ru.topbun.domain.entity.recipe.tag.TagRecipeEntity
 import ru.topbun.domain.repository.recipe.RecipeRepository
@@ -61,9 +62,9 @@ internal class RecipeRepositoryImpl(
             }
         }
 
-    override suspend fun getRecipeByUserId(userId: Int): Result<List<RecipeEntity>, DataError> =
+    override suspend fun getRecipeByUserId(userId: Int, data: GetRecipeByUserIdEntity): Result<List<RecipeEntity>, DataError> =
         context.exceptionWrapper {
-            val response = api.getRecipeByUserId(userId)
+            val response = api.getRecipeByUserId(userId, data.toRequest())
             val recipes = response.body()
             if (response.isSuccessful && recipes != null){
                 Result.Success(recipes.toEntityList())

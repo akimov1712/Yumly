@@ -37,7 +37,6 @@ import ru.topbun.domain.entity.account.ProfileEntity
 internal fun ProfileInfo(
     profile: ProfileEntity?,
     isSelf: Boolean,
-    countRecipes: Int,
     followLoading: Boolean,
     onClickFollow: () -> Unit,
     onClickFollowers: () -> Unit,
@@ -76,7 +75,7 @@ internal fun ProfileInfo(
         }
         Height(20.dp)
         Stats(
-            countRecipes = countRecipes,
+            countRecipes = profile?.countRecipes ?: 0,
             countFollowers = profile?.countFollowers ?: 0,
             countFollowing = profile?.countFollowing ?: 0,
             onClickFollowers = onClickFollowers,

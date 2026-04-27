@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.koinInject
@@ -58,6 +59,9 @@ import ru.topbun.recipe.components.TimerSection
 data class RecipeScreen(
     private val recipeId: Int,
 ) : Screen {
+
+    override val key: ScreenKey
+        get() = recipeId.toString()
 
     @Composable
     override fun Content() {
