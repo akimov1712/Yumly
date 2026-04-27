@@ -6,5 +6,8 @@ sealed interface ProfileScreenProvider : ScreenProvider {
 
     data class User(val userId: Int) : ProfileScreenProvider
     object Settings : ProfileScreenProvider
+    data class Follows(val userId: Int, val initialTab: FollowsTab) : ProfileScreenProvider
+
+    enum class FollowsTab { Followers, Following }
 
 }

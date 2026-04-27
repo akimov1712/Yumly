@@ -14,6 +14,7 @@ import ru.topbun.home.di.homeModule
 import ru.topbun.home_filter.di.homeFilterModule
 import ru.topbun.notification.di.notificationModule
 import ru.topbun.profile.di.profileModule
+import ru.topbun.profile_followers.di.followListModule
 import ru.topbun.profile_settings.di.profileSettingsModule
 import ru.topbun.recipe.di.recipeModule
 import ru.topbun.upload.di.uploadModule
@@ -35,6 +36,7 @@ val featureModule = module {
         notificationModule,
         profileModule,
         profileSettingsModule,
+        followListModule,
         recipeModule
     )
 }

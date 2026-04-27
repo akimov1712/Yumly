@@ -39,6 +39,7 @@ fun <T>PaginationList(
     contentPadding: PaddingValues = PaddingValues(0.dp),
     onLoadMore: () -> Unit,
     shimmerContent: LazyListScope.() -> Unit = {},
+    emptyContent: (LazyListScope.() -> Unit)? = null,
     content: LazyListScope.(items: List<T>) -> Unit,
 ) {
     PreloadTrigger(
@@ -66,6 +67,7 @@ fun <T>PaginationList(
             status = status,
             isEndList = isEndList,
             isEmpty = items.isEmpty(),
+            emptyContent = emptyContent,
             onLoadMore = onLoadMore
         )
     }
@@ -76,6 +78,7 @@ private fun LazyListScope.ListFooter(
     status: ScreenUiState,
     isEndList: Boolean,
     isEmpty: Boolean,
+    emptyContent: (LazyListScope.() -> Unit)?,
     onLoadMore: () -> Unit
 ) {
 
@@ -86,8 +89,8 @@ private fun LazyListScope.ListFooter(
         ScreenUiState.Loading -> if (!isEndList) item {
             FooterContentLoading()
         }
-        ScreenUiState.Success -> if (isEmpty) item {
-            FooterContentEmptyList()
+        ScreenUiState.Success -> if (isEmpty) {
+            if (emptyContent != null) emptyContent() else item { FooterContentEmptyList() }
         }
 
         else -> Unit

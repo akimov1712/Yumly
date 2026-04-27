@@ -93,6 +93,7 @@ dependencies {
     implementation(project(":feature:notification"))
     implementation(project(":feature:profile"))
     implementation(project(":feature:profile_settings"))
+    implementation(project(":feature:profile_followers"))
     implementation(project(":feature:recipe"))
 
 }

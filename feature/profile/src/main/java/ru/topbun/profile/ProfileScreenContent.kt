@@ -49,6 +49,24 @@ data class ProfileScreenContent(
                 onClickRecipe = { recipeId ->
                     val screen = ScreenRegistry.get(RecipeScreenProvider.Detail(recipeId))
                     navigator.push(screen)
+                },
+                onClickFollowers = { uid ->
+                    val screen = ScreenRegistry.get(
+                        ProfileScreenProvider.Follows(
+                            userId = uid,
+                            initialTab = ProfileScreenProvider.FollowsTab.Followers
+                        )
+                    )
+                    navigator.push(screen)
+                },
+                onClickFollowing = { uid ->
+                    val screen = ScreenRegistry.get(
+                        ProfileScreenProvider.Follows(
+                            userId = uid,
+                            initialTab = ProfileScreenProvider.FollowsTab.Following
+                        )
+                    )
+                    navigator.push(screen)
                 }
             )
         }

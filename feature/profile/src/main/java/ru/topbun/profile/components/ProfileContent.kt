@@ -31,6 +31,8 @@ internal fun ProfileContent(
     onBack: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onClickRecipe: (recipeId: Int) -> Unit = {},
+    onClickFollowers: (userId: Int) -> Unit = {},
+    onClickFollowing: (userId: Int) -> Unit = {},
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -58,13 +60,18 @@ internal fun ProfileContent(
             state.profile != null -> {
                 val headerItems: LazyListScope.() -> Unit = {
                     item("profile_info") {
+                        val profileUserId = state.profile?.userId
                         ProfileInfo(
                             profile = state.profile,
                             isSelf = state.isSelf,
                             followLoading = state.followLoading,
                             onClickFollow = { viewModel.sendIntent(ProfileIntent.SwitchFollow) },
-                            onClickFollowers = { /* В будущем: экран подписчиков */ },
-                            onClickFollowing = { /* В будущем: экран подписок */ }
+                            onClickFollowers = {
+                                profileUserId?.let { onClickFollowers(it) }
+                            },
+                            onClickFollowing = {
+                                profileUserId?.let { onClickFollowing(it) }
+                            }
                         )
                     }
                     item("profile_tabs") {

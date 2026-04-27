@@ -25,6 +25,7 @@ import ru.topbun.navigation.auth.AuthScreenProvider
 import ru.topbun.notification.NotificationScreen
 import ru.topbun.profile.ProfileScreen
 import ru.topbun.profile.ProfileScreenContent
+import ru.topbun.profile_followers.FollowListScreen
 import ru.topbun.profile_settings.ProfileSettingsScreen
 import ru.topbun.recipe.RecipeScreen
 import ru.topbun.upload.UploadScreen
@@ -69,6 +70,7 @@ class App : Application() {
 
             register<ProfileScreenProvider.User> { ProfileScreenContent(it.userId) }
             register<ProfileScreenProvider.Settings> { ProfileSettingsScreen }
+            register<ProfileScreenProvider.Follows> { FollowListScreen(it.userId, it.initialTab) }
 
             register<RecipeScreenProvider.Detail> { RecipeScreen(it.recipeId) }
 

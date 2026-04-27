@@ -82,6 +82,24 @@ object ProfileScreen : Tab {
                     onClickRecipe = { recipeId ->
                         val screen = ScreenRegistry.get(RecipeScreenProvider.Detail(recipeId))
                         navigator?.push(screen)
+                    },
+                    onClickFollowers = { userId ->
+                        val screen = ScreenRegistry.get(
+                            ProfileScreenProvider.Follows(
+                                userId = userId,
+                                initialTab = ProfileScreenProvider.FollowsTab.Followers
+                            )
+                        )
+                        navigator?.push(screen)
+                    },
+                    onClickFollowing = { userId ->
+                        val screen = ScreenRegistry.get(
+                            ProfileScreenProvider.Follows(
+                                userId = userId,
+                                initialTab = ProfileScreenProvider.FollowsTab.Following
+                            )
+                        )
+                        navigator?.push(screen)
                     }
                 )
                 NEED_AUTH -> UnauthorizedSection {
