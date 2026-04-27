@@ -55,7 +55,7 @@ internal fun HeroSection(
     ) {
         AppAsyncImage(
             modifier = Modifier.fillMaxSize(),
-            url = recipe.smallImage,
+            url = recipe.largeImage,
             contentScale = ContentScale.Crop
         )
         Box(
