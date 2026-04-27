@@ -103,6 +103,8 @@ internal sealed interface RecipeIntent {
 internal sealed interface RecipeEvent {
 
     data class NavigateToProfile(val userId: Int) : RecipeEvent
+    data class Share(val text: String) : RecipeEvent
     data object RecipeDeleted : RecipeEvent
+    data object TimerFinished : RecipeEvent
 
 }

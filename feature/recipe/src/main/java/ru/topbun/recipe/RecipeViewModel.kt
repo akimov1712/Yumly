@@ -1,7 +1,5 @@
 package ru.topbun.recipe
 
-import android.content.Context
-import android.content.Intent
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -22,7 +20,6 @@ import ru.topbun.domain.useCases.recipe.GetRecipeByIdUseCase
 
 internal class RecipeViewModel(
     recipeId: Int,
-    private val context: Context,
     private val getRecipeByIdUseCase: GetRecipeByIdUseCase,
     private val switchFavoriteRecipeUseCase: SwitchFavoriteRecipeUseCase,
     private val deleteRecipeUseCase: DeleteRecipeUseCase,
@@ -94,12 +91,7 @@ internal class RecipeViewModel(
     private fun share() {
         val recipe = state.value.recipe ?: return
         val text = buildShareText(recipe)
-
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, text)
-        }
-        context.startActivity(Intent.createChooser(intent, "Поделиться рецептом"))
+        viewModelScope.launch { _events.send(RecipeEvent.Share(text)) }
     }
 
     private fun clickAuthor() {
@@ -213,7 +205,7 @@ internal class RecipeViewModel(
                             )
                         )
                     }
-                    snackbarManager.showMessage("Готово! Таймер завершён")
+                    _events.send(RecipeEvent.TimerFinished)
                     return@launch
                 }
                 delay(1000)

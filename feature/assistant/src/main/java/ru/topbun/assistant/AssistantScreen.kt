@@ -1,6 +1,5 @@
 package ru.topbun.assistant
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -43,7 +42,6 @@ import ru.topbun.assistant.components.HistoryDialog
 import ru.topbun.assistant.components.MessageLimitBlock
 import ru.topbun.assistant.components.MessageList
 import ru.topbun.core.ui.components.UnauthorizedSection
-import ru.topbun.core.ui.theme.Colors
 import ru.topbun.domain.ScreenUiState
 import ru.topbun.navigation.auth.AuthScreenProvider
 
@@ -75,8 +73,6 @@ object AssistantScreen: Tab {
             else -> {}
         }
     }
-
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

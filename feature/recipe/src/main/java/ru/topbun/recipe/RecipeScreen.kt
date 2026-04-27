@@ -1,5 +1,8 @@
 package ru.topbun.recipe
 
+import android.content.Context
+import android.content.Intent
+import android.media.MediaPlayer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,11 +19,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -28,15 +34,17 @@ import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import ru.topbun.core.android.SnackbarManager
 import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.AppButton
 import ru.topbun.core.ui.components.AppPullRefresh
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
 import ru.topbun.core.ui.utils.ObserveAsEvents
-import ru.topbun.navigation.ProfileScreenProvider
+import ru.topbun.navigation.ProfileScreenProvider.User
 import ru.topbun.recipe.components.DeleteRecipeDialog
 import ru.topbun.recipe.components.DescriptionSection
 import ru.topbun.recipe.components.HeroSection
@@ -53,9 +61,20 @@ data class RecipeScreen(
 
     @Composable
     override fun Content() {
+        val context = LocalContext.current
+        val snackbarManager = koinInject<SnackbarManager>()
         val viewModel: RecipeViewModel = koinViewModel { parametersOf(recipeId) }
         val state by viewModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
+
+        val view = LocalView.current
+
+        DisposableEffect(Unit) {
+            view.keepScreenOn = true
+            onDispose {
+                view.keepScreenOn = false
+            }
+        }
 
         LaunchedEffect(Unit) {
             viewModel.sendIntent(RecipeIntent.LoadRecipe)
@@ -64,10 +83,19 @@ data class RecipeScreen(
         ObserveAsEvents(viewModel.events) { event ->
             when (event) {
                 is RecipeEvent.NavigateToProfile -> {
-                    val screen = ScreenRegistry.get(ProfileScreenProvider.User(event.userId))
+                    val screen = ScreenRegistry.get(User(event.userId))
                     navigator.push(screen)
                 }
+                is RecipeEvent.Share -> {
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, event.text)
+                    }
+
+                    context.startActivity(Intent.createChooser(intent, "Поделиться рецептом"))
+                }
                 RecipeEvent.RecipeDeleted -> navigator.pop()
+                RecipeEvent.TimerFinished -> showNotifyEndOfTimer(context, snackbarManager)
             }
         }
 
@@ -187,6 +215,12 @@ private fun RecipeContent(
             }
         }
     }
+}
+
+private fun showNotifyEndOfTimer(context: Context, snackbarManager: SnackbarManager) {
+    val mediaPlayer = MediaPlayer.create(context, R.raw.sound_timer_finished)
+    mediaPlayer.start()
+    snackbarManager.showMessage("Готово! Таймер завершён")
 }
 
 @Composable

@@ -1,5 +1,6 @@
 package ru.topbun.assistant.components
 
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -16,11 +17,13 @@ internal fun FormattedMessageText(
     text: String,
     color: Color
 ) {
-    Text(
-        text = text.toFormattedMessage(),
-        color = color,
-        style = Typography.P2
-    )
+    SelectionContainer{
+        Text(
+            text = text.toFormattedMessage(),
+            color = color,
+            style = Typography.P2
+        )
+    }
 }
 
 private fun String.toFormattedMessage(): AnnotatedString = buildAnnotatedString {

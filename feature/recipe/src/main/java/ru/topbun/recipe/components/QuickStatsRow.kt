@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.theme.Colors
@@ -105,6 +106,7 @@ private fun RowScope.StatBlock(
             text = value,
             style = Typography.H3,
             color = Colors.MAIN_TEXT,
+            lineHeight = 18.sp,
             textAlign = TextAlign.Center
         )
         Text(

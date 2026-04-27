@@ -13,7 +13,6 @@ val recipeModule = module {
             get(),
             get(),
             get(),
-            get(),
         )
     }
 }

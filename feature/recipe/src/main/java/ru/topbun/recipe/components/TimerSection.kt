@@ -300,16 +300,18 @@ private fun Controls(
         ActionButton(
             modifier = Modifier.weight(1f),
             text = if (timer.isRunning) "Пауза" else "Старт",
-            iconRes = if (timer.isRunning) R.drawable.ic_minus else R.drawable.ic_time,
+            iconRes = if (timer.isRunning) R.drawable.ic_pause else R.drawable.ic_play,
             enabled = timer.canStart,
             primary = true,
             onClick = if (timer.isRunning) onPause else onStart
         )
+
+        val buttonStopEnabled = timer.elapsedSeconds > 0 || timer.isRunning
         ActionButton(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).alpha(if (buttonStopEnabled) 1f else 0.7f),
             text = "Сбросить",
-            iconRes = R.drawable.ic_close,
-            enabled = timer.elapsedSeconds > 0 || timer.isRunning,
+            iconRes = R.drawable.ic_stop,
+            enabled = buttonStopEnabled,
             primary = false,
             onClick = onReset
         )
