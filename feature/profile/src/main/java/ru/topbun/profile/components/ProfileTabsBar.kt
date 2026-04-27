@@ -28,11 +28,12 @@ import ru.topbun.profile.ProfileState
 @Composable
 internal fun ProfileTabsBar(
     selectedTab: ProfileState.ProfileTab,
+    modifier: Modifier = Modifier,
     tabs: List<ProfileState.ProfileTab> = ProfileState.ProfileTab.entries,
     onSelect: (ProfileState.ProfileTab) -> Unit,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(44.dp))
             .background(Colors.WHITE)

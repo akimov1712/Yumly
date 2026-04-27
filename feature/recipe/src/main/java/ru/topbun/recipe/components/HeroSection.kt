@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -31,6 +32,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.AppAsyncImage
+import ru.topbun.core.ui.components.Weight
 import ru.topbun.core.ui.components.Width
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Typography
@@ -41,13 +43,7 @@ import ru.topbun.domain.entity.recipe.RecipeEntity
 @Composable
 internal fun HeroSection(
     recipe: RecipeEntity,
-    isFavorite: Boolean,
-    favoriteLoading: Boolean,
     isOwnRecipe: Boolean,
-    onClickBack: () -> Unit,
-    onClickShare: () -> Unit,
-    onClickFavorite: () -> Unit,
-    onClickDelete: () -> Unit,
     onClickAuthor: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -81,16 +77,7 @@ internal fun HeroSection(
                 .statusBarsPadding()
                 .padding(horizontal = 12.dp, vertical = 12.dp)
         ) {
-            TopBar(
-                isFavorite = isFavorite,
-                favoriteLoading = favoriteLoading,
-                isOwnRecipe = isOwnRecipe,
-                onClickBack = onClickBack,
-                onClickShare = onClickShare,
-                onClickFavorite = onClickFavorite,
-                onClickDelete = onClickDelete,
-            )
-            Spacer(Modifier.weight(1f))
+            Weight(1f)
             HeroContent(
                 title = recipe.title,
                 author = recipe.author,
@@ -102,7 +89,7 @@ internal fun HeroSection(
 }
 
 @Composable
-private fun TopBar(
+internal fun TopBar(
     isFavorite: Boolean,
     favoriteLoading: Boolean,
     isOwnRecipe: Boolean,

@@ -22,7 +22,7 @@ fun ColumnScope.RecipeList(
     isEndList: Boolean,
     onRefresh: () -> Unit,
     onLoadMore: () -> Unit,
-    onClickRecipe: ((RecipeEntity) -> Unit)? = null,
+    onClickRecipe: (RecipeEntity) -> Unit,
 ) {
     AppPullRefresh(
         modifier = Modifier

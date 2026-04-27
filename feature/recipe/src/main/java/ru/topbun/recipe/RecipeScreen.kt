@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
@@ -55,6 +56,7 @@ import ru.topbun.recipe.components.QuickStatsRow
 import ru.topbun.recipe.components.RecipeShimmerScreen
 import ru.topbun.recipe.components.StepsSection
 import ru.topbun.recipe.components.TimerSection
+import ru.topbun.recipe.components.TopBar
 
 data class RecipeScreen(
     private val recipeId: Int,
@@ -156,13 +158,7 @@ private fun RecipeContent(
             item("hero") {
                 HeroSection(
                     recipe = recipe,
-                    isFavorite = state.isFavorite,
-                    favoriteLoading = state.favoriteLoading,
                     isOwnRecipe = state.isOwnRecipe,
-                    onClickBack = onBack,
-                    onClickShare = { onIntent(RecipeIntent.ClickShare) },
-                    onClickFavorite = { onIntent(RecipeIntent.ToggleFavorite) },
-                    onClickDelete = { onIntent(RecipeIntent.ChangeShowDeleteDialog(true)) },
                     onClickAuthor = { onIntent(RecipeIntent.ClickAuthor) }
                 )
             }
@@ -217,6 +213,20 @@ private fun RecipeContent(
                     modifier = Modifier.padding(horizontal = 12.dp)
                 )
             }
+        }
+        Box(
+            modifier = Modifier.systemBarsPadding()
+                .padding(12.dp)
+        ){
+            TopBar(
+                isOwnRecipe = state.isOwnRecipe,
+                isFavorite = state.isFavorite,
+                favoriteLoading = state.favoriteLoading,
+                onClickBack = onBack,
+                onClickShare = { onIntent(RecipeIntent.ClickShare) },
+                onClickFavorite = { onIntent(RecipeIntent.ToggleFavorite) },
+                onClickDelete = { onIntent(RecipeIntent.ChangeShowDeleteDialog(true)) },
+            )
         }
     }
 }

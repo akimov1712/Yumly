@@ -38,12 +38,13 @@ internal fun ProfileInfo(
     profile: ProfileEntity?,
     isSelf: Boolean,
     followLoading: Boolean,
+    modifier: Modifier = Modifier,
     onClickFollow: () -> Unit,
     onClickFollowers: () -> Unit,
     onClickFollowing: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(top = 20.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(44.dp))

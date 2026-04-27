@@ -1,13 +1,24 @@
 package ru.topbun.profile.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import ru.topbun.core.ui.components.AppPullRefresh
+import ru.topbun.core.ui.components.PaginationList
+import ru.topbun.core.ui.components.RecipeItem
+import ru.topbun.core.ui.components.RecipeShimmer
+import ru.topbun.core.ui.utils.getBottomBarPadding
 import ru.topbun.domain.ScreenUiState
 import ru.topbun.profile.ProfileIntent
 import ru.topbun.profile.ProfileState
@@ -45,23 +56,8 @@ internal fun ProfileContent(
             }
 
             state.profile != null -> {
-                ProfileRecipeList(
-                    state = state.visibleListState,
-                    listState = state.visibleList.status,
-                    isEndList = state.visibleList.isEndList,
-                    recipes = state.visibleList.recipes,
-                    emptyTitle = if (state.selectedTab == ProfileState.ProfileTab.MyRecipes) {
-                        "Рецептов пока нет"
-                    } else {
-                        "Лайкнутых рецептов нет"
-                    },
-                    emptyDescription = if (state.selectedTab == ProfileState.ProfileTab.MyRecipes) {
-                        if (state.isSelf) "Опубликуй свой первый рецепт"
-                        else "Этот пользователь ещё не публиковал рецептов"
-                    } else {
-                        "Лайкни рецепты, чтобы они появились здесь"
-                    },
-                    headerContent = {
+                val headerItems: LazyListScope.() -> Unit = {
+                    item("profile_info") {
                         ProfileInfo(
                             profile = state.profile,
                             isSelf = state.isSelf,
@@ -70,24 +66,54 @@ internal fun ProfileContent(
                             onClickFollowers = { /* В будущем: экран подписчиков */ },
                             onClickFollowing = { /* В будущем: экран подписок */ }
                         )
-                    },
-                    tabsContent = {
+                    }
+                    item("profile_tabs") {
                         ProfileTabsBar(
                             selectedTab = state.selectedTab,
                             onSelect = { viewModel.sendIntent(ProfileIntent.ChangeTab(it)) }
                         )
-                    },
-                    onRefresh = { viewModel.sendIntent(ProfileIntent.Refresh) },
-                    onLoadMore = {
-                        val intent = if (state.selectedTab == ProfileState.ProfileTab.MyRecipes) {
-                            ProfileIntent.LoadRecipes
-                        } else {
-                            ProfileIntent.LoadLiked
+                    }
+                }
+
+                AppPullRefresh(
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    onRefresh = { viewModel.sendIntent(ProfileIntent.Refresh) }
+                ) {
+                    PaginationList(
+                        items = state.visibleList.recipes,
+                        status = state.visibleList.status,
+                        isEndList = state.visibleList.isEndList,
+                        state = state.visibleListState,
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(20.dp),
+                        contentPadding = PaddingValues(
+                            start = 12.dp,
+                            end = 12.dp,
+                            bottom = getBottomBarPadding()
+                        ),
+                        onLoadMore = {
+                            val intent = if (state.selectedTab == ProfileState.ProfileTab.MyRecipes) {
+                                ProfileIntent.LoadRecipes
+                            } else {
+                                ProfileIntent.LoadLiked
+                            }
+                            viewModel.sendIntent(intent)
+                        },
+                        shimmerContent = {
+                            headerItems()
+                            items(3) { RecipeShimmer() }
+                        },
+                        content = { recipes ->
+                            headerItems()
+                            itemsIndexed(
+                                items = recipes,
+                                key = { index, item -> "id:${item.id} index:$index" }
+                            ) { _, item ->
+                                RecipeItem(item, onClick = { onClickRecipe(it.id) })
+                            }
                         }
-                        viewModel.sendIntent(intent)
-                    },
-                    onClickRecipe = { recipe -> onClickRecipe(recipe.id) }
-                )
+                    )
+                }
             }
         }
     }

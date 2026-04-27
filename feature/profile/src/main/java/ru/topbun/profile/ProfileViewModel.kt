@@ -45,10 +45,17 @@ internal class ProfileViewModel(
 
     private fun changeTab(tab: ProfileState.ProfileTab) {
         _state.update { it.copy(selectedTab = tab) }
-        if (tab == ProfileState.ProfileTab.Liked &&
-            state.value.likedList.status == ScreenUiState.Idle
-        ) {
-            loadLiked()
+        val list = when (tab) {
+            ProfileState.ProfileTab.MyRecipes -> state.value.recipeList
+            ProfileState.ProfileTab.Liked -> state.value.likedList
+        }
+        if (list.status == ScreenUiState.Idle) loadActiveTab()
+    }
+
+    private fun loadActiveTab() {
+        when (state.value.selectedTab) {
+            ProfileState.ProfileTab.MyRecipes -> loadRecipes()
+            ProfileState.ProfileTab.Liked -> loadLiked()
         }
     }
 
@@ -86,7 +93,7 @@ internal class ProfileViewModel(
                                     profileStatus = ScreenUiState.Success
                                 )
                             }
-                            loadRecipes()
+                            loadActiveTab()
                         }.onError { error, _ ->
                             snackbarManager.showMessage(error.toMessage())
                             _state.update { it.copy(profileStatus = ScreenUiState.Error) }
@@ -114,7 +121,7 @@ internal class ProfileViewModel(
                                 profileStatus = ScreenUiState.Success
                             )
                         }
-                        loadRecipes()
+                        loadActiveTab()
                     }.onError { error, _ ->
                         snackbarManager.showMessage(error.toMessage())
                         _state.update { it.copy(profileStatus = ScreenUiState.Error) }
@@ -146,7 +153,7 @@ internal class ProfileViewModel(
         recipesJob?.cancel()
         recipesJob = viewModelScope.launch(SupervisorJob()) {
             _state.update { it.copy(recipeList = it.recipeList.copy(status = ScreenUiState.Loading)) }
-            val data = GetRecipeByUserIdEntity(_state.value.recipeList.recipes.size)
+            val data = GetRecipeByUserIdEntity(offset = _state.value.recipeList.recipes.size)
             getRecipeByUserIdUseCase(userId, data).onSuccess { recipes ->
                 _state.update { current ->
                     val merged = (current.recipeList.recipes + recipes).distinctBy { it.id }
@@ -154,7 +161,7 @@ internal class ProfileViewModel(
                         recipeList = current.recipeList.copy(
                             recipes = merged,
                             status = ScreenUiState.Success,
-                            isEndList = true
+                            isEndList = recipes.isEmpty()
                         )
                     )
                 }

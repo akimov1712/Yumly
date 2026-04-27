@@ -42,17 +42,14 @@ import ru.topbun.domain.entity.recipe.RecipeEntity
 @Composable
 fun RecipeItem(
     recipe: RecipeEntity,
-    onClick: ((RecipeEntity) -> Unit)? = null,
+    onClick: (RecipeEntity) -> Unit,
 ) {
-    val clickModifier = if (onClick != null) {
-        Modifier.rippleClickable { onClick(recipe) }
-    } else Modifier
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(32.dp))
             .background(Colors.WHITE)
-            .then(clickModifier)
+            .rippleClickable(Colors.BLACK){ onClick(recipe) }
             .padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
