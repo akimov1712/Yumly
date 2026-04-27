@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImagePainter
@@ -128,7 +129,7 @@ private fun ChipList(recipe: RecipeEntity) {
 @Composable
 private fun Chip(
     icon: Painter,
-    title: String
+    title: String,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically
@@ -143,7 +144,9 @@ private fun Chip(
         Text(
             text = title,
             color = Colors.SECONDARY_TEXT,
-            style = Typography.S
+            style = Typography.S,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
