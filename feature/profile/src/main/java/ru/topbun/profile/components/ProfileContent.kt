@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,6 +35,9 @@ internal fun ProfileContent(
     onClickRecipe: (recipeId: Int) -> Unit = {},
     onClickFollowers: (userId: Int) -> Unit = {},
     onClickFollowing: (userId: Int) -> Unit = {},
+    onClickBmi: () -> Unit = {},
+    onClickPrivacyPolicy: () -> Unit = {},
+    onClickUserAgreement: () -> Unit = {},
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -41,7 +46,9 @@ internal fun ProfileContent(
             title = state.profile?.username ?: if (state.isSelf) "Профиль" else "",
             showBack = showBack,
             showSettings = state.isSelf,
+            showBmi = state.isSelf,
             onClickBack = onBack,
+            onClickBmi = onClickBmi,
             onClickSettings = {
                 viewModel.sendIntent(ProfileIntent.ChangeShowSettingsDialog(true))
             }
@@ -55,6 +62,12 @@ internal fun ProfileContent(
                 ) {
                     ProfileShimmer()
                 }
+            }
+
+            state.showProfileError -> {
+                ProfileErrorState(
+                    onClickRetry = { viewModel.sendIntent(ProfileIntent.LoadProfile) }
+                )
             }
 
             state.profile != null -> {
@@ -112,6 +125,13 @@ internal fun ProfileContent(
                         },
                         content = { recipes ->
                             headerItems()
+                            if (state.selectedTab == ProfileState.ProfileTab.Liked &&
+                                state.likedList.isFromCache
+                            ) {
+                                item("liked_offline_banner") {
+                                    OfflineCacheBanner()
+                                }
+                            }
                             itemsIndexed(
                                 items = recipes,
                                 key = { index, item -> "id:${item.id} index:$index" }
@@ -134,6 +154,14 @@ internal fun ProfileContent(
                 viewModel.sendIntent(ProfileIntent.ChangeShowSettingsDialog(false))
                 onNavigateToSettings()
             },
+            onClickPrivacyPolicy = {
+                viewModel.sendIntent(ProfileIntent.ChangeShowSettingsDialog(false))
+                onClickPrivacyPolicy()
+            },
+            onClickUserAgreement = {
+                viewModel.sendIntent(ProfileIntent.ChangeShowSettingsDialog(false))
+                onClickUserAgreement()
+            },
             onClickLogout = {
                 viewModel.sendIntent(ProfileIntent.ChangeShowSettingsDialog(false))
                 viewModel.sendIntent(ProfileIntent.ChangeShowLogoutDialog(true))
@@ -151,5 +179,20 @@ internal fun ProfileContent(
                 viewModel.sendIntent(ProfileIntent.Logout)
             }
         )
+    }
+}
+
+@Composable
+private fun ProfileErrorState(
+    onClickRetry: () -> Unit,
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+    ) {
+        item("error_block") {
+            ProfileErrorBlock(onClickRetry = onClickRetry)
+        }
     }
 }

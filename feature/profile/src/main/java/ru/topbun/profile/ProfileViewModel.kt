@@ -14,6 +14,7 @@ import ru.topbun.domain.ScreenUiState
 import ru.topbun.domain.entity.recipe.getRecipe.GetRecipeByUserIdEntity
 import ru.topbun.domain.useCases.account.GetAccountInfoUseCase
 import ru.topbun.domain.useCases.account.GetProfileUseCase
+import ru.topbun.domain.useCases.favorite.GetCachedFavoriteRecipesUseCase
 import ru.topbun.domain.useCases.favorite.GetFavoriteRecipesUseCase
 import ru.topbun.domain.useCases.follow.SwitchFollowUserUseCase
 import ru.topbun.domain.useCases.recipe.GetRecipeByUserIdUseCase
@@ -27,6 +28,7 @@ internal class ProfileViewModel(
     private val getProfileUseCase: GetProfileUseCase,
     private val getRecipeByUserIdUseCase: GetRecipeByUserIdUseCase,
     private val getFavoriteRecipesUseCase: GetFavoriteRecipesUseCase,
+    private val getCachedFavoriteRecipesUseCase: GetCachedFavoriteRecipesUseCase,
     private val switchFollowUserUseCase: SwitchFollowUserUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val snackbarManager: SnackbarManager,
@@ -95,8 +97,7 @@ internal class ProfileViewModel(
                             }
                             loadActiveTab()
                         }.onError { error, _ ->
-                            snackbarManager.showMessage(error.toMessage())
-                            _state.update { it.copy(profileStatus = ScreenUiState.Error) }
+                            handleProfileError(error)
                         }
                     }.onError { error, _ ->
                         if (error == DataError.Network.UNAUTHORIZED) {
@@ -107,8 +108,7 @@ internal class ProfileViewModel(
                                 )
                             }
                         } else {
-                            snackbarManager.showMessage(error.toMessage())
-                            _state.update { it.copy(profileStatus = ScreenUiState.Error) }
+                            handleProfileError(error)
                         }
                     }
                 }
@@ -123,12 +123,15 @@ internal class ProfileViewModel(
                         }
                         loadActiveTab()
                     }.onError { error, _ ->
-                        snackbarManager.showMessage(error.toMessage())
-                        _state.update { it.copy(profileStatus = ScreenUiState.Error) }
+                        handleProfileError(error)
                     }
                 }
             }
         }
+    }
+
+    private fun handleProfileError(error: DataError) {
+        _state.update { it.copy(profileStatus = ScreenUiState.Error) }
     }
 
     private fun refresh() {
@@ -192,14 +195,40 @@ internal class ProfileViewModel(
                         likedList = current.likedList.copy(
                             recipes = merged,
                             status = ScreenUiState.Success,
-                            isEndList = recipes.isEmpty()
+                            isEndList = recipes.isEmpty(),
+                            isFromCache = false,
                         )
                     )
                 }
             }.onError { error, _ ->
-                snackbarManager.showMessage(error.toMessage())
-                _state.update { it.copy(likedList = it.likedList.copy(status = ScreenUiState.Error)) }
+                fallbackLikedFromCache(userId, error)
             }
+        }
+    }
+
+    private suspend fun fallbackLikedFromCache(userId: Int, error: DataError) {
+        val current = state.value.likedList
+        if (current.recipes.isNotEmpty()) {
+            snackbarManager.showMessage(error.toMessage())
+            _state.update { it.copy(likedList = it.likedList.copy(status = ScreenUiState.Error)) }
+            return
+        }
+        val cached = getCachedFavoriteRecipesUseCase(userId)
+        if (cached.isNotEmpty()) {
+            _state.update {
+                it.copy(
+                    likedList = it.likedList.copy(
+                        recipes = cached,
+                        status = ScreenUiState.Success,
+                        isEndList = true,
+                        isFromCache = true,
+                    )
+                )
+            }
+            snackbarManager.showMessage("Показаны сохранённые рецепты — нет связи с сервером")
+        } else {
+            snackbarManager.showMessage(error.toMessage())
+            _state.update { it.copy(likedList = it.likedList.copy(status = ScreenUiState.Error)) }
         }
     }
 

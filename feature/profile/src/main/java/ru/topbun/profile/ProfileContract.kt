@@ -37,6 +37,9 @@ internal data class ProfileState(
     val visibleListState: LazyListState
         get() = if (selectedTab == ProfileTab.MyRecipes) recipeListState else likedListState
 
+    val showProfileError: Boolean
+        get() = profile == null && profileStatus == ScreenUiState.Error
+
     sealed interface Mode {
         data object Self : Mode
         data class Other(val userId: Int) : Mode
@@ -55,6 +58,7 @@ internal data class ProfileState(
         val recipes: List<RecipeEntity> = emptyList(),
         val status: ScreenUiState = ScreenUiState.Idle,
         val isEndList: Boolean = false,
+        val isFromCache: Boolean = false,
     )
 
 }
@@ -78,5 +82,7 @@ internal sealed interface ProfileEvent {
 
     data object NavigateToAuth : ProfileEvent
     data object LoggedOut : ProfileEvent
+    data object NavigateToBmi : ProfileEvent
+    data class OpenUrl(val url: String) : ProfileEvent
 
 }
