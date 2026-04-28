@@ -20,12 +20,13 @@ import ru.topbun.domain.useCases.recipe.GetRecipeByIdUseCase
 
 internal class RecipeViewModel(
     recipeId: Int,
+    fromCache: Boolean,
     private val getRecipeByIdUseCase: GetRecipeByIdUseCase,
     private val switchFavoriteRecipeUseCase: SwitchFavoriteRecipeUseCase,
     private val deleteRecipeUseCase: DeleteRecipeUseCase,
     private val getAccountInfoUseCase: GetAccountInfoUseCase,
     private val snackbarManager: SnackbarManager,
-) : MVI<RecipeIntent, RecipeState, RecipeEvent>(RecipeState(recipeId = recipeId)) {
+) : MVI<RecipeIntent, RecipeState, RecipeEvent>(RecipeState(recipeId = recipeId, fromCache = fromCache)) {
 
     private var loadJob: Job? = null
     private var favoriteJob: Job? = null
@@ -48,7 +49,7 @@ internal class RecipeViewModel(
         loadJob?.cancel()
         loadJob = viewModelScope.launch(SupervisorJob()) {
             _state.update { it.copy(recipeStatus = ScreenUiState.Loading) }
-            getRecipeByIdUseCase(state.value.recipeId).onSuccess { recipe ->
+            getRecipeByIdUseCase(state.value.recipeId, state.value.fromCache).onSuccess { recipe ->
                 _state.update {
                     it.copy(
                         recipe = recipe,

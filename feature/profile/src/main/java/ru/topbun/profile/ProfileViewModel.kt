@@ -179,43 +179,47 @@ internal class ProfileViewModel(
 
     private fun loadLiked() {
         val current = state.value
-        val userId = current.targetUserId ?: return
+        val userId = current.targetUserId
         val list = current.likedList
         if (list.status.isLoading || list.isEndList) return
 
         likedJob?.cancel()
         likedJob = viewModelScope.launch(SupervisorJob()) {
             _state.update { it.copy(likedList = it.likedList.copy(status = ScreenUiState.Loading)) }
-            getFavoriteRecipesUseCase(
-                userId = userId,
-                limit = LIKED_PAGE_SIZE,
-                offset = list.recipes.size
-            ).onSuccess { recipes ->
-                _state.update { current ->
-                    val merged = (current.likedList.recipes + recipes).distinctBy { it.id }
-                    current.copy(
-                        likedList = current.likedList.copy(
-                            recipes = merged,
-                            status = ScreenUiState.Success,
-                            isEndList = recipes.isEmpty(),
-                            isFromCache = false,
+            if (userId != null){
+                getFavoriteRecipesUseCase(
+                    userId = userId,
+                    limit = LIKED_PAGE_SIZE,
+                    offset = list.recipes.size
+                ).onSuccess { recipes ->
+                    _state.update { current ->
+                        val merged = (current.likedList.recipes + recipes).distinctBy { it.id }
+                        current.copy(
+                            likedList = current.likedList.copy(
+                                recipes = merged,
+                                status = ScreenUiState.Success,
+                                isEndList = recipes.isEmpty(),
+                                isFromCache = false,
+                            )
                         )
-                    )
+                    }
+                }.onError { error, _ ->
+                    fallbackLikedFromCache(error)
                 }
-            }.onError { error, _ ->
-                fallbackLikedFromCache(userId, error)
+            } else {
+                fallbackLikedFromCache(null)
             }
         }
     }
 
-    private suspend fun fallbackLikedFromCache(userId: Int, error: DataError) {
+    private suspend fun fallbackLikedFromCache(error: DataError?) {
         val current = state.value.likedList
         if (current.recipes.isNotEmpty()) {
-            snackbarManager.showMessage(error.toMessage())
+            error?.let { snackbarManager.showMessage(error.toMessage()) }
             _state.update { it.copy(likedList = it.likedList.copy(status = ScreenUiState.Error)) }
             return
         }
-        val cached = getCachedFavoriteRecipesUseCase(userId)
+        val cached = getCachedFavoriteRecipesUseCase()
         if (cached.isNotEmpty()) {
             _state.update {
                 it.copy(
@@ -229,7 +233,7 @@ internal class ProfileViewModel(
             }
             snackbarManager.showMessage("Показаны сохранённые рецепты — нет связи с сервером")
         } else {
-            snackbarManager.showMessage(error.toMessage())
+            error?.let { snackbarManager.showMessage(error.toMessage()) }
             _state.update { it.copy(likedList = it.likedList.copy(status = ScreenUiState.Error)) }
         }
     }
@@ -276,7 +280,7 @@ internal class ProfileViewModel(
         }
     }
 
-    private fun logout() {
+    private fun logout() = viewModelScope.launch {
         logoutUseCase()
         _state.update {
             ProfileState(

@@ -53,9 +53,9 @@ internal class FavoriteRepositoryImpl(
             }
         }
 
-    override suspend fun getCachedFavoriteRecipes(userId: Int): List<RecipeEntity> =
+    override suspend fun getCachedFavoriteRecipes(): List<RecipeEntity> =
         runCatching {
-            dao.getByUser(userId).map { FavoriteRecipeMapper.toEntity(it) }
+            dao.selectAll().map { FavoriteRecipeMapper.toEntity(it) }
         }.getOrElse { emptyList() }
 
     private suspend fun cacheRecipes(userId: Int, offset: Int, recipes: List<RecipeEntity>) {

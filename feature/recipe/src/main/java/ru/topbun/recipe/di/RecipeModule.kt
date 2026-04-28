@@ -5,9 +5,10 @@ import org.koin.dsl.module
 import ru.topbun.recipe.RecipeViewModel
 
 val recipeModule = module {
-    viewModel { (recipeId: Int) ->
+    viewModel { (recipeId: Int, fromCache: Boolean) ->
         RecipeViewModel(
             recipeId,
+            fromCache,
             get(),
             get(),
             get(),

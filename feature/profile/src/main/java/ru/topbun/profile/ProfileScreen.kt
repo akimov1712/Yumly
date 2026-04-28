@@ -93,7 +93,9 @@ object ProfileScreen : Tab {
                         navigator?.push(screen)
                     },
                     onClickRecipe = { recipeId ->
-                        val screen = ScreenRegistry.get(RecipeScreenProvider.Detail(recipeId))
+                        val fromCache = state.selectedTab == ProfileState.ProfileTab.Liked &&
+                                state.likedList.isFromCache
+                        val screen = ScreenRegistry.get(RecipeScreenProvider.Detail(recipeId, fromCache))
                         navigator?.push(screen)
                     },
                     onClickFollowers = { userId ->

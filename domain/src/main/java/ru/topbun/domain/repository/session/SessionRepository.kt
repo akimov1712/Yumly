@@ -4,6 +4,6 @@ interface SessionRepository {
 
     fun hasSession(): Boolean
 
-    fun clearSession()
+    suspend fun clearSession()
 
 }

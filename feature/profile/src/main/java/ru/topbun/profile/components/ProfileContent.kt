@@ -63,17 +63,11 @@ internal fun ProfileContent(
                 }
             }
 
-            state.showProfileError && state.targetUserId == null -> {
-                ProfileErrorOnlyState(
-                    onClickRetry = { viewModel.sendIntent(ProfileIntent.LoadProfile) }
-                )
-            }
-
             else -> {
                 val showInfoError = state.showProfileError
                 val headerItems: LazyListScope.() -> Unit = {
                     item("profile_info_or_error") {
-                        if (showInfoError) {
+                        if (showInfoError){
                             ProfileErrorBlock(
                                 onClickRetry = { viewModel.sendIntent(ProfileIntent.LoadProfile) }
                             )
@@ -193,8 +187,6 @@ private fun ProfileErrorOnlyState(
     onClickRetry: () -> Unit,
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
     ) {
         item("error_block") {

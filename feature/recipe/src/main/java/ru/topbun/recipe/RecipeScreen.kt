@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -49,6 +48,7 @@ import ru.topbun.recipe.components.DescriptionSection
 import ru.topbun.recipe.components.HeroSection
 import ru.topbun.recipe.components.IngredientsSection
 import ru.topbun.recipe.components.NutritionCard
+import ru.topbun.recipe.components.OfflineCacheBanner
 import ru.topbun.recipe.components.QuickStatsRow
 import ru.topbun.recipe.components.RecipeShimmerScreen
 import ru.topbun.recipe.components.StepsSection
@@ -57,6 +57,7 @@ import ru.topbun.recipe.components.TopBar
 
 data class RecipeScreen(
     private val recipeId: Int,
+    private val fromCache: Boolean
 ) : Screen {
 
     override val key: ScreenKey
@@ -66,7 +67,7 @@ data class RecipeScreen(
     override fun Content() {
         val context = LocalContext.current
         val snackbarManager = koinInject<SnackbarManager>()
-        val viewModel: RecipeViewModel = koinViewModel { parametersOf(recipeId) }
+        val viewModel: RecipeViewModel = koinViewModel { parametersOf(recipeId, fromCache) }
         val state by viewModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
 
@@ -158,6 +159,11 @@ private fun RecipeContent(
                     isOwnRecipe = state.isOwnRecipe,
                     onClickAuthor = { onIntent(RecipeIntent.ClickAuthor) }
                 )
+            }
+            if (state.fromCache){
+                item("offline cache banner") {
+                    OfflineCacheBanner()
+                }
             }
             item("stats") {
                 QuickStatsRow(

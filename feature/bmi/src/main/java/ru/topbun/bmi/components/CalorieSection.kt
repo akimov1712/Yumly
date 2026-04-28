@@ -93,8 +93,8 @@ private fun ExplanationRow() {
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                modifier = Modifier.size(16.dp),
-                painter = painterResource(R.drawable.ic_chevron_down),
+                modifier = Modifier.size(20.dp),
+                painter = painterResource(R.drawable.ic_lamp),
                 contentDescription = null,
                 tint = Colors.PRIMARY
             )

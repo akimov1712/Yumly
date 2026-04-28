@@ -6,6 +6,6 @@ class GetCachedFavoriteRecipesUseCase(
     private val repository: FavoriteRepository
 ) {
 
-    suspend operator fun invoke(userId: Int) = repository.getCachedFavoriteRecipes(userId)
+    suspend operator fun invoke() = repository.getCachedFavoriteRecipes()
 
 }

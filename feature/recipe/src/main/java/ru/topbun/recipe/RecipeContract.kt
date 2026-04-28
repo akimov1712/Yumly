@@ -5,6 +5,7 @@ import ru.topbun.domain.entity.recipe.RecipeEntity
 
 internal data class RecipeState(
     val recipeId: Int,
+    val fromCache: Boolean,
     val recipe: RecipeEntity? = null,
     val recipeStatus: ScreenUiState = ScreenUiState.Idle,
     val isFavorite: Boolean = false,

@@ -6,6 +6,6 @@ class LogoutUseCase(
     private val repository: SessionRepository
 ) {
 
-    operator fun invoke() = repository.clearSession()
+    suspend operator fun invoke() = repository.clearSession()
 
 }

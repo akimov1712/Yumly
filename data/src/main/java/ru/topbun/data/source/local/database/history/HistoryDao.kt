@@ -13,4 +13,8 @@ interface HistoryDao {
 
     @Insert
     suspend fun addHistory(data: HistoryDbo)
+
+    @Query("DELETE FROM histories")
+    suspend fun deleteAll()
+
 }

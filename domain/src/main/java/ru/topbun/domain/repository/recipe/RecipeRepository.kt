@@ -11,7 +11,7 @@ import ru.topbun.domain.entity.recipe.tag.TagRecipeEntity
 interface RecipeRepository {
 
     suspend fun getRecipe(data: GetRecipeEntity): Result<List<RecipeEntity> ,DataError>
-    suspend fun getRecipeById(id: Int): Result<RecipeEntity ,DataError>
+    suspend fun getRecipeById(id: Int, fromCache: Boolean): Result<RecipeEntity ,DataError>
     suspend fun getRecipeByUserId(userId: Int, data: GetRecipeByUserIdEntity): Result<List<RecipeEntity> ,DataError>
     suspend fun addRecipe(data: AddRecipeEntity): Result<RecipeEntity, DataError>
     suspend fun deleteRecipe(id: Int): Result<Unit, DataError>

@@ -57,8 +57,8 @@ internal fun HealthyRangeCard(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    modifier = Modifier.size(18.dp),
-                    painter = painterResource(R.drawable.ic_checkmark),
+                    modifier = Modifier.size(26.dp),
+                    painter = painterResource(R.drawable.ic_star),
                     contentDescription = null,
                     tint = Colors.PRIMARY
                 )
