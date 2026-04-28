@@ -1,9 +1,11 @@
 package ru.topbun.upload
 
 import android.net.Uri
+import ru.topbun.domain.ScreenUiState
 import ru.topbun.domain.entity.recipe.IngredientEntity
 import ru.topbun.domain.entity.recipe.RecipeDifficulty
 import ru.topbun.domain.entity.recipe.StepEntity
+import ru.topbun.domain.entity.recipe.tag.TagRecipeEntity
 import ru.topbun.upload.fragments.UploadFragments
 
 internal data class UploadState(
@@ -22,6 +24,11 @@ internal data class UploadState(
     val selectedDifficultyIndex: Int? = null,
     val ingredients: List<IngredientEntity> = emptyList(),
     val steps: List<StepEntity> = emptyList(),
+
+    val tags: List<TagRecipeEntity> = emptyList(),
+    val tagsStatus: ScreenUiState = ScreenUiState.Idle,
+    val tagsExpanded: Boolean = false,
+    val selectedTagIds: List<Int> = emptyList(),
 
     val uploadUiState: UploadUiState? = null,
     val publishLoading: Boolean = false,
@@ -86,6 +93,8 @@ internal sealed interface UploadIntent{
     data object ClearData: UploadIntent
     data object CheckSession: UploadIntent
     data object OpenPublishedRecipe: UploadIntent
+    data object LoadTags: UploadIntent
+    data object ToggleTagsExpanded: UploadIntent
     data class ChangeShowDialogClearData(val value: Boolean): UploadIntent
     data class ChangeShowDialogAddIngredient(val value: Boolean): UploadIntent
     data class ChangeShowDialogAddStep(val value: Boolean): UploadIntent
@@ -98,6 +107,7 @@ internal sealed interface UploadIntent{
     data class ChangeNutrientValue(val nutrient: UploadState.NutrientsEnum, val value: Int): UploadIntent
     data class ChangeSelectDifficultyIndex(val index: Int): UploadIntent
     data class ChangeFragment(val fragment: UploadFragments): UploadIntent
+    data class ToggleTag(val id: Int): UploadIntent
     data class AddIngredient(val name: String, val value: String): UploadIntent
     data class RemoveIngredient(val index: Int): UploadIntent
     data class ReorderIngredient(val fromIndex: Int, val toIndex: Int): UploadIntent

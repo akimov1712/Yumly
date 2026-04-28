@@ -20,6 +20,7 @@ import ru.topbun.upload.components.DurationSection
 import ru.topbun.upload.components.FoodNameSection
 import ru.topbun.upload.components.NutrientsSection
 import ru.topbun.upload.components.PreviewPicker
+import ru.topbun.upload.components.TagsSection
 
 @Composable
 internal fun BasicFragment(
@@ -54,6 +55,15 @@ internal fun BasicFragment(
     ){
         viewModel.sendIntent(UploadIntent.ChangeSelectDifficultyIndex(it))
     }
+    TagsSection(
+        tags = state.tags,
+        selectedIds = state.selectedTagIds,
+        status = state.tagsStatus,
+        expanded = state.tagsExpanded,
+        onToggle = { viewModel.sendIntent(UploadIntent.ToggleTag(it)) },
+        onToggleExpanded = { viewModel.sendIntent(UploadIntent.ToggleTagsExpanded) },
+        onRetry = { viewModel.sendIntent(UploadIntent.LoadTags) }
+    )
     AppButton(
         modifier = Modifier
             .fillMaxWidth()

@@ -3,6 +3,7 @@ package ru.topbun.upload
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.topbun.core.android.MVI
@@ -10,11 +11,13 @@ import ru.topbun.core.android.SnackbarManager
 import ru.topbun.core.common.error.DataError
 import ru.topbun.core.common.onError
 import ru.topbun.core.common.onSuccess
+import ru.topbun.domain.ScreenUiState
 import ru.topbun.domain.entity.recipe.IngredientEntity
 import ru.topbun.domain.entity.recipe.RecipeDifficulty
 import ru.topbun.domain.entity.recipe.StepEntity
 import ru.topbun.domain.entity.recipe.addRecipe.AddRecipeEntity
 import ru.topbun.domain.useCases.recipe.AddRecipeUseCase
+import ru.topbun.domain.useCases.recipe.GetTagsUseCase
 import ru.topbun.domain.useCases.session.HasSessionUseCase
 import ru.topbun.domain.useCases.upload.UploadFileUseCase
 import ru.topbun.domain.validation.recipe.AddRecipeValidator
@@ -25,11 +28,13 @@ internal class UploadViewModel(
     private val hasSessionUseCase: HasSessionUseCase,
     private val addRecipeUseCase: AddRecipeUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
+    private val getTagsUseCase: GetTagsUseCase,
     private val snackbarManager: SnackbarManager,
     private val addRecipeValidator: AddRecipeValidator
 ): MVI<UploadIntent, UploadState, UploadEvent>(UploadState()){
 
     private var publishRecipeJob: Job? = null
+    private var loadTagsJob: Job? = null
 
     private fun changePreview(uri: Uri?) = _state.update { it.copy(preview = uri) }
     private fun changeTitle(value: String){ if (value.length <= 72) _state.update { it.copy(name = value) } }
@@ -40,6 +45,29 @@ internal class UploadViewModel(
     private fun changeShowDialogClearData(value: Boolean) = _state.update { it.copy(showDialogClearData = value) }
     private fun changeShowDialogAddIngredient(value: Boolean) = _state.update { it.copy(showDialogAddIngredient = value) }
     private fun changeShowDialogAddStep(value: Boolean) = _state.update { it.copy(showDialogAddStep = value) }
+    private fun toggleTagsExpanded() = _state.update { it.copy(tagsExpanded = !it.tagsExpanded) }
+
+    private fun toggleTag(id: Int) = _state.update {
+        val newSelected = it.selectedTagIds.toMutableList().apply {
+            if (contains(id)) remove(id) else add(id)
+        }
+        it.copy(selectedTagIds = newSelected)
+    }
+
+    private fun loadTags() {
+        loadTagsJob?.cancel()
+        loadTagsJob = viewModelScope.launch(SupervisorJob()) {
+            _state.update { it.copy(tagsStatus = ScreenUiState.Loading) }
+            getTagsUseCase().onSuccess { tags ->
+                _state.update {
+                    it.copy(tags = tags, tagsStatus = ScreenUiState.Success)
+                }
+            }.onError { error, _ ->
+                snackbarManager.showMessage(error.toMessage())
+                _state.update { it.copy(tagsStatus = ScreenUiState.Error) }
+            }
+        }
+    }
 
     private fun changeShowDialogSuccessPublish(value: Int?) = _state.update {
         val newPublishRecipeUiState = value?.let { UploadState.PublishRecipeUiState.Success(it) } ?: UploadState.PublishRecipeUiState.None
@@ -144,7 +172,9 @@ internal class UploadViewModel(
             ingredients = emptyList(),
             showDialogAddIngredient = false,
             steps = emptyList(),
-            showDialogAddStep = false
+            showDialogAddStep = false,
+            selectedTagIds = emptyList(),
+            tagsExpanded = false,
         )
         _state.update { newState }
         snackbarManager.showMessage("Данные успешно очищены")
@@ -154,6 +184,7 @@ internal class UploadViewModel(
         val hasSession = hasSessionUseCase()
         val uploadUiState = if (!hasSession) UploadState.UploadUiState.NEED_AUTH else UploadState.UploadUiState.SUCCESS
         _state.update { it.copy(uploadUiState = uploadUiState) }
+        if (hasSession && state.value.tagsStatus == ScreenUiState.Idle) loadTags()
     }
 
     private suspend fun uploadImage(fileUri: String): String?{
@@ -198,7 +229,7 @@ internal class UploadViewModel(
                 carb = carbs,
                 ingredients = ingredients,
                 steps = steps,
-                tagIds = emptyList(),
+                tagIds = selectedTagIds,
             )
             val validation = addRecipeValidator.validate(recipe)
             validation.onError { error, _ ->
@@ -226,16 +257,7 @@ internal class UploadViewModel(
                     )
                 }
             }.onError { error, _ ->
-                val message = when(error){
-                    DataError.Network.UNAUTHORIZED -> "Пользователь не авторизован"
-                    DataError.Network.INVALID_DATA -> "Введённые данные не прошли валидацию. Проверьте их корректность"
-                    DataError.Network.REQUEST_TIMEOUT -> "Время ожидания превышено. Проверьте интернет-соединение или попробуйте позже"
-                    DataError.Network.SERIALIZATION -> "При получении данных произошла ошибка"
-                    DataError.Network.SERVER_ERROR -> "Произошла ошибка на сервере. Попробуйте позже"
-                    DataError.Network.NO_INTERNET -> "Отсутствует интернет-соединение"
-                    else -> "Произошла ошибка. Попробуйте позже"
-                }
-                snackbarManager.showMessage(message)
+                snackbarManager.showMessage(error.toMessage())
                 _state.update { it.copy(publishLoading = false) }
             }
         }
@@ -260,10 +282,23 @@ internal class UploadViewModel(
             is UploadIntent.AddStep -> addStep(intent.description, intent.previewUri)
             is UploadIntent.RemoveStep -> removeStep(intent.index)
             is UploadIntent.ReorderStep -> reorderSteps(intent.fromIndex, intent.toIndex)
+            is UploadIntent.ToggleTag -> toggleTag(intent.id)
+            UploadIntent.LoadTags -> loadTags()
+            UploadIntent.ToggleTagsExpanded -> toggleTagsExpanded()
             UploadIntent.PublishRecipe -> publishRecipe()
             UploadIntent.CheckSession -> checkSession()
             UploadIntent.OpenPublishedRecipe -> openPublishedRecipe()
             is UploadIntent.ChangeShowDialogSuccessPublish -> changeShowDialogSuccessPublish(intent.recipeId)
         }
+    }
+
+    private fun DataError.toMessage(): String = when (this) {
+        DataError.Network.UNAUTHORIZED -> "Пользователь не авторизован"
+        DataError.Network.INVALID_DATA -> "Введённые данные не прошли валидацию. Проверьте их корректность"
+        DataError.Network.REQUEST_TIMEOUT -> "Время ожидания превышено. Проверьте интернет-соединение или попробуйте позже"
+        DataError.Network.SERIALIZATION -> "При получении данных произошла ошибка"
+        DataError.Network.SERVER_ERROR -> "Произошла ошибка на сервере. Попробуйте позже"
+        DataError.Network.NO_INTERNET -> "Отсутствует интернет-соединение"
+        else -> "Произошла ошибка. Попробуйте позже"
     }
 }
