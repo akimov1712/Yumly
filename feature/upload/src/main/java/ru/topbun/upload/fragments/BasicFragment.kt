@@ -59,9 +59,7 @@ internal fun BasicFragment(
         tags = state.tags,
         selectedIds = state.selectedTagIds,
         status = state.tagsStatus,
-        expanded = state.tagsExpanded,
         onToggle = { viewModel.sendIntent(UploadIntent.ToggleTag(it)) },
-        onToggleExpanded = { viewModel.sendIntent(UploadIntent.ToggleTagsExpanded) },
         onRetry = { viewModel.sendIntent(UploadIntent.LoadTags) }
     )
     AppButton(

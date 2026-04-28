@@ -30,15 +30,14 @@ import ru.topbun.core.ui.theme.Typography
 import ru.topbun.core.ui.utils.rippleClickable
 import ru.topbun.domain.ScreenUiState
 import ru.topbun.domain.entity.recipe.tag.TagRecipeEntity
+import ru.topbun.domain.entity.recipe.tag.TagType
 
 @Composable
 internal fun TagsSection(
     tags: List<TagRecipeEntity>,
     selectedIds: List<Int>,
     status: ScreenUiState,
-    expanded: Boolean,
     onToggle: (Int) -> Unit,
-    onToggleExpanded: () -> Unit,
     onRetry: () -> Unit,
 ) {
     val title = buildAnnotatedString {
@@ -63,9 +62,7 @@ internal fun TagsSection(
                     TagsGrouped(
                         tags = tags,
                         selectedIds = selectedIds,
-                        expanded = expanded,
                         onToggle = onToggle,
-                        onToggleExpanded = onToggleExpanded
                     )
                 }
             }
@@ -78,50 +75,18 @@ internal fun TagsSection(
 private fun TagsGrouped(
     tags: List<TagRecipeEntity>,
     selectedIds: List<Int>,
-    expanded: Boolean,
     onToggle: (Int) -> Unit,
-    onToggleExpanded: () -> Unit,
 ) {
     val grouped = tags.groupBy { it.type }
-    val previewLimit = 8
-    val totalShown = if (expanded) tags.size else minOf(previewLimit, tags.size)
-    val showToggle = tags.size > previewLimit
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        if (expanded) {
-            grouped.forEach { (type, groupTags) ->
-                TagGroup(
-                    title = type.title,
-                    tags = groupTags,
-                    selectedIds = selectedIds,
-                    onToggle = onToggle
-                )
-            }
-        } else {
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                tags.take(totalShown).forEach { tag ->
-                    TagChip(
-                        tag = tag,
-                        isSelected = selectedIds.contains(tag.id),
-                        onClick = { onToggle(tag.id) }
-                    )
-                }
-            }
-        }
-        if (showToggle) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                AppTextButton(
-                    text = if (expanded) "Свернуть" else "Показать все",
-                    onClick = onToggleExpanded
-                )
-            }
+        grouped.forEach { (type, groupTags) ->
+            TagGroup(
+                title = type.title,
+                tags = groupTags,
+                selectedIds = selectedIds,
+                onToggle = onToggle
+            )
         }
     }
 }
@@ -163,7 +128,7 @@ private fun TagChip(
 ) {
     val bgColor = if (isSelected) Colors.PRIMARY else Color.Transparent
     val borderColor = if (isSelected) Colors.PRIMARY else Colors.OUTLINE
-    val textColor = if (isSelected) Colors.WHITE else Colors.MAIN_TEXT
+    val textColor = if (isSelected) Colors.WHITE else Colors.SECONDARY_TEXT
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(28.dp))
@@ -213,9 +178,9 @@ private fun TagsError(onRetry: () -> Unit) {
     }
 }
 
-private val ru.topbun.domain.entity.recipe.tag.TagType.title: String
+private val TagType.title: String
     get() = when (this) {
-        ru.topbun.domain.entity.recipe.tag.TagType.Category -> "Категории"
-        ru.topbun.domain.entity.recipe.tag.TagType.Diets -> "Диеты"
-        ru.topbun.domain.entity.recipe.tag.TagType.Preparation -> "Способ приготовления"
+        TagType.Category -> "Категории"
+        TagType.Diets -> "Диеты"
+        TagType.Preparation -> "Способ приготовления"
     }

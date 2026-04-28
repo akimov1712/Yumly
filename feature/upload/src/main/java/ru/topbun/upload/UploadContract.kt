@@ -27,7 +27,6 @@ internal data class UploadState(
 
     val tags: List<TagRecipeEntity> = emptyList(),
     val tagsStatus: ScreenUiState = ScreenUiState.Idle,
-    val tagsExpanded: Boolean = false,
     val selectedTagIds: List<Int> = emptyList(),
 
     val uploadUiState: UploadUiState? = null,
@@ -94,7 +93,6 @@ internal sealed interface UploadIntent{
     data object CheckSession: UploadIntent
     data object OpenPublishedRecipe: UploadIntent
     data object LoadTags: UploadIntent
-    data object ToggleTagsExpanded: UploadIntent
     data class ChangeShowDialogClearData(val value: Boolean): UploadIntent
     data class ChangeShowDialogAddIngredient(val value: Boolean): UploadIntent
     data class ChangeShowDialogAddStep(val value: Boolean): UploadIntent

@@ -45,7 +45,6 @@ internal class UploadViewModel(
     private fun changeShowDialogClearData(value: Boolean) = _state.update { it.copy(showDialogClearData = value) }
     private fun changeShowDialogAddIngredient(value: Boolean) = _state.update { it.copy(showDialogAddIngredient = value) }
     private fun changeShowDialogAddStep(value: Boolean) = _state.update { it.copy(showDialogAddStep = value) }
-    private fun toggleTagsExpanded() = _state.update { it.copy(tagsExpanded = !it.tagsExpanded) }
 
     private fun toggleTag(id: Int) = _state.update {
         val newSelected = it.selectedTagIds.toMutableList().apply {
@@ -174,7 +173,6 @@ internal class UploadViewModel(
             steps = emptyList(),
             showDialogAddStep = false,
             selectedTagIds = emptyList(),
-            tagsExpanded = false,
         )
         _state.update { newState }
         snackbarManager.showMessage("Данные успешно очищены")
@@ -284,7 +282,6 @@ internal class UploadViewModel(
             is UploadIntent.ReorderStep -> reorderSteps(intent.fromIndex, intent.toIndex)
             is UploadIntent.ToggleTag -> toggleTag(intent.id)
             UploadIntent.LoadTags -> loadTags()
-            UploadIntent.ToggleTagsExpanded -> toggleTagsExpanded()
             UploadIntent.PublishRecipe -> publishRecipe()
             UploadIntent.CheckSession -> checkSession()
             UploadIntent.OpenPublishedRecipe -> openPublishedRecipe()
