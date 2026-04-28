@@ -8,6 +8,7 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import ru.topbun.assistant.AssistantScreen
 import ru.topbun.auth.AuthScreen
+import ru.topbun.bmi.BmiScreen
 import ru.topbun.auth_confirm.ConfirmScreen
 import ru.topbun.auth_login.LoginScreen
 import ru.topbun.auth_register.RegisterScreen
@@ -17,6 +18,7 @@ import ru.topbun.auth_welcome.WelcomeScreen
 import ru.topbun.dashboard.DashboardScreen
 import ru.topbun.feature.splash.SplashScreen
 import ru.topbun.home.HomeScreen
+import ru.topbun.navigation.BmiScreenProvider
 import ru.topbun.navigation.DashboardScreenProvider
 import ru.topbun.navigation.ProfileScreenProvider
 import ru.topbun.navigation.RecipeScreenProvider
@@ -73,6 +75,8 @@ class App : Application() {
             register<ProfileScreenProvider.Follows> { FollowListScreen(it.userId, it.initialTab) }
 
             register<RecipeScreenProvider.Detail> { RecipeScreen(it.recipeId) }
+
+            register<BmiScreenProvider.Main> { BmiScreen }
 
         }
     }

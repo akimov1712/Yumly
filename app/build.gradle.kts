@@ -95,5 +95,6 @@ dependencies {
     implementation(project(":feature:profile_settings"))
     implementation(project(":feature:profile_followers"))
     implementation(project(":feature:recipe"))
+    implementation(project(":feature:bmi"))
 
 }
