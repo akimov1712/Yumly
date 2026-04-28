@@ -109,36 +109,34 @@ private fun BmiScale(progress: Float) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(34.dp)
+            .height(28.dp),
+        contentAlignment = Alignment.CenterStart
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(8.dp)
                 .clip(RoundedCornerShape(4.dp))
-                .align(Alignment.Center)
         ) {
             ScaleSegment(weight = 0.18f, color = BmiCategory.Underweight.color)
             ScaleSegment(weight = 0.25f, color = BmiCategory.Normal.color)
             ScaleSegment(weight = 0.20f, color = BmiCategory.Overweight.color)
             ScaleSegment(weight = 0.37f, color = BmiCategory.Obese.color)
         }
-        Box(
+        Row(
             modifier = Modifier
-                .fillMaxWidth(progress.coerceAtLeast(0.005f))
-                .height(0.dp)
-                .align(Alignment.CenterStart)
+                .fillMaxWidth(progress.coerceAtLeast(0.005f)),
+            horizontalArrangement = Arrangement.End
         ) {
             Box(
                 modifier = Modifier
-                    .align(Alignment.CenterEnd)
                     .size(20.dp)
                     .clip(CircleShape)
-                    .background(Colors.WHITE)
+                    .background(Colors.WHITE),
+                contentAlignment = Alignment.Center
             ) {
                 Box(
                     modifier = Modifier
-                        .align(Alignment.Center)
                         .size(10.dp)
                         .clip(CircleShape)
                         .background(Color.Black.copy(alpha = 0.65f))
