@@ -132,7 +132,7 @@ private fun Placeholder() {
             Icon(
                 modifier = Modifier.size(36.dp),
                 painter = painterResource(R.drawable.ic_image_picker),
-                contentDescription = "image_picker",
+                contentDescription = "Выбор изображения",
                 tint = Colors.PRIMARY
             )
         }

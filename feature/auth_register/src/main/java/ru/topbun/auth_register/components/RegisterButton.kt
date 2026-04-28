@@ -17,7 +17,7 @@ internal fun RegisterButton(
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp),
-        text = "Sign Up",
+        text = "Зарегистрироваться",
         enabled = enabled,
         isLoading = isLoading
     ) { onClick() }

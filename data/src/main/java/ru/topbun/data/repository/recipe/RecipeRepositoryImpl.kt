@@ -42,6 +42,22 @@ internal class RecipeRepositoryImpl(
             }
         }
 
+    override suspend fun getFollowRecipe(data: GetRecipeEntity): Result<List<RecipeEntity>, DataError> =
+        context.exceptionWrapper {
+            val response = api.getFollowRecipes(data.toRequest())
+            val recipes = response.body()
+            if (response.isSuccessful && recipes != null) {
+                insertHistoryQuery(data.q, data.offset)
+                Result.Success(recipes.toEntityList())
+            } else {
+                val error = when (response.code()) {
+                    HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
+                    else -> DataError.Network.SERVER_ERROR
+                }
+                Result.Error(error)
+            }
+        }
+
     private suspend fun insertHistoryQuery(q: String?, offset: Int) {
         if (!q.isNullOrBlank() && offset == 0) {
             val dbo = HistoryDbo(query = q)

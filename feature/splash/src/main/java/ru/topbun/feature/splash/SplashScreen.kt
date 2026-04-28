@@ -72,7 +72,7 @@ object SplashScreen: Screen{
         Icon(
             modifier = Modifier.size(164.dp),
             painter = painterResource(ru.topbun.core.ui.R.drawable.ic_logo),
-            contentDescription = "Logo",
+            contentDescription = "Логотип",
             tint = Colors.WHITE
         )
     }

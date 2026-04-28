@@ -29,7 +29,7 @@ internal data class HomeState(
         get() = selectedSearchType == SearchType.Subscribers
 
     enum class SearchType(val title: String){
-        All("All"), Subscribers("Subscribers");
+        All("Все"), Subscribers("Подписки");
     }
 
     data class RecipeListUiState(

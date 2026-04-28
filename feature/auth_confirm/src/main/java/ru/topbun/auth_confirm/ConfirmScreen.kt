@@ -84,15 +84,15 @@ data class ConfirmScreen(
                 Height(72.dp)
                 FilledButton(
                     text = when (state.screenMode) {
-                        SIGN_UP -> "Verify"
-                        RESET_PASSWORD -> "Next"
+                        SIGN_UP -> "Подтвердить"
+                        RESET_PASSWORD -> "Далее"
                     },
                     enabled = state.confirmEnabled,
                     isLoading = state.confirmLoading,
                 ) { viewModel.sendIntent(ConfirmIntent.ClickConfirm) }
                 Height(16.dp)
                 AppOutlinedButton(
-                    text = "Send again " + if (!state.sendAgainEnabled) state.formatTimer() else "",
+                    text = "Отправить снова " + if (!state.sendAgainEnabled) state.formatTimer() else "",
                     modifier = Modifier
                         .fillMaxWidth()
                         .defaultMinSize(minHeight = 56.dp),

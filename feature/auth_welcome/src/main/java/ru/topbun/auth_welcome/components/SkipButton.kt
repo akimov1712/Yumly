@@ -11,7 +11,7 @@ import ru.topbun.core.ui.components.AppTextButton
 @Composable
 internal fun ColumnScope.SkipButton(onClick: () -> Unit) {
     AppTextButton(
-        text = "Later",
+        text = "Позже",
         modifier = Modifier
             .align(Alignment.End)
             .padding(horizontal = 16.dp),

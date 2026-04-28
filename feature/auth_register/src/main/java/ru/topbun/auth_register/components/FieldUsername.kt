@@ -21,7 +21,7 @@ internal fun FieldUsername(
         errorText = error,
         onFocused = onFocused,
         onValueChange = onValueChange,
-        placeholder = "Username",
+        placeholder = "Имя пользователя",
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp),

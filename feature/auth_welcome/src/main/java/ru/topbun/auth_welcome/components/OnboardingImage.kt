@@ -12,7 +12,7 @@ internal fun OnboardingImage() {
     Image(
         modifier = Modifier.fillMaxWidth(),
         painter = painterResource(ru.topbun.core.ui.R.drawable.img_onboarding),
-        contentDescription = "onboarding",
+        contentDescription = "онбординг",
         contentScale = ContentScale.FillWidth
     )
 }

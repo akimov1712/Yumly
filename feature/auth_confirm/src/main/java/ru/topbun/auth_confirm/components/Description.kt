@@ -9,7 +9,7 @@ import ru.topbun.core.ui.theme.Typography
 @Composable
 internal fun Description() {
     Text(
-        text = "We’ve sent the code to your email",
+        text = "Мы отправили код на вашу почту",
         color = Colors.SECONDARY_TEXT,
         style = Typography.P2,
         textAlign = TextAlign.Center

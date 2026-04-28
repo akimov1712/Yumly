@@ -24,9 +24,9 @@ internal fun BoxScope.SignUpButton(onClick: () -> Unit) {
             .noRippleClickable { onClick() }
             .padding(vertical = 4.dp, horizontal = 8.dp),
         text = buildAnnotatedString {
-            append("Don’t have any account? ")
+            append("Нет аккаунта? ")
             withStyle(SpanStyle(color = Colors.PRIMARY)) {
-                append("Sign Up")
+                append("Зарегистрироваться")
             }
         },
         style = Typography.P2,

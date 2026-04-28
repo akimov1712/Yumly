@@ -23,6 +23,7 @@ import ru.topbun.domain.useCases.login.LoginUseCase
 import ru.topbun.domain.useCases.notification.GetNotificationsUseCase
 import ru.topbun.domain.useCases.recipe.AddRecipeUseCase
 import ru.topbun.domain.useCases.recipe.DeleteRecipeUseCase
+import ru.topbun.domain.useCases.recipe.GetFollowRecipeUseCase
 import ru.topbun.domain.useCases.recipe.GetRecipeByIdUseCase
 import ru.topbun.domain.useCases.recipe.GetRecipeByUserIdUseCase
 import ru.topbun.domain.useCases.recipe.GetRecipeUseCase
@@ -66,4 +67,5 @@ val useCaseModule = module {
     singleOf(::RequestVerificationUseCase)
     singleOf(::ResetPasswordUseCase)
     singleOf(::GetTagsUseCase)
+    singleOf(::GetFollowRecipeUseCase)
 }

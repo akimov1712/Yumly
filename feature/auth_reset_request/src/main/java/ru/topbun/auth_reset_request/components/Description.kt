@@ -9,7 +9,7 @@ import ru.topbun.core.ui.theme.Typography
 @Composable
 internal fun Description() {
     Text(
-        text = "Enter your email to recover your password",
+        text = "Введите email для восстановления пароля",
         color = Colors.SECONDARY_TEXT,
         style = Typography.P2,
         textAlign = TextAlign.Center

@@ -9,7 +9,7 @@ import ru.topbun.core.ui.theme.Typography
 @Composable
 internal fun Title() {
     Text(
-        text = "Welcome Back!",
+        text = "С возвращением!",
         color = Colors.MAIN_TEXT,
         style = Typography.H1,
         textAlign = TextAlign.Center

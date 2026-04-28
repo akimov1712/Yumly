@@ -46,7 +46,7 @@ internal fun Header(
         AppTextField(
             text = text,
             onValueChange = onValueChange,
-            placeholder = "Search",
+            placeholder = "Поиск",
             modifier = Modifier.weight(1f)
                 .defaultMinSize(minHeight = 56.dp),
             startIcon = painterResource(R.drawable.ic_search),

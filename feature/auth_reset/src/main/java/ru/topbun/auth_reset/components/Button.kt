@@ -17,7 +17,7 @@ internal fun Button(
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp),
-        text = "Done",
+        text = "Готово",
         enabled = enabled,
         isLoading = isLoading
     ) { onClick() }

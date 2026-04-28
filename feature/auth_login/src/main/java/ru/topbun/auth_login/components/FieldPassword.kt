@@ -29,7 +29,7 @@ internal fun FieldPassword(
     AppOutlinedTextField(
         text = value,
         onValueChange = { onSendIntent(LoginIntent.ChangePassword(it)) },
-        placeholder = "Password",
+        placeholder = "Пароль",
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp),

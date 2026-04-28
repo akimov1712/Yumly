@@ -46,7 +46,7 @@ object UploadScreen : Tab {
 
     override val options @Composable get() = TabOptions(
         index = 1U,
-        title = "Upload",
+        title = "Загрузить",
         icon = painterResource(R.drawable.ic_tabs_upload)
     )
 

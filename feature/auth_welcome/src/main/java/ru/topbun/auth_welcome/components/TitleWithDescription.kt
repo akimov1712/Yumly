@@ -21,13 +21,13 @@ fun TitleWithDescription() {
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
-            text = "Start Cooking",
+            text = "Начните готовить",
             color = Colors.MAIN_TEXT,
             style = ru.topbun.core.ui.theme.Typography.H1,
             textAlign = TextAlign.Center
         )
         Text(
-            text = "Let’s join our community to cook better food!",
+            text = "Присоединяйтесь к нашему сообществу, чтобы готовить вкуснее!",
             color = Colors.SECONDARY_TEXT,
             style = Typography.P1,
             textAlign = TextAlign.Center

@@ -9,7 +9,7 @@ import ru.topbun.core.ui.theme.Typography
 @Composable
 internal fun Description() {
     Text(
-        text = "Please enter your account here",
+        text = "Введите данные своего аккаунта",
         color = Colors.SECONDARY_TEXT,
         style = Typography.P2,
         textAlign = TextAlign.Center

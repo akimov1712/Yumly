@@ -18,6 +18,9 @@ internal interface RecipeApi {
     @POST("/v1/recipe")
     suspend fun getRecipes(@Body body: GetRecipeRequest): Response<GetRecipeResponse>
 
+    @POST("/v1/recipe/follow")
+    suspend fun getFollowRecipes(@Body body: GetRecipeRequest): Response<GetRecipeResponse>
+
     @GET("/v1/recipe/{id}")
     suspend fun getRecipeById(@Path("id") recipeId: Int): Response<RecipeDto>
 

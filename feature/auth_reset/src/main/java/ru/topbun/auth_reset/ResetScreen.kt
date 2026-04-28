@@ -68,7 +68,7 @@ data class ResetScreen(private val email: String): Screen{
                 Height(32.dp)
                 FieldPassword(
                     value = state.password,
-                    placeholder = "Password",
+                    placeholder = "Пароль",
                     isShowPassword = state.showPassword,
                     onClickShowPassword = { viewModel.sendIntent(ResetIntent.SwitchShowPassword) },
                     onChangeValue = { viewModel.sendIntent(ResetIntent.ChangePassword(it)) }
@@ -76,7 +76,7 @@ data class ResetScreen(private val email: String): Screen{
                 Height(16.dp)
                 FieldPassword(
                     value = state.confirmPassword,
-                    placeholder = "Confirm password",
+                    placeholder = "Подтвердите пароль",
                     isShowPassword = state.showPassword,
                     onClickShowPassword = { viewModel.sendIntent(ResetIntent.SwitchShowPassword) },
                     onChangeValue = { viewModel.sendIntent(ResetIntent.ChangeConfirmPassword(it)) }

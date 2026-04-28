@@ -29,7 +29,7 @@ object HomeScreen: Tab {
 
     override val options @Composable get() = TabOptions(
         index = 0U,
-        title = "Home",
+        title = "Главная",
         icon = painterResource(R.drawable.ic_tabs_home)
     )
 

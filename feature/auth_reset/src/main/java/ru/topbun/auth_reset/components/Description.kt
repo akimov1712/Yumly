@@ -9,7 +9,7 @@ import ru.topbun.core.ui.theme.Typography
 @Composable
 internal fun Description() {
     Text(
-        text = "Please enter your new password",
+        text = "Введите новый пароль",
         color = Colors.SECONDARY_TEXT,
         style = Typography.P2,
         textAlign = TextAlign.Center

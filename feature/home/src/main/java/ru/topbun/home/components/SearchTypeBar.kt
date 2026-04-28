@@ -51,7 +51,7 @@ internal fun SearchTypeBar(
             val bgColor = if(selected) Colors.PRIMARY else Color.Transparent
             val weight = when(type){
                 All -> 1f
-                Subscribers -> 1.5f
+                Subscribers -> 1.3f
             }
             Box(
                 modifier = Modifier.weight(weight)

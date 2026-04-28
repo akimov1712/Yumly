@@ -50,7 +50,7 @@ object AssistantScreen: Tab {
 
     override val options @Composable get() = TabOptions(
         index = 2U,
-        title = "Assistant",
+        title = "Ассистент",
         icon = painterResource(ru.topbun.core.ui.R.drawable.ic_tabs_assistant)
     )
 

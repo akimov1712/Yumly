@@ -24,9 +24,9 @@ internal fun BoxScope.LoginButton(onClick: () -> Unit) {
             .noRippleClickable { onClick() }
             .padding(vertical = 4.dp, horizontal = 8.dp),
         text = buildAnnotatedString {
-            append("Already have an account? ")
+            append("Уже есть аккаунт? ")
             withStyle(SpanStyle(color = Colors.PRIMARY)) {
-                append("Log In")
+                append("Войти")
             }
         },
         style = Typography.P2,

@@ -17,10 +17,12 @@ import ru.topbun.core.common.onSuccess
 import ru.topbun.domain.ScreenUiState
 import ru.topbun.domain.entity.recipe.getRecipe.GetRecipeEntity
 import ru.topbun.domain.entity.recipe.getRecipe.GetRecipeFilterEntity
+import ru.topbun.domain.useCases.recipe.GetFollowRecipeUseCase
 import ru.topbun.domain.useCases.recipe.GetRecipeUseCase
 
 internal class HomeViewModel(
     private val getRecipeUseCase: GetRecipeUseCase,
+    private val getFollowRecipeUseCase: GetFollowRecipeUseCase,
     private val snackbarManager: SnackbarManager
 ): MVI<HomeIntent, HomeState, HomeEvent>(HomeState()) {
 
@@ -40,9 +42,13 @@ internal class HomeViewModel(
                 q = search,
                 offset = recipeList.recipes.size,
                 recipeFilter = recipeFilters,
-                onlyFromFollowing = isSubscribersFeed,
             )
-            getRecipeUseCase(getRecipeEntity).onSuccess { recipes ->
+            val result = if (isSubscribersFeed) {
+                getFollowRecipeUseCase(getRecipeEntity)
+            } else {
+                getRecipeUseCase(getRecipeEntity)
+            }
+            result.onSuccess { recipes ->
                 _state.update { it.copy(
                     recipeList = recipeList.copy(
                         recipes = (it.recipeList.recipes + recipes).distinctBy { recipe -> recipe.id },

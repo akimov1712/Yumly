@@ -12,7 +12,7 @@ import ru.topbun.core.ui.components.AppButton
 @Composable
 fun Button(onClick: () -> Unit) {
     AppButton(
-        text = "Get Started",
+        text = "Начать",
         modifier = Modifier.fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp)
             .padding(horizontal = 24.dp),

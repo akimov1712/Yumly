@@ -92,7 +92,7 @@ object RegisterScreen: Screen {
                 Height(16.dp)
                 FieldPassword(
                     value = state.password,
-                    placeholder = "Password",
+                    placeholder = "Пароль",
                     isShowPassword = state.showPassword,
                     error = state.passwordError,
                     onFocused = { viewModel.sendIntent(RegisterIntent.ChangeFieldFocused(RegisterState.FieldFocused.PASSWORD)) },
@@ -102,7 +102,7 @@ object RegisterScreen: Screen {
                 Height(16.dp)
                 FieldPassword(
                     value = state.confirmPassword,
-                    placeholder = "Confirm password",
+                    placeholder = "Подтвердите пароль",
                     isShowPassword = state.showPassword,
                     error = state.confirmPasswordError,
                     onFocused = { viewModel.sendIntent(RegisterIntent.ChangeFieldFocused(RegisterState.FieldFocused.CONFIRM_PASSWORD)) },

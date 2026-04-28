@@ -43,7 +43,7 @@ object ProfileScreen : Tab {
 
     override val options @Composable get() = TabOptions(
         index = 4U,
-        title = "Profile",
+        title = "Профиль",
         icon = painterResource(R.drawable.ic_tab_profile)
     )
 

@@ -62,7 +62,7 @@ internal fun AssistantPlaceholder(onClick: () -> Unit) {
         }
         Height(28.dp)
         Text(
-            text = "Yumly Assistant",
+            text = "Yumly Ассистент",
             color = Colors.MAIN_TEXT,
             style = Typography.H1,
             textAlign = TextAlign.Center

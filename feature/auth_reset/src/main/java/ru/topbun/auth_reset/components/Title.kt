@@ -9,7 +9,7 @@ import ru.topbun.core.ui.theme.Typography
 @Composable
 internal fun Title() {
     Text(
-        text = "Reset your password",
+        text = "Сброс пароля",
         color = Colors.MAIN_TEXT,
         style = Typography.H1,
         textAlign = TextAlign.Center

@@ -33,7 +33,7 @@ object NotificationScreen : Tab {
 
     override val options @Composable get() = TabOptions(
         index = 3U,
-        title = "Notification",
+        title = "Уведомления",
         icon = painterResource(R.drawable.ic_tabs_notification)
     )
 

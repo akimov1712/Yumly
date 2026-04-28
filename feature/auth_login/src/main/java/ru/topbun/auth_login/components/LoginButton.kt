@@ -17,7 +17,7 @@ internal fun LoginButton(
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp),
-        text = "Login",
+        text = "Войти",
         enabled = enabled,
         isLoading = isLoading
     ) { onClick() }

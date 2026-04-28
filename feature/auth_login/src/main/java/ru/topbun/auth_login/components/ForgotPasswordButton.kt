@@ -18,7 +18,7 @@ internal fun ColumnScope.ForgotPasswordButton(onClick: () -> Unit) {
             .align(Alignment.End)
             .noRippleClickable { onClick() }
             .padding(vertical = 4.dp, horizontal = 8.dp),
-        text = "Forgot password?",
+        text = "Забыли пароль?",
         style = Typography.P2,
         color = Colors.PRIMARY,
     )

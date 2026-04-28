@@ -17,7 +17,7 @@ internal fun ResetButton(
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp),
-        text = "Reset Password",
+        text = "Сбросить пароль",
         enabled = enabled,
         isLoading = isLoading
     ) { onClick() }
