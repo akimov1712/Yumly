@@ -17,6 +17,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.viewmodel.koinViewModel
+import ru.topbun.bmi.components.ActivitySelector
 import ru.topbun.bmi.components.AgeSection
 import ru.topbun.bmi.components.BmiHeader
 import ru.topbun.bmi.components.BmiResultCard
@@ -72,9 +73,14 @@ object BmiScreen : Screen {
                     maxKg = state.healthyMaxKg,
                     currentKg = state.weightKg
                 )
+                ActivitySelector(
+                    selected = state.activity,
+                    onSelect = { viewModel.sendIntent(BmiIntent.ChangeActivity(it)) }
+                )
                 CalorieSection(
                     bmr = state.basalMetabolicRate,
-                    daily = state.recommendedCalories
+                    daily = state.recommendedCalories,
+                    activity = state.activity,
                 )
             }
         }

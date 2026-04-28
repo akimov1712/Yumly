@@ -17,12 +17,16 @@ internal class BmiViewModel : MVI<BmiIntent, BmiState, BmiEvent>(BmiState()) {
     private fun changeAge(value: Int) =
         _state.update { it.copy(ageYears = value.coerceIn(MIN_AGE, MAX_AGE)) }
 
+    private fun changeActivity(value: BmiState.Activity) =
+        _state.update { it.copy(activity = value) }
+
     override suspend fun handleIntent(intent: BmiIntent) {
         when (intent) {
             is BmiIntent.ChangeGender -> changeGender(intent.value)
             is BmiIntent.ChangeHeight -> changeHeight(intent.value)
             is BmiIntent.ChangeWeight -> changeWeight(intent.value)
             is BmiIntent.ChangeAge -> changeAge(intent.value)
+            is BmiIntent.ChangeActivity -> changeActivity(intent.value)
         }
     }
 

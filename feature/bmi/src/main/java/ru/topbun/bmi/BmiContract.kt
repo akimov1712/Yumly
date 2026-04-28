@@ -8,6 +8,7 @@ internal data class BmiState(
     val heightCm: Int = 170,
     val weightKg: Float = 65f,
     val ageYears: Int = 25,
+    val activity: Activity = Activity.Light,
 ) {
 
     val bmi: Float
@@ -50,10 +51,42 @@ internal data class BmiState(
         }
 
     val recommendedCalories: Int
-        get() = (basalMetabolicRate * 1.375f).roundToInt()
+        get() = (basalMetabolicRate * activity.factor).roundToInt()
 
     enum class Gender(val title: String) {
         Female("Женщина"), Male("Мужчина");
+    }
+
+    enum class Activity(
+        val title: String,
+        val description: String,
+        val factor: Float,
+    ) {
+        Sedentary(
+            title = "Минимальная",
+            description = "Сидячая работа, нет тренировок",
+            factor = 1.2f,
+        ),
+        Light(
+            title = "Лёгкая",
+            description = "Тренировки 1–3 раза в неделю",
+            factor = 1.375f,
+        ),
+        Moderate(
+            title = "Средняя",
+            description = "Тренировки 3–5 раз в неделю",
+            factor = 1.55f,
+        ),
+        High(
+            title = "Высокая",
+            description = "Тренировки 6–7 раз в неделю",
+            factor = 1.725f,
+        ),
+        VeryHigh(
+            title = "Очень высокая",
+            description = "Тяжёлые тренировки или физическая работа",
+            factor = 1.9f,
+        );
     }
 }
 
@@ -99,6 +132,7 @@ internal sealed interface BmiIntent {
     data class ChangeHeight(val value: Int) : BmiIntent
     data class ChangeWeight(val value: Float) : BmiIntent
     data class ChangeAge(val value: Int) : BmiIntent
+    data class ChangeActivity(val value: BmiState.Activity) : BmiIntent
 }
 
 internal sealed interface BmiEvent

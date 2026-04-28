@@ -16,8 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import ru.topbun.bmi.BmiState
 import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.theme.Colors
@@ -27,6 +29,7 @@ import ru.topbun.core.ui.theme.Typography
 internal fun CalorieSection(
     bmr: Int,
     daily: Int,
+    activity: BmiState.Activity,
 ) {
     Column(
         modifier = Modifier
@@ -45,7 +48,8 @@ internal fun CalorieSection(
             CalorieCard(
                 modifier = Modifier.weight(1f),
                 iconRes = R.drawable.ic_calories,
-                title = "Базовый обмен",
+                title = "Покой (BMR)",
+                hint = "Минимум для жизни",
                 value = bmr,
                 tint = Colors.BLUE_TEXT,
                 background = Colors.BLUE_TEXT.copy(alpha = 0.10f)
@@ -53,17 +57,56 @@ internal fun CalorieSection(
             CalorieCard(
                 modifier = Modifier.weight(1f),
                 iconRes = R.drawable.ic_calories,
-                title = "В день",
+                title = "Норма в день",
+                hint = "С учётом активности",
                 value = daily,
                 tint = Colors.PRIMARY,
                 background = Colors.PRIMARY.copy(alpha = 0.10f)
             )
         }
+        ExplanationRow()
         Text(
-            text = "Расчёт по формуле Миффлина-Сан Жеора с малой активностью",
+            text = "Расчёт: BMR × ${activity.factor} (${activity.title.lowercase()}). " +
+                    "Чтобы похудеть — отнимите 10–20% от нормы, чтобы набрать массу — добавьте столько же.",
             style = Typography.S,
             color = Colors.SECONDARY_TEXT,
         )
+    }
+}
+
+@Composable
+private fun ExplanationRow() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(Colors.FORM)
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .clip(CircleShape)
+                .background(Colors.PRIMARY.copy(alpha = 0.18f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                modifier = Modifier.size(16.dp),
+                painter = painterResource(R.drawable.ic_chevron_down),
+                contentDescription = null,
+                tint = Colors.PRIMARY
+            )
+        }
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(
+                text = "Покой — энергия только на дыхание, сердце и обмен веществ. " +
+                        "Норма в день — то, что нужно съедать с учётом всей вашей активности.",
+                style = Typography.S,
+                color = Colors.MAIN_TEXT,
+            )
+        }
     }
 }
 
@@ -72,9 +115,10 @@ private fun CalorieCard(
     modifier: Modifier,
     iconRes: Int,
     title: String,
+    hint: String,
     value: Int,
-    tint: androidx.compose.ui.graphics.Color,
-    background: androidx.compose.ui.graphics.Color,
+    tint: Color,
+    background: Color,
 ) {
     Column(
         modifier = modifier
@@ -107,6 +151,11 @@ private fun CalorieCard(
             text = "$value ккал",
             style = Typography.H2,
             color = Colors.MAIN_TEXT
+        )
+        Text(
+            text = hint,
+            style = Typography.S,
+            color = Colors.SECONDARY_TEXT
         )
     }
 }
