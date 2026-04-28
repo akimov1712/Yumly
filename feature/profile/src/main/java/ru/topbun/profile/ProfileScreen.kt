@@ -1,5 +1,8 @@
 package ru.topbun.profile
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -21,6 +25,7 @@ import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.UnauthorizedSection
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.utils.ObserveAsEvents
+import ru.topbun.navigation.BmiScreenProvider
 import ru.topbun.navigation.ProfileScreenProvider
 import ru.topbun.navigation.RecipeScreenProvider
 import ru.topbun.navigation.RootScreenProvider
@@ -30,6 +35,9 @@ import ru.topbun.navigation.utills.root
 import ru.topbun.profile.ProfileState.ProfileUiState.NEED_AUTH
 import ru.topbun.profile.ProfileState.ProfileUiState.SUCCESS
 import ru.topbun.profile.components.ProfileContent
+
+private const val PRIVACY_POLICY_URL = "https://yumly.app/privacy"
+private const val USER_AGREEMENT_URL = "https://yumly.app/terms"
 
 object ProfileScreen : Tab {
 
@@ -41,6 +49,7 @@ object ProfileScreen : Tab {
 
     @Composable
     override fun Content() {
+        val context = LocalContext.current
         val viewModel: ProfileViewModel = koinViewModel { parametersOf(ProfileState.Mode.Self) }
         val state by viewModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow.parent
@@ -61,6 +70,11 @@ object ProfileScreen : Tab {
                     val screen = ScreenRegistry.get(AuthScreenProvider.Login)
                     navigator?.push(screen)
                 }
+                ProfileEvent.NavigateToBmi -> {
+                    val screen = ScreenRegistry.get(BmiScreenProvider.Main)
+                    navigator?.push(screen)
+                }
+                is ProfileEvent.OpenUrl -> openUrl(context, event.url)
             }
         }
 
@@ -100,6 +114,16 @@ object ProfileScreen : Tab {
                             )
                         )
                         navigator?.push(screen)
+                    },
+                    onClickBmi = {
+                        val screen = ScreenRegistry.get(BmiScreenProvider.Main)
+                        navigator?.push(screen)
+                    },
+                    onClickPrivacyPolicy = {
+                        openUrl(context, PRIVACY_POLICY_URL)
+                    },
+                    onClickUserAgreement = {
+                        openUrl(context, USER_AGREEMENT_URL)
                     }
                 )
                 NEED_AUTH -> UnauthorizedSection {
@@ -110,4 +134,10 @@ object ProfileScreen : Tab {
             }
         }
     }
+}
+
+private fun openUrl(context: Context, url: String) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    runCatching { context.startActivity(intent) }
 }

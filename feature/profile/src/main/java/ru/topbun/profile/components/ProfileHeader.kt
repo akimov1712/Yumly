@@ -1,6 +1,7 @@
 package ru.topbun.profile.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -32,8 +34,10 @@ internal fun ProfileHeader(
     title: String?,
     showBack: Boolean,
     showSettings: Boolean,
+    showBmi: Boolean = false,
     onClickBack: () -> Unit,
     onClickSettings: () -> Unit,
+    onClickBmi: () -> Unit = {},
 ) {
     Row(
         modifier = modifier
@@ -65,13 +69,26 @@ internal fun ProfileHeader(
                 textAlign = TextAlign.Center
             )
         }
-        if (showSettings) {
-            CircleIconButton(
-                iconRes = R.drawable.ic_settings,
-                onClick = onClickSettings
-            )
-        } else {
-            Spacer(Modifier.size(48.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            if (showBmi) {
+                CircleIconButton(
+                    iconRes = R.drawable.ic_bmi,
+                    background = Colors.PRIMARY,
+                    tint = Colors.WHITE,
+                    onClick = onClickBmi
+                )
+            }
+            if (showSettings) {
+                CircleIconButton(
+                    iconRes = R.drawable.ic_settings,
+                    onClick = onClickSettings
+                )
+            } else if (!showBmi) {
+                Spacer(Modifier.size(48.dp))
+            }
         }
     }
 }
@@ -79,6 +96,8 @@ internal fun ProfileHeader(
 @Composable
 private fun CircleIconButton(
     iconRes: Int,
+    background: Color = Colors.WHITE,
+    tint: Color = Colors.BLUE_TEXT,
     onClick: () -> Unit,
 ) {
     IconButton(
@@ -89,14 +108,14 @@ private fun CircleIconButton(
                 shadow = Shadow(radius = 4.dp, alpha = 0.1f)
             )
             .clip(CircleShape)
-            .background(Colors.WHITE),
+            .background(background),
         onClick = onClick
     ) {
         Icon(
             modifier = Modifier.size(24.dp),
             painter = painterResource(iconRes),
             contentDescription = null,
-            tint = Colors.BLUE_TEXT
+            tint = tint
         )
     }
 }
