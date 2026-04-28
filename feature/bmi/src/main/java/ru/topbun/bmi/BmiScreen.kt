@@ -25,6 +25,7 @@ import ru.topbun.bmi.components.GenderSelector
 import ru.topbun.bmi.components.HealthyRangeCard
 import ru.topbun.bmi.components.HeightSection
 import ru.topbun.bmi.components.WeightSection
+import ru.topbun.core.ui.components.Height
 import ru.topbun.core.ui.theme.Colors
 
 object BmiScreen : Screen {
@@ -42,13 +43,11 @@ object BmiScreen : Screen {
                 .systemBarsPadding()
         ) {
             BmiHeader(onClickBack = { navigator.pop() })
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 12.dp)
-                    .padding(bottom = 24.dp),
+                    .padding(horizontal = 12.dp, vertical = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 BmiResultCard(state = state)

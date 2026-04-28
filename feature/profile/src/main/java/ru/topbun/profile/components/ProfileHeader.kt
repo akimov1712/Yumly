@@ -76,8 +76,6 @@ internal fun ProfileHeader(
             if (showBmi) {
                 CircleIconButton(
                     iconRes = R.drawable.ic_bmi,
-                    background = Colors.PRIMARY,
-                    tint = Colors.WHITE,
                     onClick = onClickBmi
                 )
             }

@@ -232,7 +232,7 @@ private fun StepCard(
                 ),
                 color = Colors.MAIN_TEXT
             )
-            step.previewUrl?.let {
+            if (!step.previewUrl.isNullOrBlank()){
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -243,11 +243,11 @@ private fun StepCard(
                 ) {
                     AppAsyncImage(
                         modifier = Modifier.fillMaxSize(),
-                        url = it,
+                        url = step.previewUrl,
                         contentScale = ContentScale.Crop,
                         onState = {
                             if (it is AsyncImagePainter.State.Error){
-                                Log.d("STEPS_PREVIEW_LOAD_ERROR", it.result.throwable.message ?: "Неизвестно")
+                                Log.d("STEPS_PREVIEW_LOAD_ERROR", "$it - " + it.result.throwable.message ?: "Неизвестно")
                             }
                         }
                     )
