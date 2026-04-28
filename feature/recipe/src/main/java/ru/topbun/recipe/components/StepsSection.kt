@@ -21,6 +21,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -39,6 +42,7 @@ import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.AppAsyncImage
 import ru.topbun.core.ui.components.AppTextButton
 import ru.topbun.core.ui.components.Height
+import ru.topbun.core.ui.components.ZoomableImageDialog
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.theme.Fonts
 import ru.topbun.core.ui.theme.Typography
@@ -175,6 +179,7 @@ private fun StepCard(
     completed: Boolean,
     onToggle: () -> Unit,
 ) {
+    var zoomOpen by remember { mutableStateOf(false) }
     val accent = if (completed) Colors.PRIMARY else Colors.BLUE_TEXT
     Row(
         modifier = Modifier
@@ -234,6 +239,7 @@ private fun StepCard(
                         .aspectRatio(1.7f)
                         .clip(RoundedCornerShape(16.dp))
                         .background(Colors.OUTLINE.copy(0.3f))
+                        .rippleClickable(color = Colors.PRIMARY) { zoomOpen = true }
                 ) {
                     AppAsyncImage(
                         modifier = Modifier.fillMaxSize(),
@@ -248,5 +254,12 @@ private fun StepCard(
                 }
             }
         }
+    }
+
+    if (zoomOpen) {
+        ZoomableImageDialog(
+            url = step.previewUrl,
+            onDismissRequest = { zoomOpen = false }
+        )
     }
 }
