@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -29,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
@@ -41,10 +39,9 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import ru.topbun.core.android.SnackbarManager
 import ru.topbun.core.ui.R
-import ru.topbun.core.ui.components.AppButton
 import ru.topbun.core.ui.components.AppPullRefresh
+import ru.topbun.core.ui.components.ListErrorBlock
 import ru.topbun.core.ui.theme.Colors
-import ru.topbun.core.ui.theme.Typography
 import ru.topbun.core.ui.utils.ObserveAsEvents
 import ru.topbun.navigation.ProfileScreenProvider.User
 import ru.topbun.recipe.components.DeleteRecipeDialog
@@ -263,29 +260,14 @@ private fun ErrorState(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 32.dp),
+                .padding(horizontal = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "Не удалось загрузить рецепт",
-                style = Typography.H2,
-                color = Colors.MAIN_TEXT,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = "Попробуйте ещё раз",
-                style = Typography.P2,
-                color = Colors.SECONDARY_TEXT,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-            AppButton(
-                modifier = Modifier
-                    .padding(top = 24.dp)
-                    .fillMaxWidth(),
-                text = "Загрузить снова",
-                onClick = onClickRetry
+            ListErrorBlock(
+                title = "Не удалось загрузить рецепт",
+                message = "Проверьте подключение и попробуйте ещё раз",
+                onClickRetry = onClickRetry
             )
         }
     }

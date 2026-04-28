@@ -6,25 +6,20 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ru.topbun.core.ui.theme.Colors
-import ru.topbun.core.ui.theme.Typography
 import ru.topbun.domain.ScreenUiState
 
 @Composable
@@ -84,7 +79,11 @@ private fun LazyListScope.ListFooter(
 
     when (status) {
         ScreenUiState.Error -> item {
-            FooterContentError(onLoadMore)
+            if (isEmpty) {
+                FooterContentErrorBlock(onLoadMore)
+            } else {
+                FooterContentErrorInline(onLoadMore)
+            }
         }
         ScreenUiState.Loading -> if (!isEndList) item {
             FooterContentLoading()
@@ -101,18 +100,7 @@ private fun LazyListScope.ListFooter(
 
 @Composable
 private fun FooterContentEmptyList() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Список пуст",
-            color = Colors.BLUE_TEXT,
-            style = Typography.H2
-        )
-    }
+    ListEmptyBlock()
 }
 
 @Composable
@@ -132,7 +120,12 @@ private fun FooterContentLoading() {
 }
 
 @Composable
-private fun FooterContentError(onLoadMore: () -> Unit) {
+private fun FooterContentErrorBlock(onLoadMore: () -> Unit) {
+    ListErrorBlock(onClickRetry = onLoadMore)
+}
+
+@Composable
+private fun FooterContentErrorInline(onLoadMore: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -140,7 +133,6 @@ private fun FooterContentError(onLoadMore: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         AppButton(
-            modifier = Modifier.wrapContentSize(),
             text = "Загрузить снова",
         ) {
             onLoadMore()
