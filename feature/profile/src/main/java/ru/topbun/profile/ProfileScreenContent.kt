@@ -1,8 +1,5 @@
 package ru.topbun.profile
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,7 +7,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -30,7 +26,6 @@ data class ProfileScreenContent(
 
     @Composable
     override fun Content() {
-        val context = LocalContext.current
         val viewModel: ProfileViewModel = koinViewModel { parametersOf(ProfileState.Mode.Other(userId)) }
         val navigator = LocalNavigator.currentOrThrow
 
@@ -44,7 +39,6 @@ data class ProfileScreenContent(
                     val screen = ScreenRegistry.get(BmiScreenProvider.Main)
                     navigator.push(screen)
                 }
-                is ProfileEvent.OpenUrl -> openUrl(context, event.url)
                 else -> Unit
             }
         }
@@ -89,10 +83,4 @@ data class ProfileScreenContent(
             )
         }
     }
-}
-
-private fun openUrl(context: Context, url: String) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    runCatching { context.startActivity(intent) }
 }

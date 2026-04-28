@@ -83,6 +83,5 @@ internal sealed interface ProfileEvent {
     data object NavigateToAuth : ProfileEvent
     data object LoggedOut : ProfileEvent
     data object NavigateToBmi : ProfileEvent
-    data class OpenUrl(val url: String) : ProfileEvent
 
 }

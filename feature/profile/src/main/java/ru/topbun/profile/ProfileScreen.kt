@@ -74,7 +74,6 @@ object ProfileScreen : Tab {
                     val screen = ScreenRegistry.get(BmiScreenProvider.Main)
                     navigator?.push(screen)
                 }
-                is ProfileEvent.OpenUrl -> openUrl(context, event.url)
             }
         }
 
