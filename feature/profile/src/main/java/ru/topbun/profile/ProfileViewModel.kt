@@ -98,6 +98,7 @@ internal class ProfileViewModel(
                             loadActiveTab()
                         }.onError { error, _ ->
                             handleProfileError(error)
+                            loadActiveTab()
                         }
                     }.onError { error, _ ->
                         if (error == DataError.Network.UNAUTHORIZED) {
@@ -124,6 +125,7 @@ internal class ProfileViewModel(
                         loadActiveTab()
                     }.onError { error, _ ->
                         handleProfileError(error)
+                        loadActiveTab()
                     }
                 }
             }

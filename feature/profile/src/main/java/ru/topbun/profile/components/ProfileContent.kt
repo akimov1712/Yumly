@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -64,28 +63,35 @@ internal fun ProfileContent(
                 }
             }
 
-            state.showProfileError -> {
-                ProfileErrorState(
+            state.showProfileError && state.targetUserId == null -> {
+                ProfileErrorOnlyState(
                     onClickRetry = { viewModel.sendIntent(ProfileIntent.LoadProfile) }
                 )
             }
 
-            state.profile != null -> {
+            else -> {
+                val showInfoError = state.showProfileError
                 val headerItems: LazyListScope.() -> Unit = {
-                    item("profile_info") {
-                        val profileUserId = state.profile?.userId
-                        ProfileInfo(
-                            profile = state.profile,
-                            isSelf = state.isSelf,
-                            followLoading = state.followLoading,
-                            onClickFollow = { viewModel.sendIntent(ProfileIntent.SwitchFollow) },
-                            onClickFollowers = {
-                                profileUserId?.let { onClickFollowers(it) }
-                            },
-                            onClickFollowing = {
-                                profileUserId?.let { onClickFollowing(it) }
-                            }
-                        )
+                    item("profile_info_or_error") {
+                        if (showInfoError) {
+                            ProfileErrorBlock(
+                                onClickRetry = { viewModel.sendIntent(ProfileIntent.LoadProfile) }
+                            )
+                        } else {
+                            val profileUserId = state.profile?.userId
+                            ProfileInfo(
+                                profile = state.profile,
+                                isSelf = state.isSelf,
+                                followLoading = state.followLoading,
+                                onClickFollow = { viewModel.sendIntent(ProfileIntent.SwitchFollow) },
+                                onClickFollowers = {
+                                    profileUserId?.let { onClickFollowers(it) }
+                                },
+                                onClickFollowing = {
+                                    profileUserId?.let { onClickFollowing(it) }
+                                }
+                            )
+                        }
                     }
                     item("profile_tabs") {
                         ProfileTabsBar(
@@ -183,7 +189,7 @@ internal fun ProfileContent(
 }
 
 @Composable
-private fun ProfileErrorState(
+private fun ProfileErrorOnlyState(
     onClickRetry: () -> Unit,
 ) {
     LazyColumn(
