@@ -5,6 +5,8 @@ import ru.topbun.core.common.HttpStatusCode
 import ru.topbun.core.common.Result
 import ru.topbun.core.common.error.DataError
 import ru.topbun.data.exceptionWrapper
+import ru.topbun.data.source.local.database.favorite.FavoriteRecipeDao
+import ru.topbun.data.source.local.database.favorite.FavoriteRecipeMapper
 import ru.topbun.data.source.remote.api.favorite.FavoriteApi
 import ru.topbun.data.source.remote.dto.favorite.GetFavoriteRequest
 import ru.topbun.domain.entity.recipe.RecipeEntity
@@ -12,7 +14,8 @@ import ru.topbun.domain.repository.favorite.FavoriteRepository
 
 internal class FavoriteRepositoryImpl(
     private val context: Context,
-    private val api: FavoriteApi
+    private val api: FavoriteApi,
+    private val dao: FavoriteRecipeDao,
 ): FavoriteRepository {
 
     override suspend fun switchFavoriteRecipe(id: Int): Result<Boolean, DataError> =
@@ -38,7 +41,9 @@ internal class FavoriteRepositoryImpl(
             val response = api.getFavoriteRecipes(userId, request)
             val recipes = response.body()
             if (response.isSuccessful && recipes != null){
-                Result.Success(recipes.toEntityList())
+                val entities = recipes.toEntityList()
+                cacheRecipes(userId, offset, entities)
+                Result.Success(entities)
             } else {
                 val error = when(response.code()){
                     HttpStatusCode.BAD_REQUEST -> DataError.Network.INVALID_DATA
@@ -47,5 +52,22 @@ internal class FavoriteRepositoryImpl(
                 Result.Error(error)
             }
         }
+
+    override suspend fun getCachedFavoriteRecipes(userId: Int): List<RecipeEntity> =
+        runCatching {
+            dao.getByUser(userId).map { FavoriteRecipeMapper.toEntity(it) }
+        }.getOrElse { emptyList() }
+
+    private suspend fun cacheRecipes(userId: Int, offset: Int, recipes: List<RecipeEntity>) {
+        if (recipes.isEmpty() && offset == 0) {
+            dao.deleteByUser(userId)
+            return
+        }
+        if (offset == 0) dao.deleteByUser(userId)
+        val items = recipes.mapIndexed { index, recipe ->
+            FavoriteRecipeMapper.toDbo(userId, offset + index, recipe)
+        }
+        if (items.isNotEmpty()) dao.insertAll(items)
+    }
 
 }

@@ -8,6 +8,7 @@ import ru.topbun.domain.useCases.account.ResetPasswordUseCase
 import ru.topbun.domain.useCases.account.UpdateAccountInfoUseCase
 import ru.topbun.domain.useCases.config.GetStatusFirstStartUseCase
 import ru.topbun.domain.useCases.config.SetStatusFirstStartUseCase
+import ru.topbun.domain.useCases.favorite.GetCachedFavoriteRecipesUseCase
 import ru.topbun.domain.useCases.favorite.GetFavoriteRecipesUseCase
 import ru.topbun.domain.useCases.favorite.SwitchFavoriteRecipeUseCase
 import ru.topbun.domain.useCases.follow.GetFollowersUseCase
@@ -40,6 +41,7 @@ val useCaseModule = module {
     singleOf(::GetStatusFirstStartUseCase)
     singleOf(::SetStatusFirstStartUseCase)
     singleOf(::GetFavoriteRecipesUseCase)
+    singleOf(::GetCachedFavoriteRecipesUseCase)
     singleOf(::SwitchFavoriteRecipeUseCase)
     singleOf(::GetFollowersUseCase)
     singleOf(::GetFollowingUseCase)
