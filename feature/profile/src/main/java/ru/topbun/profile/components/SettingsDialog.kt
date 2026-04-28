@@ -29,6 +29,8 @@ import ru.topbun.core.ui.utils.rippleClickable
 internal fun SettingsDialog(
     onDismissRequest: () -> Unit,
     onClickEditProfile: () -> Unit,
+    onClickPrivacyPolicy: () -> Unit,
+    onClickUserAgreement: () -> Unit,
     onClickLogout: () -> Unit,
 ) = BottomDialogWrapper(
     onDismissRequest = onDismissRequest,
@@ -59,6 +61,16 @@ internal fun SettingsDialog(
                 iconRes = R.drawable.ic_edit,
                 title = "Изменить профиль",
                 onClick = onClickEditProfile
+            )
+            SettingsItem(
+                iconRes = R.drawable.ic_privacy,
+                title = "Политика конфиденциальности",
+                onClick = onClickPrivacyPolicy
+            )
+            SettingsItem(
+                iconRes = R.drawable.ic_document,
+                title = "Пользовательское соглашение",
+                onClick = onClickUserAgreement
             )
             SettingsItem(
                 iconRes = R.drawable.ic_logout,
