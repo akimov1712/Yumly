@@ -52,6 +52,10 @@ dependencies {
     implementation(libs.voyager.tab.navigator)
     implementation(libs.voyager.koin)
 
+    // Review
+    implementation(platform(libs.bom))
+    implementation(libs.review)
+
     // Koin
     implementation(libs.koin.core)
     implementation(libs.koin.compose)

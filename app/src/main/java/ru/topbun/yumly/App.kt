@@ -1,8 +1,11 @@
 package ru.topbun.yumly
 
 import android.app.Application
+import android.util.Log
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import io.appmetrica.analytics.AppMetrica
 import io.appmetrica.analytics.AppMetricaConfig
 import org.koin.android.ext.koin.androidContext
@@ -40,8 +43,22 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         initYandexMetrica()
+        initFirebasePush()
         initKoin()
         initScreens()
+    }
+
+
+    private fun initFirebasePush(){
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("FIREBASE_PUSH", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            val token = task.result
+            Log.d("FIREBASE_PUSH", token)
+        })
     }
 
     private fun initYandexMetrica(){

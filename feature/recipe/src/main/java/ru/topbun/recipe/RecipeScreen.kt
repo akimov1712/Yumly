@@ -3,6 +3,7 @@ package ru.topbun.recipe
 import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,6 +37,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import ru.rustore.sdk.review.RuStoreReviewManagerFactory
 import ru.topbun.core.android.SnackbarManager
 import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.AppPullRefresh
@@ -101,6 +103,19 @@ data class RecipeScreen(
                 }
                 RecipeEvent.RecipeDeleted -> navigator.pop()
                 RecipeEvent.TimerFinished -> showNotifyEndOfTimer(context, snackbarManager)
+                RecipeEvent.ShowReview -> {
+                    val manager = RuStoreReviewManagerFactory.create(context)
+                    manager.requestReviewFlow()
+                        .addOnSuccessListener { reviewInfo ->
+                            manager.launchReviewFlow(reviewInfo)
+                                .addOnFailureListener { throwable ->
+                                    Log.d("RU_STORE", "error launch: ${throwable.message}")
+                                }
+                        }
+                        .addOnFailureListener { throwable ->
+                            Log.d("RU_STORE", "error request: ${throwable.message}")
+                        }
+                }
             }
         }
 

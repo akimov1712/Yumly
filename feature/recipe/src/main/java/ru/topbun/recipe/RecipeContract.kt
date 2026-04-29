@@ -107,5 +107,6 @@ internal sealed interface RecipeEvent {
     data class Share(val text: String) : RecipeEvent
     data object RecipeDeleted : RecipeEvent
     data object TimerFinished : RecipeEvent
+    data object ShowReview : RecipeEvent
 
 }

@@ -35,6 +35,11 @@ internal class RecipeViewModel(
 
     init {
         loadCurrentUser()
+        showReview()
+    }
+
+    private fun showReview() = viewModelScope.launch{
+        _events.send(RecipeEvent.ShowReview)
     }
 
     private fun loadCurrentUser() {

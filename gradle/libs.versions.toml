@@ -1,6 +1,5 @@
 [versions]
 # Android Config
-analytics = "8.1.0"
 namespace = "ru.topbun.yumly"
 applicationId = "ru.topbun.yumly"
 compileSdk = "36"
@@ -24,6 +23,11 @@ coilCompose = "3.4.0"
 composeShimmer = "1.4.0"
 reorderable = "3.1.0"
 datepicker = "2.0.7"
+gms = "4.4.4"
+firebaseBom = "34.12.0"
+playServicesBase = "18.10.0"
+analytics = "8.1.0"
+bom = "2026.03.01"
 
 # Default Library Version
 agp = "8.13.2"
@@ -45,12 +49,18 @@ material = "1.13.0"
 [libraries]
 # Library
 analytics = { module = "io.appmetrica.analytics:analytics", version.ref = "analytics" }
+bom = { module = "ru.rustore.sdk:bom", version.ref = "bom" }
 datepicker = { module = "com.github.ozcanalasalvar.picker:datepicker", version.ref = "datepicker" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
+play-services-base = { module = "com.google.android.gms:play-services-base", version.ref = "playServicesBase" }
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 okhttp-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+review = { module = "ru.rustore.sdk:review" }
 security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "security-crypto" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
@@ -95,6 +105,7 @@ wheelview = { module = "com.github.ozcanalasalvar.picker:wheelview", version.ref
 # Plugins
 room = { id = "androidx.room", version.ref = "room" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+gms = { id = "com.google.gms.google-services", version.ref = "gms" }
 
 # Default Plugins
 android-application = { id = "com.android.application", version.ref = "agp" }
