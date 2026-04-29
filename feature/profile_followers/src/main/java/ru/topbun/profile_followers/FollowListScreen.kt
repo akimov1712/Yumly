@@ -84,7 +84,7 @@ data class FollowListScreen(
                             start = 12.dp,
                             end = 12.dp,
                             top = 16.dp,
-                            bottom = 16.dp + getBottomBarPadding()
+                            bottom = 16.dp + getBottomBarPadding(false)
                         ),
                         onLoadMore = {
                             val intent = when (state.selectedTab) {

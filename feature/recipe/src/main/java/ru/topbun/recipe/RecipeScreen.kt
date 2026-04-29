@@ -42,6 +42,7 @@ import ru.topbun.core.ui.components.AppPullRefresh
 import ru.topbun.core.ui.components.ListErrorBlock
 import ru.topbun.core.ui.theme.Colors
 import ru.topbun.core.ui.utils.ObserveAsEvents
+import ru.topbun.core.ui.utils.useBottomBarPadding
 import ru.topbun.navigation.ProfileScreenProvider.User
 import ru.topbun.recipe.components.DeleteRecipeDialog
 import ru.topbun.recipe.components.DescriptionSection
@@ -144,7 +145,8 @@ private fun RecipeContent(
     val hasDescription = !recipe.description.isNullOrBlank() || recipe.tags.isNotEmpty()
 
     AppPullRefresh(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .useBottomBarPadding(false),
         onRefresh = { onIntent(RecipeIntent.Refresh) }
     ) {
         LazyColumn(

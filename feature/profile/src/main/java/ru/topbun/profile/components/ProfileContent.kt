@@ -109,7 +109,7 @@ internal fun ProfileContent(
                         contentPadding = PaddingValues(
                             start = 12.dp,
                             end = 12.dp,
-                            bottom = getBottomBarPadding()
+                            bottom = getBottomBarPadding(state.isSelf)
                         ),
                         onLoadMore = {
                             val intent = if (state.selectedTab == ProfileState.ProfileTab.MyRecipes) {

@@ -1,5 +1,6 @@
 package ru.topbun.core.ui.components
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -14,6 +15,7 @@ import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter.State
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import ru.topbun.core.ui.BuildConfig
 
 @Composable
 fun AppAsyncImage(
@@ -28,6 +30,8 @@ fun AppAsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
 ) {
+    val url = buildUrl(url ?: "")
+    Log.d("BUILD_URL_COIL", url)
     val context = LocalContext.current
     val request = remember(url) {
         ImageRequest.Builder(context)
@@ -50,4 +54,9 @@ fun AppAsyncImage(
         clipToBounds = clipToBounds,
 
     )
+}
+
+private fun buildUrl(url: String): String{
+    val baseUrl = BuildConfig.BASE_URL
+    return ("$baseUrl/v1/$url").takeIf { !url.contains("http") } ?: url
 }
