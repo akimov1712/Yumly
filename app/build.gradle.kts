@@ -16,6 +16,10 @@ android {
         versionName = libs.versions.versionName.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+
+        val metricaKey = property("METRICA_KEY")?.toString() ?: error("METRICA_KEY not found")
+        buildConfigField("String", "METRICA_KEY", "\"$metricaKey\"")
     }
 
     buildTypes {
@@ -36,10 +40,14 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
 dependencies {
+
+    // Analytics
+    implementation(libs.analytics)
 
     // Koin
     implementation(libs.koin.core)

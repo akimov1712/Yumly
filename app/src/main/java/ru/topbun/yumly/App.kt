@@ -3,6 +3,8 @@ package ru.topbun.yumly
 import android.app.Application
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
+import io.appmetrica.analytics.AppMetrica
+import io.appmetrica.analytics.AppMetricaConfig
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -37,8 +39,14 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        initYandexMetrica()
         initKoin()
         initScreens()
+    }
+
+    private fun initYandexMetrica(){
+        val config = AppMetricaConfig.newConfigBuilder(BuildConfig.METRICA_KEY).build()
+        AppMetrica.activate(this, config)
     }
 
 

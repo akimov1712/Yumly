@@ -1,5 +1,6 @@
 [versions]
 # Android Config
+analytics = "8.1.0"
 namespace = "ru.topbun.yumly"
 applicationId = "ru.topbun.yumly"
 compileSdk = "36"
@@ -43,6 +44,7 @@ material = "1.13.0"
 
 [libraries]
 # Library
+analytics = { module = "io.appmetrica.analytics:analytics", version.ref = "analytics" }
 datepicker = { module = "com.github.ozcanalasalvar.picker:datepicker", version.ref = "datepicker" }
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 okhttp-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
