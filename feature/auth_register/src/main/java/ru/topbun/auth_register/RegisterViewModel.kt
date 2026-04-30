@@ -1,6 +1,5 @@
 package ru.topbun.auth_register
 
-import android.R.id.message
 import kotlinx.coroutines.flow.update
 import ru.topbun.core.android.MVI
 import ru.topbun.core.android.SnackbarManager
@@ -36,6 +35,9 @@ internal class RegisterViewModel(
     private fun changeConfirmPassword(value: String) {
         if (value.length < 64) _state.update { it.copy(confirmPassword = value) }
     }
+
+    private fun changeAgreementAccepted(value: Boolean) =
+        _state.update { it.copy(isAgreementAccepted = value) }
 
     private fun changeFieldFocused(field: RegisterState.FieldFocused) =
         _state.update { it.copy(fieldFocused = field) }
@@ -96,6 +98,7 @@ internal class RegisterViewModel(
             is RegisterIntent.ChangeEmail -> changeEmail(intent.value)
             is RegisterIntent.ChangePassword -> changePassword(intent.value)
             is RegisterIntent.ChangeConfirmPassword -> changeConfirmPassword(intent.value)
+            is RegisterIntent.ChangeAgreementAccepted -> changeAgreementAccepted(intent.value)
             RegisterIntent.SwitchShowPassword -> switchShowPassword()
             is RegisterIntent.ChangeFieldFocused -> changeFieldFocused(intent.field)
             RegisterIntent.ClickLogin -> navigateLogin()
