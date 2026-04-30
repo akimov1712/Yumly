@@ -5,6 +5,7 @@ internal data class RegisterState(
     val email: String = "",
     val password: String = "",
     val confirmPassword: String = "",
+    val isAgreementAccepted: Boolean = false,
     val showPassword: Boolean = false,
     val fieldFocused: FieldFocused? = null,
     val registerIsLoading: Boolean = false,
@@ -16,7 +17,8 @@ internal data class RegisterState(
 ){
 
     val registerButtonEnabled: Boolean
-        get() = listOf(username, email, password, confirmPassword).all { it.isNotBlank() }
+        get() = listOf(username, email, password, confirmPassword).all { it.isNotBlank() } &&
+                isAgreementAccepted
 
 
     enum class FieldFocused{
@@ -30,6 +32,7 @@ internal sealed interface RegisterIntent{
     data class ChangeEmail(val value: String): RegisterIntent
     data class ChangePassword(val value: String): RegisterIntent
     data class ChangeConfirmPassword(val value: String): RegisterIntent
+    data class ChangeAgreementAccepted(val value: Boolean): RegisterIntent
     data class ChangeFieldFocused(val field: RegisterState.FieldFocused): RegisterIntent
     data object SwitchShowPassword: RegisterIntent
     object ClickSignUp : RegisterIntent

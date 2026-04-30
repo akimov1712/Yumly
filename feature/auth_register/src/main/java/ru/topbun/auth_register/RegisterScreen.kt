@@ -20,6 +20,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.viewmodel.koinViewModel
+import ru.topbun.auth_register.components.AgreementSection
 import ru.topbun.auth_register.components.Description
 import ru.topbun.auth_register.components.FieldEmail
 import ru.topbun.auth_register.components.FieldPassword
@@ -109,7 +110,14 @@ object RegisterScreen: Screen {
                     onClickShowPassword = { viewModel.sendIntent(RegisterIntent.SwitchShowPassword) },
                     onChangeValue = { viewModel.sendIntent(RegisterIntent.ChangeConfirmPassword(it)) }
                 )
-                Height(64.dp)
+                Height(18.dp)
+                AgreementSection(
+                    checked = state.isAgreementAccepted,
+                    onCheckedChange = {
+                        viewModel.sendIntent(RegisterIntent.ChangeAgreementAccepted(it))
+                    },
+                )
+                Height(40.dp)
                 RegisterButton(
                     enabled = state.registerButtonEnabled,
                     isLoading = state.registerIsLoading

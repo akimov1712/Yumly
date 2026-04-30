@@ -1,8 +1,4 @@
 package ru.topbun.profile
-
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +17,8 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import ru.topbun.core.android.LegalLinks
+import ru.topbun.core.android.openUrl
 import ru.topbun.core.ui.R
 import ru.topbun.core.ui.components.UnauthorizedSection
 import ru.topbun.core.ui.theme.Colors
@@ -35,9 +33,6 @@ import ru.topbun.navigation.utills.root
 import ru.topbun.profile.ProfileState.ProfileUiState.NEED_AUTH
 import ru.topbun.profile.ProfileState.ProfileUiState.SUCCESS
 import ru.topbun.profile.components.ProfileContent
-
-private const val PRIVACY_POLICY_URL = "https://yumly.app/privacy"
-private const val USER_AGREEMENT_URL = "https://yumly.app/terms"
 
 object ProfileScreen : Tab {
 
@@ -121,10 +116,10 @@ object ProfileScreen : Tab {
                         navigator?.push(screen)
                     },
                     onClickPrivacyPolicy = {
-                        openUrl(context, PRIVACY_POLICY_URL)
+                        openUrl(context, LegalLinks.PRIVACY_POLICY_URL)
                     },
                     onClickUserAgreement = {
-                        openUrl(context, USER_AGREEMENT_URL)
+                        openUrl(context, LegalLinks.USER_AGREEMENT_URL)
                     }
                 )
                 NEED_AUTH -> UnauthorizedSection {
@@ -135,10 +130,4 @@ object ProfileScreen : Tab {
             }
         }
     }
-}
-
-private fun openUrl(context: Context, url: String) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    runCatching { context.startActivity(intent) }
 }
